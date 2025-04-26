@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
+import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 interface OtpVerificationPopupProps {
   isOpen: boolean;
@@ -16,7 +19,14 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isResendActive, setIsResendActive] = useState<boolean>(false);
-  const inputRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
+  const inputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
+
+  const { handleSubmit } = useForm();
 
   useEffect(() => {
     if (!isOpen) return;
@@ -49,10 +59,35 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ): void => {
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
       inputRefs[index - 1]?.current?.focus();
     }
+  };
+
+  const showToast = (
+    icon: "success" | "error" | "warning" | "info",
+    title: string
+  ) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+
+    Toast.fire({
+      icon,
+      title,
+    });
   };
 
   const handleResend = (): void => {
@@ -63,20 +98,52 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
     setOtp(["", "", "", ""]);
 
     console.log("Resending OTP to", email);
+    // You can trigger resend OTP API here
   };
 
-  const handleSubmit = (): void => {
+  const onOtpSubmit = async () => {
     const otpValue = otp.join("");
-    if (otpValue.length === 4) {
-      onVerify(otpValue);
+
+    if (otpValue.length < 4) {
+      showToast("error", "Please enter all 4 digits of the OTP");
+
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/pre-register/verify-otp",
+        {
+          email,
+          otp_code: otpValue,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        showToast("success", "mail has been successfully verified.");
+
+        onVerify(otpValue);
+        onClose();
+      }
+    } catch (error: any) {
+      showToast(
+        "error",
+        error?.response?.data?.detail || "Something went wrong. Try again."
+      );
     }
   };
 
   if (!isOpen) return null;
 
   return (
-<div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
-<div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -114,34 +181,38 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
           <p className="font-medium text-gray-800">{email}</p>
         </div>
 
-        <div className="flex justify-center space-x-3 mb-6">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={inputRefs[index]}
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-14 h-14 text-center text-xl font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-          ))}
-        </div>
+        <form onSubmit={handleSubmit(onOtpSubmit)}>
+          <div className="flex justify-center space-x-3 mb-6">
+            {otp.map((digit, index) => (
+              <input
+                key={index}
+                ref={inputRefs[index]}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                className="w-14 h-14 text-center text-xl font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+            ))}
+          </div>
 
-        <button
-          onClick={handleSubmit}
-          className=" w-1/2 block mx-auto bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-2xl focus:outline-none transition duration-300 text-lg mb-4"
-        >
-          Submit
-        </button>
+          <button
+            type="submit"
+            className="w-1/2 block mx-auto bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-2xl focus:outline-none transition duration-300 text-lg mb-4"
+          >
+            Submit
+          </button>
+        </form>
 
         <div className="text-center">
           <button
             onClick={handleResend}
-            className={`text-[#3474fd] font-bold ${!isResendActive && "opacity-50 cursor-not-allowed"}`}
+            className={`text-[#3474fd] font-bold ${
+              !isResendActive && "opacity-50 cursor-not-allowed"
+            }`}
             disabled={!isResendActive}
           >
             Resend OTP

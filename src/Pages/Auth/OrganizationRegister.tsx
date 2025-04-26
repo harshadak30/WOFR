@@ -5,7 +5,6 @@ import React, { useState, ChangeEvent, MouseEvent } from "react";
 import OtpVerificationPopup from "./OtpVerificationPopup";
 import MainLayout from "../../Layout/mainLayout";
 
-// Define types for the OTP verification callback and state
 interface RegisterFormProps {
   email?: string;
 }
@@ -16,7 +15,7 @@ const OrganizationRegister: React.FC<RegisterFormProps> = () => {
 
   const handleVerify = (otpValue: string) => {
     console.log("Verifying OTP:", otpValue);
-    // In a real app, you would verify the OTP here
+   
     setTimeout(() => {
       setIsVerified(true);
       setIsPopupOpen(false);
@@ -24,7 +23,7 @@ const OrganizationRegister: React.FC<RegisterFormProps> = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Prevent form reload
+    e.preventDefault(); 
     setIsPopupOpen(true);
   };
 
