@@ -20,7 +20,7 @@ export default function Page1() {
 
       {/* Right side - Mobile app and world map visualization */}
       <div className="w-1/2 relative">
-        <img src="/globe.png" alt="" />
+        <img src="background/backgroundAPP.png" alt="" />
       </div>
     </div>
   );

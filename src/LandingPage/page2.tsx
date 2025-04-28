@@ -28,7 +28,7 @@ export default function Page2() {
             {/* Support System Card */}
             <div className="bg-white rounded-2xl shadow-xl p-8 md:w-1/3 transform md:-rotate-6 md:-translate-y-2 ">
               <div className=" w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <img src="/public/support_agent.png" alt="" />
+                <img src="/icons/support_agent.png" alt="" />
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800">
                 Support System
@@ -42,7 +42,7 @@ export default function Page2() {
             {/* Financial Management Card */}
             <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-xl p-8 md:w-1/3 text-white">
               <div className="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <img src="/public/account_balance_wallet.png" alt="" />
+                <img src="/icons/account_balance_wallet.png" alt="" />
               </div>
               <h3 className="text-xl font-bold mb-4">Financial Management</h3>
               <p className="text-white/90 text-sm">
@@ -54,7 +54,7 @@ export default function Page2() {
             {/* Safety Compliance Card */}
             <div className="bg-white rounded-2xl shadow-xl p-8 md:w-1/3 transform md:rotate-6 md:-translate-y-2">
               <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                <img src="/public/admin_panel_settings.png" alt="" />
+                <img src="/icons/admin_panel_settings.png" alt="" />
               </div>
               <h3 className="text-xl font-bold mb-4 text-gray-800">
                 Safety Compliance
@@ -71,7 +71,7 @@ export default function Page2() {
         <div className="flex justify-center mt-12">
           <button className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-3 px-8 rounded-md flex items-center gap-2 transition-all">
             Try WOFR Apps for Free
-            <img src="/public/Frame 1346.png" alt="" />
+            <img src="/icons/arrow.png" alt="" />
           </button>
         </div>
       </div>
