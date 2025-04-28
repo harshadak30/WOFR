@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 type LoginMethod = "password" | "otp" | "both";
-
 type FormValues = {
   email: string;
   password: string;
@@ -16,20 +15,19 @@ type FormValues = {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
+  const loginMethodFromAdmin: LoginMethod = "both";
+  
+  // State management
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", ""]);
   const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
   const [isGeneratingOtp, setIsGeneratingOtp] = useState<boolean>(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-  const [showForgotPasswordModal, setShowForgotPasswordModal] =
-    useState<boolean>(false);
+  const [showForgotPasswordModal, setShowForgotPasswordModal] = useState<boolean>(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
   const [isSendingResetLink, setIsSendingResetLink] = useState<boolean>(false);
-
-  // API base URL
-  const apiBaseUrl =
-    "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app";
 
   const {
     register,
@@ -43,6 +41,18 @@ const Login: React.FC = () => {
     },
   });
 
+  // const allowPassword = loginMethodFromAdmin === "password" || loginMethodFromAdmin === "both";
+  // const allowOTP = loginMethodFromAdmin === "otp" || loginMethodFromAdmin === "both";
+
+    const allowPassword =
+    loginMethodFromAdmin === ("password" as LoginMethod) ||
+    loginMethodFromAdmin === ("both" as LoginMethod);
+
+  const allowOTP =
+    loginMethodFromAdmin === ("otp" as LoginMethod) ||
+    loginMethodFromAdmin === ("both" as LoginMethod);
+
+  // Check for Google callback on component mount
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const code = searchParams.get("code");
@@ -57,60 +67,44 @@ const Login: React.FC = () => {
     }
   }, [location]);
 
-  const handleGoogleCallback = async (code: string, state: string | null) => {
-    setIsGoogleLoading(true);
-    try {
-      // const response = await axios.post(
-      //   `${apiBaseUrl}/api/auth/v1/google/callback`,
-      //   {
-      //     code: code,
-      //     state: state || "",
-      //   }
-      // );
-
-      const response = await axios.post(
-        `${apiBaseUrl}/api/auth/v1/google/callback`
-      );
-      console.log(response);
-
-      if (response.data) {
-        // Store token from response if available
-        if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-        }
-
-        showNotification("Google login successful", true);
-
-        setTimeout(() => {
-          navigate("/wofr/lease-intro");
-        }, 1000);
+  // Handle Escape key and body overflow for modal
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showForgotPasswordModal) {
+        closeModal();
       }
-    } catch (error: any) {
-      console.error("Google callback error:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        "Failed to authenticate with Google. Please try again.";
-      showNotification(errorMessage, false);
-    } finally {
-      setIsGoogleLoading(false);
+    };
 
-      // Clear the URL parameters to avoid reprocessing on page refresh
-      window.history.replaceState({}, document.title, window.location.pathname);
+    document.addEventListener("keydown", handleEscKey);
+    
+    if (showForgotPasswordModal) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
     }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+      document.body.classList.remove("overflow-hidden");
+    };
+  }, [showForgotPasswordModal]);
+
+  // Notification helper
+  const showNotification = (message: string, isSuccess: boolean) => {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: isSuccess ? "success" : "error",
+      title: message,
+      showConfirmButton: false,
+      timer: 3000,
+    });
   };
 
-  const loginMethodFromAdmin: LoginMethod = "both";
-
-  const allowPassword =
-    loginMethodFromAdmin === ("password" as LoginMethod) ||
-    loginMethodFromAdmin === ("both" as LoginMethod);
-
-  const allowOTP =
-    loginMethodFromAdmin === ("otp" as LoginMethod) ||
-    loginMethodFromAdmin === ("both" as LoginMethod);
-
+  // Password visibility toggle
   const handlePasswordVisibility = () => setShowPassword((prev) => !prev);
 
+  // OTP input handling
   const handleOtpChange = (index: number, value: string) => {
     if (value && !/^\d*$/.test(value)) return;
 
@@ -126,28 +120,16 @@ const Login: React.FC = () => {
     }
   };
 
-  const showNotification = (message: string, isSuccess: boolean) => {
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: isSuccess ? "success" : "error",
-      title: message,
-      showConfirmButton: false,
-      timer: 3000,
-    });
-  };
-
+  // Generate OTP
   const generateOtp = async () => {
     const email = getValues("email");
     const password = getValues("password");
 
-    // Validate email
     if (!email) {
       showNotification("Email is required", false);
       return;
     }
 
-    // Validate password if password method is allowed
     if (allowPassword && !password) {
       showNotification("Password is required", false);
       return;
@@ -164,25 +146,22 @@ const Login: React.FC = () => {
       if (response.data) {
         setIsOtpSent(true);
         showNotification("OTP sent to your email", true);
-        // Clear OTP values
         setOtpValues(["", "", "", ""]);
       }
     } catch (error: any) {
       console.error("OTP generation error:", error);
-      const errorMessage =
-        error.response?.data?.message ||
-        "Failed to generate OTP. Please try again.";
+      const errorMessage = error.response?.data?.message || "Failed to generate OTP. Please try again.";
       showNotification(errorMessage, false);
     } finally {
       setIsGeneratingOtp(false);
     }
   };
 
+  // Verify OTP
   const verifyOtp = async () => {
     const email = getValues("email");
     const otpCode = otpValues.join("");
 
-    // Validate OTP
     if (otpCode.length !== 4) {
       showNotification("Please enter the complete 4-digit OTP", false);
       return;
@@ -191,17 +170,12 @@ const Login: React.FC = () => {
     setIsVerifyingOtp(true);
 
     try {
-      const response = await axios.post(
-        `${apiBaseUrl}/api/auth/v1/verify-login-otp`,
-        {
-          email_or_phone: email,
-          otp_code: otpCode,
-        }
-      );
-      console.log(response.data);
+      const response = await axios.post(`${apiBaseUrl}/api/auth/v1/verify-login-otp`, {
+        email_or_phone: email,
+        otp_code: otpCode,
+      });
 
       if (response.data) {
-        // Store token if needed
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
         }
@@ -210,29 +184,27 @@ const Login: React.FC = () => {
         }
         showNotification("Login successful", true);
 
-        // Small delay before navigation to allow seeing the success message
         setTimeout(() => {
           navigate("/wofr/lease-intro");
         }, 1000);
       }
     } catch (error: any) {
       console.error("OTP verification error:", error);
-      const errorMessage =
-        error.response?.data?.message || "Invalid OTP. Please try again.";
+      const errorMessage = error.response?.data?.message || "Invalid OTP. Please try again.";
       showNotification(errorMessage, false);
     } finally {
       setIsVerifyingOtp(false);
     }
   };
 
-  const resendOtp = () => {
-    generateOtp();
-  };
+  // Resend OTP
+  const resendOtp = () => generateOtp();
 
-  // Handle Google authentication
+  // Google authentication
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     try {
+      // Fix: Correctly fetch the Google auth URL
       const response = await axios.get(`${apiBaseUrl}/auth/v1/google/login`);
 
       if (response.data && response.data.authUrl) {
@@ -242,63 +214,52 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       console.error("Google login error:", error);
-      showNotification(
-        "Failed to connect with Google. Please try again.",
-        false
-      );
+      showNotification("Failed to connect with Google. Please try again.", false);
       setIsGoogleLoading(false);
     }
   };
 
-  // Handle forgot password
+  // Google callback handling - Fixed for "no route found" issue
+  const handleGoogleCallback = async (code: string, state: string | null) => {
+    setIsGoogleLoading(true);
+    try {
+      // Fix: Ensure the correct endpoint is used with proper parameters
+      const response = await axios.post(`${apiBaseUrl}/v1/auth/google/callback`, {
+        code,
+        state: state || ""
+      });
+
+      if (response.data) {
+        if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
+        }
+
+        showNotification("Google login successful", true);
+
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+    } catch (error: any) {
+      console.error("Google callback error:", error);
+      const errorMessage = error.response?.data?.message || "Failed to authenticate with Google. Please try again.";
+      showNotification(errorMessage, false);
+    } finally {
+      setIsGoogleLoading(false);
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  };
+
+  // Forgot password handling
   const handleForgotPassword = (e: React.MouseEvent) => {
     e.preventDefault();
     setForgotPasswordEmail(getValues("email") || "");
     setShowForgotPasswordModal(true);
   };
 
-  // Close modal when clicking outside
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       closeModal();
-    }
-  };
-
-  // Send password reset link
-  const sendPasswordResetLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !forgotPasswordEmail ||
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(forgotPasswordEmail)
-    ) {
-      showNotification("Please enter a valid email address", false);
-      return;
-    }
-
-    setIsSendingResetLink(true);
-
-    try {
-      const response = await axios.post(
-        `${apiBaseUrl}/api/auth/v1/forgot-password/send-link`,
-        null,
-        {
-          params: {
-            email: forgotPasswordEmail,
-          },
-        }
-      );
-
-      showNotification("Password reset link sent to your email", true);
-      setShowForgotPasswordModal(false);
-    } catch (error: any) {
-      console.error("Forgot password error:", error);
-      const errorMessage =
-        error.response?.data?.detail ||
-        "Failed to send password reset link. Please try again.";
-      showNotification(errorMessage, false);
-    } finally {
-      setIsSendingResetLink(false);
     }
   };
 
@@ -307,32 +268,32 @@ const Login: React.FC = () => {
     setForgotPasswordEmail("");
   };
 
-  useEffect(() => {
-    const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && showForgotPasswordModal) {
-        closeModal();
-      }
-    };
+  // Send password reset link
+  const sendPasswordResetLink = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    document.addEventListener("keydown", handleEscKey);
-
-    // Clean up
-    return () => {
-      document.removeEventListener("keydown", handleEscKey);
-    };
-  }, [showForgotPasswordModal]);
-
-  useEffect(() => {
-    if (showForgotPasswordModal) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
+    if (!forgotPasswordEmail || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(forgotPasswordEmail)) {
+      showNotification("Please enter a valid email address", false);
+      return;
     }
 
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-    };
-  }, [showForgotPasswordModal]);
+    setIsSendingResetLink(true);
+
+    try {
+      await axios.post(`${apiBaseUrl}/api/auth/v1/forgot-password/send-link`, null, {
+        params: { email: forgotPasswordEmail },
+      });
+
+      showNotification("Password reset link sent to your email", true);
+      setShowForgotPasswordModal(false);
+    } catch (error: any) {
+      console.error("Forgot password error:", error);
+      const errorMessage = error.response?.data?.detail || "Failed to send password reset link. Please try again.";
+      showNotification(errorMessage, false);
+    } finally {
+      setIsSendingResetLink(false);
+    }
+  };
 
   return (
     <MainLayout>
@@ -341,25 +302,20 @@ const Login: React.FC = () => {
         style={{ backgroundImage: "url('background/background.png')" }}
       >
         <div className="flex flex-col lg:flex-row justify-between items-center gap-12 w-full max-w-7xl px-6 py-0">
+          {/* Left side - Branding */}
           <div className="flex-1 flex flex-col items-start lg:items-start space-y-8 mb-8 lg:mb-0">
             <div className="w-full flex justify-center lg:justify-center">
-              <img
-                src="background/company-logo.png"
-                alt="Logo"
-                className="w-40 mb-4"
-              />
+              <img src="background/company-logo.png" alt="Logo" className="w-40 mb-4" />
             </div>
             <h1 className="text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left">
-              Secure Your Financial
-              <br />
-              Future Today
+              Secure Your Financial<br />Future Today
             </h1>
             <p className="text-lg lg:text-xl text-white leading-relaxed tracking-wide max-w-xl text-center lg:text-left">
-              Access your portfolio, track investments, and manage your wealth
-              with our advanced financial platform.
+              Access your portfolio, track investments, and manage your wealth with our advanced financial platform.
             </p>
           </div>
 
+          {/* Right side - Login Form */}
           <div className="flex-1 w-full max-w-3xl">
             <div className="bg-white rounded-lg p-8 w-full max-w-xl">
               <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">
@@ -369,18 +325,14 @@ const Login: React.FC = () => {
               <form className="space-y-6">
                 {/* Email */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                     Email ID
                   </label>
                   <input
                     type="email"
                     id="email"
                     placeholder="example@gmail.com"
-                    className={`w-full px-4 py-3 bg-gray-100 border ${errors.email ? "border-red-500" : "border-gray-200"
-                      } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                    className={`w-full px-4 py-3 bg-gray-100 border ${errors.email ? "border-red-500" : "border-gray-200"} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
                     {...register("email", {
                       required: "Email is required",
                       pattern: {
@@ -389,20 +341,13 @@ const Login: React.FC = () => {
                       },
                     })}
                   />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
+                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                 </div>
 
                 {/* Password */}
                 {allowPassword && (
                   <div>
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
+                    <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                       Password
                     </label>
                     <div className="relative">
@@ -410,12 +355,9 @@ const Login: React.FC = () => {
                         type={showPassword ? "text" : "password"}
                         id="password"
                         placeholder="••••••"
-                        className={`w-full px-4 py-3 bg-gray-100 border ${errors.password ? "border-red-500" : "border-gray-200"
-                          } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                        className={`w-full px-4 py-3 bg-gray-100 border ${errors.password ? "border-red-500" : "border-gray-200"} rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
                         {...register("password", {
-                          required: allowPassword
-                            ? "Password is required"
-                            : false,
+                          required: allowPassword ? "Password is required" : false,
                           minLength: {
                             value: 6,
                             message: "Password must be at least 6 characters",
@@ -430,11 +372,7 @@ const Login: React.FC = () => {
                         {showPassword ? <FaEye /> : <FaEyeSlash />}
                       </button>
                     </div>
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.password.message}
-                      </p>
-                    )}
+                    {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                   </div>
                 )}
 
@@ -446,10 +384,7 @@ const Login: React.FC = () => {
                       type="checkbox"
                       className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
                     />
-                    <label
-                      htmlFor="remember"
-                      className="ml-2 block text-sm text-gray-700"
-                    >
+                    <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
                       Remember me
                     </label>
                   </div>
@@ -470,9 +405,7 @@ const Login: React.FC = () => {
                         <div className="w-full border-t border-gray-300"></div>
                       </div>
                       <div className="relative flex justify-center">
-                        <span className="px-4 bg-white text-gray-500 text-base">
-                          OR
-                        </span>
+                        <span className="px-4 bg-white text-gray-500 text-base">OR</span>
                       </div>
                     </div>
 
@@ -482,12 +415,10 @@ const Login: React.FC = () => {
                       disabled={isGeneratingOtp}
                       className="w-[90%] mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500"
                     >
-                      {isGeneratingOtp
-                        ? "Sending..."
-                        : "Generate OTP for Verification"}
+                      {isGeneratingOtp ? "Sending..." : "Generate OTP for Verification"}
                     </button>
 
-                    {/* OTP Section - Always visible but disabled until OTP is sent */}
+                    {/* OTP Section */}
                     <div className="mt-4 flex flex-col items-center text-center">
                       <p className="text-sm text-gray-600 mb-4">
                         {isOtpSent
@@ -502,9 +433,7 @@ const Login: React.FC = () => {
                             type="text"
                             maxLength={1}
                             value={value}
-                            onChange={(e) =>
-                              handleOtpChange(index, e.target.value)
-                            }
+                            onChange={(e) => handleOtpChange(index, e.target.value)}
                             className="w-12 h-12 text-center border rounded-md"
                             disabled={!isOtpSent || isVerifyingOtp}
                           />
@@ -524,7 +453,7 @@ const Login: React.FC = () => {
                   </>
                 )}
 
-                {/* Login Button - Now used for OTP verification */}
+                {/* Login Button */}
                 <button
                   type="button"
                   onClick={verifyOtp}
@@ -537,15 +466,13 @@ const Login: React.FC = () => {
                 {/* Redirect to Register */}
                 <p className="text-center text-sm text-gray-600 mt-4">
                   Don't have an account?{" "}
-                  <Link
-                    to={"/register"}
-                    className="text-teal-600 hover:text-teal-500 font-medium"
-                  >
+                  <Link to={"/register"} className="text-teal-600 hover:text-teal-500 font-medium">
                     Sign up
                   </Link>
                 </p>
               </form>
 
+              {/* Google Login */}
               <div>
                 <button
                   type="button"
@@ -553,11 +480,7 @@ const Login: React.FC = () => {
                   disabled={isGoogleLoading}
                   className="w-[50%] mx-auto flex items-center justify-center gap-2 border mt-10 border-black hover:bg-gray-100 text-black font-medium py-3 px-4 rounded-md focus:outline-none transition-colors"
                 >
-                  <img
-                    src="icons/google.png"
-                    alt="Google"
-                    className="w-6 h-6"
-                  />
+                  <img src="icons/google.png" alt="Google" className="w-6 h-6" />
                   <span>{isGoogleLoading ? "Connecting..." : "Google"}</span>
                 </button>
               </div>
@@ -566,35 +489,29 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Improved Forgot Password Modal with Portal */}
+      {/* Forgot Password Modal */}
       {showForgotPasswordModal && (
         <div
-          className="fixed   bg-black/40 backdrop-blur-sm inset-0 z-50 overflow-auto  bg-opacity-75 flex items-center justify-center"
+          className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 overflow-auto bg-opacity-75 flex items-center justify-center"
           onClick={handleOutsideClick}
           aria-modal="true"
           role="dialog"
         >
           <div
             className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden"
-            onClick={(e) => e.stopPropagation()} // Prevent clicks from closing modal
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">
-                Reset Password
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">Reset Password</h3>
             </div>
 
             <form onSubmit={sendPasswordResetLink}>
               <div className="px-6 py-4">
                 <p className="text-sm text-gray-500 mb-4">
-                  Enter your email address and we'll send you a link to reset
-                  your password.
+                  Enter your email address and we'll send you a link to reset your password.
                 </p>
                 <div>
-                  <label
-                    htmlFor="forgotPasswordEmail"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
+                  <label htmlFor="forgotPasswordEmail" className="block text-sm font-medium text-gray-700 mb-1">
                     Email
                   </label>
                   <input
