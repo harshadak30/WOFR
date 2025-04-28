@@ -96,9 +96,6 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
     setTimeLeft(60);
     setIsResendActive(false);
     setOtp(["", "", "", ""]);
-
-    console.log("Resending OTP to", email);
-    // You can trigger resend OTP API here
   };
 
   const onOtpSubmit = async () => {

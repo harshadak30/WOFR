@@ -24,7 +24,7 @@ const WofrLeaseIntroPage: React.FC = () => {
                             <Link to="/register" className="bg-teal-600 text-white px-6 py-2 rounded-lg text-center">
                                 Already user? Sign in
                             </Link>
-                            <Link to="/wofr4" className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-center">
+                            <Link to="/free-trial" className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-lg text-center">
                                 Try WOFR Apps for Free
                             </Link>
                         </div>

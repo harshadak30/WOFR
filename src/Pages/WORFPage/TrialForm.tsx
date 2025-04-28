@@ -1,12 +1,12 @@
-
-import React from 'react';
-import { ArrowRight } from 'lucide-react';
-import Button from '../../component/Button/Button';
+import React from "react";
+import { ArrowRight } from "lucide-react";
 
 const TrialForm: React.FC = () => {
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold mb-2 text-center">Start your free trial</h2>
+      <h2 className="text-2xl font-bold mb-2 text-center">
+        Start your free trial
+      </h2>
       <p className="text-gray-700 mb-8 text-center">
         Join thousands of companies growing with our platform
       </p>
@@ -89,30 +89,36 @@ const TrialForm: React.FC = () => {
           />
           <label htmlFor="terms" className="ml-2 text-sm text-gray-600">
             I agree to the{" "}
-            <a href="#" className="text-blue-600 hover:underline">terms of use</a>,{" "}
-            <a href="#" className="text-blue-600 hover:underline">privacy notice</a> and{" "}
-            <a href="#" className="text-blue-600 hover:underline">offer details</a>
+            <a href="#" className="text-blue-600 hover:underline">
+              terms of use
+            </a>
+            ,{" "}
+            <a href="#" className="text-blue-600 hover:underline">
+              privacy notice
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-blue-600 hover:underline">
+              offer details
+            </a>
           </label>
         </div>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-  <button
-    type="submit"
-    className="flex justify-center items-center px-5 py-2 text-base bg-[#008F98] text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
-  >
-    Start 7-Day Free Trial
-    <ArrowRight className="ml-2 h-4 w-4" />
-  </button>
-  <button
-    type="button"
-    className="flex justify-center items-center px-5 py-2 text-base border border-black text-black rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
-  >
-    Sign up
-  </button>
-</div>
-
-
+          <button
+            type="submit"
+            className="flex justify-center items-center px-5 py-2 text-base bg-[#008F98] text-white rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
+          >
+            Start 7-Day Free Trial
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            className="flex justify-center items-center px-5 py-2 text-base border border-black text-black rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
+          >
+            Sign up
+          </button>
+        </div>
       </form>
     </div>
   );

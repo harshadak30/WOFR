@@ -7,16 +7,14 @@ import MainLayout from "../../Layout/mainLayout";
 export default function WOFRDashboard() {
   return (
     <>
-    <MainLayout>
-    <div className="w-[90%] mx-auto my-10 flex flex-col gap-10">
-       
-        <Page1/>
-        <Page2/>
-        <Corousel/>
-        <Page3/>
-     
-    </div>
-    </MainLayout>
+      <MainLayout>
+        <div className="w-[90%] mx-auto my-10 flex flex-col gap-10">
+          <Page1 />
+          <Page2 />
+          <Corousel />
+          <Page3 />
+        </div>
+      </MainLayout>
     </>
   );
 }
