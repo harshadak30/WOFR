@@ -92,7 +92,7 @@ const Register: React.FC<RegisterFormProps> = () => {
 
     try {
       const response = await fetch(
-        `https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
+        `https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
           email
         )}`,
         {
@@ -134,7 +134,7 @@ const Register: React.FC<RegisterFormProps> = () => {
       urlEncodedData.append("confirm_password", formData.confirmPassword);
 
       const response = await fetch(
-        "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/register",
+        "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/api/auth/v1/register",
         {
           method: "POST",
           headers: {

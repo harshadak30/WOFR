@@ -35,7 +35,7 @@ const Login: React.FC = () => {
   const handleLoginSubmit = async () => {
     try {
       const response = await axios.post(
-        "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/login",
+        "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app//api/auth/v1/login",
         {
           email_or_phone: emailOrPhone,
           password: password,
@@ -56,7 +56,7 @@ const Login: React.FC = () => {
     try {
       const otpCode = otpValues.join(""); // Joining the OTP values
       const response = await axios.post(
-        "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/verify-login-otp",
+        "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app//api/auth/v1/verify-login-otp",
         {
           email_or_phone: emailOrPhone,
           otp_code: otpCode,
@@ -221,10 +221,8 @@ const Login: React.FC = () => {
 
 export default Login;
 
-
-
-// import React, { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
+// import React, { useState, useEffect } from "react";
+// import { Link, useNavigate, useLocation } from "react-router-dom";
 // import { useForm } from "react-hook-form";
 // import MainLayout from "../../Layout/mainLayout";
 // import axios from "axios";
@@ -240,11 +238,21 @@ export default Login;
 
 // const Login: React.FC = () => {
 //   const navigate = useNavigate();
+//   const location = useLocation();
 //   const [showPassword, setShowPassword] = useState<boolean>(false);
 //   const [otpValues, setOtpValues] = useState<string[]>(["", "", "", ""]);
 //   const [isOtpSent, setIsOtpSent] = useState<boolean>(false);
 //   const [isGeneratingOtp, setIsGeneratingOtp] = useState<boolean>(false);
 //   const [isVerifyingOtp, setIsVerifyingOtp] = useState<boolean>(false);
+//   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+//   const [showForgotPasswordModal, setShowForgotPasswordModal] =
+//     useState<boolean>(false);
+//   const [forgotPasswordEmail, setForgotPasswordEmail] = useState<string>("");
+//   const [isSendingResetLink, setIsSendingResetLink] = useState<boolean>(false);
+
+//   // API base URL
+//   const apiBaseUrl =
+//     "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/";
 
 //   const {
 //     register,
@@ -258,12 +266,63 @@ export default Login;
 //     },
 //   });
 
-//   const loginMethodFromAdmin: LoginMethod = "both";
+//   useEffect(() => {
+//     const searchParams = new URLSearchParams(location.search);
+//     const code = searchParams.get("code");
+//     const error = searchParams.get("error");
+//     const state = searchParams.get("state");
 
-//   // Fix TypeScript comparison issue
-//   const PASSWORD: LoginMethod = "password";
-//   const OTP: LoginMethod = "otp";
-//   const BOTH: LoginMethod = "both";
+//     if (code && !error) {
+//       handleGoogleCallback(code, state);
+//     } else if (error) {
+//       showNotification("Google login failed: " + error, false);
+//       window.history.replaceState({}, document.title, window.location.pathname);
+//     }
+//   }, [location]);
+
+//   const handleGoogleCallback = async (code: string, state: string | null) => {
+//     setIsGoogleLoading(true);
+//     try {
+//       // const response = await axios.post(
+//       //   `${apiBaseUrl}/api/auth/v1/google/callback`,
+//       //   {
+//       //     code: code,
+//       //     state: state || "",
+//       //   }
+//       // );
+
+//       const response = await axios.post(
+//         `${apiBaseUrl}/api/auth/v1/google/callback`
+//       );
+//       console.log(response);
+
+//       if (response.data) {
+//         // Store token from response if available
+//         if (response.data.token) {
+//           localStorage.setItem("token", response.data.token);
+//         }
+
+//         showNotification("Google login successful", true);
+
+//         setTimeout(() => {
+//           navigate("/wofr/lease-intro");
+//         }, 1000);
+//       }
+//     } catch (error: any) {
+//       console.error("Google callback error:", error);
+//       const errorMessage =
+//         error.response?.data?.message ||
+//         "Failed to authenticate with Google. Please try again.";
+//       showNotification(errorMessage, false);
+//     } finally {
+//       setIsGoogleLoading(false);
+
+//       // Clear the URL parameters to avoid reprocessing on page refresh
+//       window.history.replaceState({}, document.title, window.location.pathname);
+//     }
+//   };
+
+//   const loginMethodFromAdmin: LoginMethod = "both";
 
 //   const allowPassword =
 //     loginMethodFromAdmin === ("password" as LoginMethod) ||
@@ -272,17 +331,16 @@ export default Login;
 //   const allowOTP =
 //     loginMethodFromAdmin === ("otp" as LoginMethod) ||
 //     loginMethodFromAdmin === ("both" as LoginMethod);
+
 //   const handlePasswordVisibility = () => setShowPassword((prev) => !prev);
 
 //   const handleOtpChange = (index: number, value: string) => {
-//     // Only allow numbers
 //     if (value && !/^\d*$/.test(value)) return;
 
 //     const updated = [...otpValues];
 //     updated[index] = value;
 //     setOtpValues(updated);
 
-//     // Auto-focus to next input if value is entered
 //     if (value && index < 3) {
 //       const nextInput = document.getElementById(`otp-${index + 1}`);
 //       if (nextInput) {
@@ -321,13 +379,10 @@ export default Login;
 //     setIsGeneratingOtp(true);
 
 //     try {
-//       const response = await axios.post(
-//         "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/login",
-//         {
-//           email_or_phone: email,
-//           password: allowPassword ? password : undefined,
-//         }
-//       );
+//       const response = await axios.post(`${apiBaseUrl}/api/auth/v1/login`, {
+//         email_or_phone: email,
+//         password: allowPassword ? password : undefined,
+//       });
 
 //       if (response.data) {
 //         setIsOtpSent(true);
@@ -360,17 +415,22 @@ export default Login;
 
 //     try {
 //       const response = await axios.post(
-//         "https://23f2-2405-201-37-21d9-3801-53f6-f1a6-cf41.ngrok-free.app/api/auth/v1/verify-login-otp",
+//         `${apiBaseUrl}/api/auth/v1/verify-login-otp`,
 //         {
 //           email_or_phone: email,
 //           otp_code: otpCode,
 //         }
 //       );
+//       console.log(response.data);
 
 //       if (response.data) {
 //         // Store token if needed
-//         // localStorage.setItem("token", response.data.token);
-
+//         if (response.data.token) {
+//           localStorage.setItem("token", response.data.token);
+//         }
+//         if (response.data.email) {
+//           localStorage.setItem("email", response.data.email);
+//         }
 //         showNotification("Login successful", true);
 
 //         // Small delay before navigation to allow seeing the success message
@@ -391,6 +451,111 @@ export default Login;
 //   const resendOtp = () => {
 //     generateOtp();
 //   };
+
+//   // Handle Google authentication
+//   const handleGoogleLogin = async () => {
+//     setIsGoogleLoading(true);
+//     try {
+//       const response = await axios.get(`${apiBaseUrl}/auth/v1/google/login`);
+
+//       if (response.data && response.data.authUrl) {
+//         window.location.href = response.data.authUrl;
+//       } else {
+//         window.location.href = `${apiBaseUrl}/auth/v1/google/login`;
+//       }
+//     } catch (error) {
+//       console.error("Google login error:", error);
+//       showNotification(
+//         "Failed to connect with Google. Please try again.",
+//         false
+//       );
+//       setIsGoogleLoading(false);
+//     }
+//   };
+
+//   // Handle forgot password
+//   const handleForgotPassword = (e: React.MouseEvent) => {
+//     e.preventDefault();
+//     setForgotPasswordEmail(getValues("email") || "");
+//     setShowForgotPasswordModal(true);
+//   };
+
+//   // Close modal when clicking outside
+//   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+//     if (e.target === e.currentTarget) {
+//       closeModal();
+//     }
+//   };
+
+//   // Send password reset link
+//   const sendPasswordResetLink = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     if (
+//       !forgotPasswordEmail ||
+//       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(forgotPasswordEmail)
+//     ) {
+//       showNotification("Please enter a valid email address", false);
+//       return;
+//     }
+
+//     setIsSendingResetLink(true);
+
+//     try {
+//       const response = await axios.post(
+//         `${apiBaseUrl}/api/auth/v1/forgot-password/send-link`,
+//         null,
+//         {
+//           params: {
+//             email: forgotPasswordEmail,
+//           },
+//         }
+//       );
+
+//       showNotification("Password reset link sent to your email", true);
+//       setShowForgotPasswordModal(false);
+//     } catch (error: any) {
+//       console.error("Forgot password error:", error);
+//       const errorMessage =
+//         error.response?.data?.detail ||
+//         "Failed to send password reset link. Please try again.";
+//       showNotification(errorMessage, false);
+//     } finally {
+//       setIsSendingResetLink(false);
+//     }
+//   };
+
+//   const closeModal = () => {
+//     setShowForgotPasswordModal(false);
+//     setForgotPasswordEmail("");
+//   };
+
+//   useEffect(() => {
+//     const handleEscKey = (e: KeyboardEvent) => {
+//       if (e.key === "Escape" && showForgotPasswordModal) {
+//         closeModal();
+//       }
+//     };
+
+//     document.addEventListener("keydown", handleEscKey);
+
+//     // Clean up
+//     return () => {
+//       document.removeEventListener("keydown", handleEscKey);
+//     };
+//   }, [showForgotPasswordModal]);
+
+//   useEffect(() => {
+//     if (showForgotPasswordModal) {
+//       document.body.classList.add("overflow-hidden");
+//     } else {
+//       document.body.classList.remove("overflow-hidden");
+//     }
+
+//     return () => {
+//       document.body.classList.remove("overflow-hidden");
+//     };
+//   }, [showForgotPasswordModal]);
 
 //   return (
 //     <MainLayout>
@@ -437,9 +602,8 @@ export default Login;
 //                     type="email"
 //                     id="email"
 //                     placeholder="example@gmail.com"
-//                     className={`w-full px-4 py-3 bg-gray-100 border ${
-//                       errors.email ? "border-red-500" : "border-gray-200"
-//                     } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
+//                     className={`w-full px-4 py-3 bg-gray-100 border ${errors.email ? "border-red-500" : "border-gray-200"
+//                       } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
 //                     {...register("email", {
 //                       required: "Email is required",
 //                       pattern: {
@@ -469,9 +633,8 @@ export default Login;
 //                         type={showPassword ? "text" : "password"}
 //                         id="password"
 //                         placeholder="••••••"
-//                         className={`w-full px-4 py-3 bg-gray-100 border ${
-//                           errors.password ? "border-red-500" : "border-gray-200"
-//                         } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
+//                         className={`w-full px-4 py-3 bg-gray-100 border ${errors.password ? "border-red-500" : "border-gray-200"
+//                           } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
 //                         {...register("password", {
 //                           required: allowPassword
 //                             ? "Password is required"
@@ -513,12 +676,13 @@ export default Login;
 //                       Remember me
 //                     </label>
 //                   </div>
-//                   <a
-//                     href="#"
+//                   <button
+//                     type="button"
+//                     onClick={handleForgotPassword}
 //                     className="text-sm text-teal-600 hover:text-teal-500 font-medium"
 //                   >
 //                     Forgot Password?
-//                   </a>
+//                   </button>
 //                 </div>
 
 //                 {/* Generate OTP Button */}
@@ -608,20 +772,87 @@ export default Login;
 //               <div>
 //                 <button
 //                   type="button"
-//                   className="w-[50%] mx-auto flex items-center justify-center gap-2 border mt-10 border-black hover:bg-teal-700 text-black font-medium py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500"
+//                   onClick={handleGoogleLogin}
+//                   disabled={isGoogleLoading}
+//                   className="w-[50%] mx-auto flex items-center justify-center gap-2 border mt-10 border-black hover:bg-gray-100 text-black font-medium py-3 px-4 rounded-md focus:outline-none transition-colors"
 //                 >
 //                   <img
 //                     src="icons/google.png"
 //                     alt="Google"
 //                     className="w-6 h-6"
 //                   />
-//                   <span>Google</span>
+//                   <span>{isGoogleLoading ? "Connecting..." : "Google"}</span>
 //                 </button>
 //               </div>
 //             </div>
 //           </div>
 //         </div>
 //       </div>
+
+//       {/* Improved Forgot Password Modal with Portal */}
+//       {showForgotPasswordModal && (
+//         <div
+//           className="fixed   bg-black/40 backdrop-blur-sm inset-0 z-50 overflow-auto  bg-opacity-75 flex items-center justify-center"
+//           onClick={handleOutsideClick}
+//           aria-modal="true"
+//           role="dialog"
+//         >
+//           <div
+//             className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden"
+//             onClick={(e) => e.stopPropagation()} // Prevent clicks from closing modal
+//           >
+//             <div className="px-6 py-4 border-b border-gray-200">
+//               <h3 className="text-lg font-medium text-gray-900">
+//                 Reset Password
+//               </h3>
+//             </div>
+
+//             <form onSubmit={sendPasswordResetLink}>
+//               <div className="px-6 py-4">
+//                 <p className="text-sm text-gray-500 mb-4">
+//                   Enter your email address and we'll send you a link to reset
+//                   your password.
+//                 </p>
+//                 <div>
+//                   <label
+//                     htmlFor="forgotPasswordEmail"
+//                     className="block text-sm font-medium text-gray-700 mb-1"
+//                   >
+//                     Email
+//                   </label>
+//                   <input
+//                     type="email"
+//                     id="forgotPasswordEmail"
+//                     value={forgotPasswordEmail}
+//                     onChange={(e) => setForgotPasswordEmail(e.target.value)}
+//                     placeholder="example@gmail.com"
+//                     className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+//                     required
+//                     autoFocus
+//                   />
+//                 </div>
+//               </div>
+
+//               <div className="px-6 py-4 bg-gray-50 flex flex-row-reverse">
+//                 <button
+//                   type="submit"
+//                   disabled={isSendingResetLink}
+//                   className="ml-3 inline-flex justify-center px-4 py-2 bg-teal-600 text-white font-medium rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+//                 >
+//                   {isSendingResetLink ? "Sending..." : "Send Reset Link"}
+//                 </button>
+//                 <button
+//                   type="button"
+//                   onClick={closeModal}
+//                   className="inline-flex justify-center px-4 py-2 bg-white text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+//                 >
+//                   Cancel
+//                 </button>
+//               </div>
+//             </form>
+//           </div>
+//         </div>
+//       )}
 //     </MainLayout>
 //   );
 // };
