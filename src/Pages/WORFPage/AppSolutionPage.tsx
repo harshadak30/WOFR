@@ -98,27 +98,6 @@ const AppSolutionsPage: React.FC = () => {
         <section className="px-4 sm:px-6 lg:px-8 xl:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8 lg:gap-10 w-full max-w-screen-2xl mx-auto">
             {appData.map((app, index) => (
-              // <Link to={app.path || "/default-path"} key={index} className="w-full">
-              //   <div
-              //     className="p-4 md:p-6 bg-white rounded-lg shadow-md hover:shadow-lg border border-gray-100 hover:border-[#008F98] transition-all duration-300"
-              //   >
-              //     <div className="flex items-start">
-              //       <div className="bg-blue-50 p-2 md:p-3 rounded-lg mr-3 md:mr-4 flex-shrink-0">
-              //         <div className="text-xl md:text-2xl text-[#003061]">
-              //           {app.icon}
-              //         </div>
-              //       </div>
-              //       <div>
-              //         <h3 className="font-bold text-lg md:text-xl text-[#003061] mb-1 md:mb-2">
-              //           {app.title}
-              //         </h3>
-              //         <p className="text-sm md:text-base text-gray-600">
-              //           {app.description}
-              //         </p>
-              //       </div>
-              //     </div>
-              //   </div>
-              // </Link>
               <Link
                 to={app.path || "/default-path"}
                 key={index}
@@ -149,7 +128,7 @@ const AppSolutionsPage: React.FC = () => {
         {/* Call-to-Action Buttons */}
         <div className="flex flex-col sm:flex-row justify-center sm:space-x-4 space-y-4 sm:space-y-0 py-10 lg:py-16 px-4 mt-8">
           <Link
-            to=""
+            to="/login"
             className="flex items-center justify-center w-full sm:w-auto px-6 md:px-8 py-3 rounded text-white bg-[#008F98] hover:bg-[#007a82] transition-colors mb-6 sm:mb-0"
           >
             Already a user? Sign In
@@ -157,7 +136,7 @@ const AppSolutionsPage: React.FC = () => {
           </Link>
 
           <Link
-            to=""
+            to="/free-trial"
             className="flex items-center justify-center w-full sm:w-auto bg-[#008F98] text-white px-6 md:px-8 py-3 rounded hover:bg-[#007a82] transition-colors"
           >
             Try WOFR Apps for Free

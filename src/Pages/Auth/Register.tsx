@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OtpVerificationPopup from "./OtpVerificationPopup";
@@ -6,6 +5,7 @@ import MainLayout from "../../Layout/mainLayout";
 import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import axios from "../../helper/axios"
 
 // Define types for form inputs
 interface RegisterFormInputs {
@@ -104,7 +104,6 @@ const Register: React.FC<RegisterFormProps> = () => {
       );
 
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         setIsEmailVerified(true);
@@ -348,6 +347,7 @@ const Register: React.FC<RegisterFormProps> = () => {
                       type="text"
                       id="organization"
                       placeholder="xyz"
+                      disabled
                       className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                       {...register("organization")}
                     />
@@ -422,6 +422,7 @@ const Register: React.FC<RegisterFormProps> = () => {
                             value === watch("password") ||
                             "Passwords do not match",
                         })}
+                        required
                       />
                       <span
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"

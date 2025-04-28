@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import MainLayout from "../../Layout/mainLayout";
-import axios from "axios";
 import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "../../helper/axios"
 
 type LoginMethod = "password" | "otp" | "both";
 type FormValues = {
@@ -15,7 +15,7 @@ type FormValues = {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
+  // const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
   const loginMethodFromAdmin: LoginMethod = "both";
   
   // State management
@@ -138,7 +138,7 @@ const Login: React.FC = () => {
     setIsGeneratingOtp(true);
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/api/auth/v1/login`, {
+      const response = await axios.post(`api/auth/v1/login`, {
         email_or_phone: email,
         password: allowPassword ? password : undefined,
       });
@@ -150,7 +150,7 @@ const Login: React.FC = () => {
       }
     } catch (error: any) {
       console.error("OTP generation error:", error);
-      const errorMessage = error.response?.data?.message || "Failed to generate OTP. Please try again.";
+      const errorMessage = error.response?.data?.detail || "Failed to generate OTP. Please try again.";
       showNotification(errorMessage, false);
     } finally {
       setIsGeneratingOtp(false);
@@ -170,7 +170,7 @@ const Login: React.FC = () => {
     setIsVerifyingOtp(true);
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/api/auth/v1/verify-login-otp`, {
+      const response = await axios.post(`api/auth/v1/verify-login-otp`, {
         email_or_phone: email,
         otp_code: otpCode,
       });
@@ -185,12 +185,12 @@ const Login: React.FC = () => {
         showNotification("Login successful", true);
 
         setTimeout(() => {
-          navigate("/wofr/lease-intro");
+          navigate("/explore-solutions");
         }, 1000);
       }
     } catch (error: any) {
       console.error("OTP verification error:", error);
-      const errorMessage = error.response?.data?.message || "Invalid OTP. Please try again.";
+      const errorMessage = error.response?.data?.detail || "Invalid OTP. Please try again.";
       showNotification(errorMessage, false);
     } finally {
       setIsVerifyingOtp(false);
@@ -205,12 +205,12 @@ const Login: React.FC = () => {
     setIsGoogleLoading(true);
     try {
       // Fix: Correctly fetch the Google auth URL
-      const response = await axios.get(`${apiBaseUrl}/auth/v1/google/login`);
+      const response = await axios.get(`auth/v1/google/login`);
 
       if (response.data && response.data.authUrl) {
         window.location.href = response.data.authUrl;
       } else {
-        window.location.href = `${apiBaseUrl}/auth/v1/google/login`;
+        window.location.href = `auth/v1/google/login`;
       }
     } catch (error) {
       console.error("Google login error:", error);
@@ -224,7 +224,7 @@ const Login: React.FC = () => {
     setIsGoogleLoading(true);
     try {
       // Fix: Ensure the correct endpoint is used with proper parameters
-      const response = await axios.post(`${apiBaseUrl}/v1/auth/google/callback`, {
+      const response = await axios.post(`v1/auth/google/callback`, {
         code,
         state: state || ""
       });
@@ -242,7 +242,7 @@ const Login: React.FC = () => {
       }
     } catch (error: any) {
       console.error("Google callback error:", error);
-      const errorMessage = error.response?.data?.message || "Failed to authenticate with Google. Please try again.";
+      const errorMessage = error.response?.data?.detail || "Failed to authenticate with Google. Please try again.";
       showNotification(errorMessage, false);
     } finally {
       setIsGoogleLoading(false);
@@ -280,7 +280,7 @@ const Login: React.FC = () => {
     setIsSendingResetLink(true);
 
     try {
-      await axios.post(`${apiBaseUrl}/api/auth/v1/forgot-password/send-link`, null, {
+      await axios.post(`api/auth/v1/forgot-password/send-link`, null, {
         params: { email: forgotPasswordEmail },
       });
 
@@ -400,14 +400,14 @@ const Login: React.FC = () => {
                 {/* Generate OTP Button */}
                 {allowOTP && (
                   <>
-                    <div className="relative py-1">
+                    {/* <div className="relative py-1">
                       <div className="absolute inset-0 flex items-center">
                         <div className="w-full border-t border-gray-300"></div>
                       </div>
                       <div className="relative flex justify-center">
                         <span className="px-4 bg-white text-gray-500 text-base">OR</span>
                       </div>
-                    </div>
+                    </div> */}
 
                     <button
                       type="button"
@@ -473,7 +473,7 @@ const Login: React.FC = () => {
               </form>
 
               {/* Google Login */}
-              <div>
+              {/* <div>
                 <button
                   type="button"
                   onClick={handleGoogleLogin}
@@ -483,7 +483,7 @@ const Login: React.FC = () => {
                   <img src="icons/google.png" alt="Google" className="w-6 h-6" />
                   <span>{isGoogleLoading ? "Connecting..." : "Google"}</span>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
