@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function Page1() {
   return (
@@ -13,9 +14,9 @@ export default function Page1() {
           Never at water me might. On formed merits hunted unable merely by mr
           whence or. Possession the unpleasing simplicity her uncommonly.
         </p>
-        <button className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-6 rounded">
+        <Link to="/free-trial" className="bg-teal-500 hover:bg-teal-600 text-white font-medium py-2 px-6 rounded">
           Explore our Universe for free
-        </button>
+        </Link>
       </div>
 
       {/* Right side - Mobile app and world map visualization */}

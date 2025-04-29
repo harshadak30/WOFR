@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+ import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import OtpVerificationPopup from "./OtpVerificationPopup";
 import MainLayout from "../../Layout/mainLayout";
 import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "../../helper/axios"
+import axios from "../../helper/axios";
 
 // Define types for form inputs
 interface RegisterFormInputs {
@@ -27,8 +27,7 @@ const Register: React.FC<RegisterFormProps> = () => {
   const [isOtpVerified, setIsOtpVerified] = useState<boolean>(false);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -91,30 +90,22 @@ const Register: React.FC<RegisterFormProps> = () => {
     setVerifyingEmail(true);
 
     try {
-      const response = await fetch(
-        `https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
-          email
-        )}`,
+      const response = await axios.post(
+        `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(email)}`,
+        null,
         {
-          method: "POST",
           headers: {
             accept: "application/json",
           },
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setIsEmailVerified(true);
-        setIsOtpModalOpen(true);
-        showToast("success", data.msg || "OTP sent to your email");
-      } else {
-        showToast("error", data?.detail || "Failed to send OTP");
-      }
-    } catch (error) {
+      setIsEmailVerified(true);
+      setIsOtpModalOpen(true);
+      showToast("success", response.data.msg || "OTP sent to your email");
+    } catch (error: any) {
       console.error("Error verifying email:", error);
-      showToast("error", "Something went wrong. Please try again.");
+      showToast("error", error?.response?.data?.detail || "Failed to send OTP");
     } finally {
       setVerifyingEmail(false);
     }
@@ -132,35 +123,30 @@ const Register: React.FC<RegisterFormProps> = () => {
       urlEncodedData.append("user_password", formData.password);
       urlEncodedData.append("confirm_password", formData.confirmPassword);
 
-      const response = await fetch(
-        "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/api/auth/v1/register",
+      const response = await axios.post(
+        "/api/auth/v1/register", 
+        urlEncodedData.toString(),
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
             accept: "application/json",
           },
-          body: urlEncodedData.toString(),
         }
       );
 
-      const data = await response.json();
-
-      if (response.ok) {
-        showToast(
-          "success",
-          "Registration Successful! You can now login to your account"
-        );
-        navigate("/login");
-      } else {
-        showToast(
-          "error",
-          data.detail || data.message || "Registration failed"
-        );
-      }
-    } catch (error) {
+      showToast(
+        "success",
+        "Registration Successful! You can now login to your account"
+      );
+      navigate("/login");
+    } catch (error: any) {
       console.error("Error during registration:", error);
-      showToast("error", "Something went wrong during registration");
+      showToast(
+        "error",
+        error?.response?.data?.detail || 
+        error?.response?.data?.message || 
+        "Registration failed"
+      );
     }
   };
 
@@ -477,3 +463,4 @@ const Register: React.FC<RegisterFormProps> = () => {
 };
 
 export default Register;
+

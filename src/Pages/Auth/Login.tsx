@@ -178,14 +178,12 @@ const Login: React.FC = () => {
       if (response.data) {
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
-        }
-        if (response.data.email) {
-          localStorage.setItem("email", response.data.email);
+          localStorage.setItem("name", response.data.username);
         }
         showNotification("Login successful", true);
 
         setTimeout(() => {
-          navigate("/explore-solutions");
+          navigate("/dashboard");
         }, 1000);
       }
     } catch (error: any) {

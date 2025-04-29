@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axios from "../../helper/axios"
 
 interface OtpVerificationPopupProps {
   isOpen: boolean;
@@ -109,7 +109,7 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
 
     try {
       const response = await axios.post(
-        "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app/api/auth/v1/pre-register/verify-otp",
+        "/api/auth/v1/pre-register/verify-otp",
         {
           email,
           otp_code: otpValue,

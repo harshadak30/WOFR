@@ -7,7 +7,7 @@ const data = [
   { year: "+5 years", income: 30, expense: 35 },
 ];
 
-const RevenueChart = () => {
+const LeaseMaturityChart = () => {
   return (
     <Card className="bg-[#fcfcfc] p-8 cursor-pointer">
       <CardContent className="p-6">
@@ -40,4 +40,4 @@ const RevenueChart = () => {
   );
 };
 
-export default RevenueChart;
+export default LeaseMaturityChart;

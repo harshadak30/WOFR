@@ -11,6 +11,7 @@ import WOFRDashboard from "./Pages/WORFPage/Dashboard"
 import ProtectedRoute from "./router/ProtectedRoute";
 import {DashboardRoutes} from "./router/DashboardRoutes";
 import DashboardLayout from "./component/layout/DashboardLayout";
+import Calendly from "./Calendly/Calendly";
 const App: React.FC = () => {
   return (
     <Router>
@@ -20,6 +21,7 @@ const App: React.FC = () => {
         {/* <Route path="/" element={<AppSolutionsPage />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/book-demo" element={<Calendly />} />
         <Route path="/" element={<WOFRDashboard />} />
         <Route path="/wofr/lease-intro" element={ <WofrLeaseIntroPage/>} />       
         <Route path="/org-signup" element={ <OrganizationRegister/>} />
