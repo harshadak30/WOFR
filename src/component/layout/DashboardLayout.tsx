@@ -1,4 +1,3 @@
-
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "../DashBoardContent.tsx/DashBoardHeader";
 import DashboardHeader from "../DashBoardContent.tsx/DashBoardSiderbar";
@@ -6,9 +5,9 @@ import DashboardHeader from "../DashBoardContent.tsx/DashBoardSiderbar";
 const DashboardLayout = () => {
   return (
     <div className="flex h-screen bg-[#f0f1f5]">
-      <DashboardSidebar />
+      <DashboardHeader />
       <div className="flex-1 overflow-y-auto">
-        <DashboardHeader />
+        <DashboardSidebar />
         <div className="p-4">
           <Outlet />
         </div>

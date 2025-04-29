@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const TrialForm: React.FC = () => {
   return (
@@ -112,12 +113,13 @@ const TrialForm: React.FC = () => {
             Start 7-Day Free Trial
             <ArrowRight className="ml-2 h-4 w-4" />
           </button>
-          <button
+          <Link
+          to="/register"
             type="button"
             className="flex justify-center items-center px-5 py-2 text-base border border-black text-black rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
           >
             Sign up
-          </button>
+          </Link>
         </div>
       </form>
     </div>

@@ -1,61 +1,62 @@
-import React from "react";
-import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { DashboardRoutes } from "../../router/DashboardRoutes";
 
-const DashboardHeader: React.FC = () => {
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("userData");
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+const DashboardSidebar = () => {
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggleSidebar = () => setIsOpen(!isOpen);
+  const handleCloseSidebar = () => setIsOpen(false);
+
   return (
-    <header className="  p-6">
-      <div className="flex justify-between items-center">
-        <div id="search-bar" className="relative flex-1 max-w-md space-y-2.5">
-        <Select>
-            <SelectTrigger className="w-[180px] border-gray-300  text-black  font-semibold cursor-not-allowed">
-              <SelectValue placeholder="Select Entity" />
-            </SelectTrigger>
-            <SelectContent className="border-gray-300">
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="super">Super Admin</SelectItem>
-            </SelectContent>
-          </Select>
+    <>
+      <button
+        onClick={handleToggleSidebar}
+        className="lg:hidden fixed top-7 mt-6  left-4 z-50 bg-white p-2 rounded shadow"
+      >
+        <Menu className="w-6 h-6 text-gray-700" />
+      </button>
 
-        </div>
-        <div className="flex items-center">
-          <button
-            className="flex items-center m-1 bg-[#2563EB] hover:bg-[#2553eb] text-white py-2 px-4 rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60 cursor-pointer"
-            aria-label="Add new user"
-          >
-           
-            <span className="font-medium">Export</span>
-          </button>
-          <button
-            className="flex items-center  bg-[#059669] hover:bg-[#059641] text-white py-2 px-4  rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60  cursor-pointer"
-            aria-label="logout"
-          >
-             <Plus size={16} />
-            <span className="font-medium">
-            New Lease
-            </span>
-          </button>
-          <button
-            className="flex items-center m-1 bg-[#059669] hover:bg-[#059641] text-white py-2 px-4  rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60  cursor-pointer"
-            aria-label="logout"
-          >
-            <span className="font-medium" onClick={handleLogout}>
-              Logout
-            </span>
-          </button>
-       
-        </div>
+      <div
+        className={`fixed top-0 left-0 z-40 bg-white w-68 h-full border-r border-gray-200 pt-24 px-4 transition-transform duration-300 ease-in-out 
+        ${isOpen ? "translate-x-0" : "-translate-x-full"} 
+        lg:translate-x-0 lg:relative lg:flex lg:flex-col`}
+      >
+        <nav className="space-y-6 flex-1">
+          {DashboardRoutes.map((item) => (
+            <Link
+              key={item.path}
+              to={`/dashboard/${item.path}`}
+              onClick={handleCloseSidebar}
+              className={`relative flex items-center px-5 py-2 rounded-md transition-colors group ${
+                location.pathname.includes(item.path)
+                  ? "text-blue-600 bg-[#EFF6FF]"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              <span
+                className={`absolute left-0 top-0 h-full w-1 rounded-r-md ${
+                  location.pathname.includes(item.path)
+                    ? "bg-[#0873ff]"
+                    : "bg-transparent"
+                }`}
+              />
+              <img
+                src={item.icon}
+                alt={item.label}
+                width={20}
+                height={20}
+                className="m-1"
+              />
+              <span className="ml-3 font-medium text-lg">{item.label}</span>
+            </Link>
+          ))}
+        </nav>
       </div>
-    </header>
+    </>
   );
 };
 
-export default DashboardHeader;
+export default DashboardSidebar;

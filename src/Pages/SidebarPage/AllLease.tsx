@@ -35,7 +35,7 @@ const AllLease = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("api/v1/all_users");
+        const response = await axios.get("api/users/v1/all-users");
 
         const formattedUsers = response.data.map((user: any) => ({
           name: user.username ?? "No Name",

@@ -21,7 +21,7 @@ const ResetPasswordModal: React.FC = () => {
   const query = useQuery();
   const email = query.get("email");
 
-  const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
+  // const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
 
   const showNotification = (message: string, isSuccess: boolean) => {
     Swal.fire({
@@ -49,7 +49,7 @@ const ResetPasswordModal: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post(`${apiBaseUrl}/api/auth/v1/forgot-password`, {
+      await axios.post(`/api/auth/v1/forgot-password`, {
         email: email,
         new_password: data.password,
         confirm_password: data.confirmPassword,

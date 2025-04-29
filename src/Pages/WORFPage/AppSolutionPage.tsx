@@ -20,7 +20,7 @@ const appData = [
     description:
       "Streamline lease management and compliance with automated solutions",
     icon: <FaFileContract />,
-    path: "/Wofr3", // Ensure this path is defined
+    path: "/wofr/lease-intro", // Ensure this path is defined
   },
   {
     title: "ESOP Manager",
