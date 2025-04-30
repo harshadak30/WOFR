@@ -3,7 +3,6 @@
 import React from "react";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 const DashboardHeader: React.FC = () => {
   const navigate = useNavigate();

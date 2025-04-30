@@ -7,7 +7,7 @@ import FreeTrialPage from "./Pages/WORFPage/FreeTrialPage";
 import WofrLeaseIntroPage from "./Pages/WORFPage/WofrLeaseIntroPage";
 import OrganizationRegister from "./Pages/Auth/OrganizationRegister";
 import ResetPasswordForm from "./Pages/Auth/ResetPasswordForm";
-import WOFRDashboard from "./Pages/WORFPage/Dashboard"
+import WOFRDashboard from "./LandingPage/Dashboard"
 import ProtectedRoute from "./router/ProtectedRoute";
 import {DashboardRoutes} from "./router/DashboardRoutes";
 import DashboardLayout from "./component/layout/DashboardLayout";
