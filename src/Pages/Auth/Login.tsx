@@ -297,7 +297,7 @@ const Login: React.FC = () => {
     <MainLayout>
       <div
         className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
-        style={{ backgroundImage: "url('background/background.png')" }}
+        style={{ backgroundImage: "url('background/Landingbg-img.png')" }}
       >
         <div className="flex flex-col lg:flex-row justify-between items-center gap-12 w-full max-w-7xl px-6 py-0">
           {/* Left side - Branding */}
@@ -305,7 +305,7 @@ const Login: React.FC = () => {
             <div className="w-full flex justify-center lg:justify-center">
               <img src="background/company-logo.png" alt="Logo" className="w-40 mb-4" />
             </div>
-            <h1 className="text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left">
+            <h1 className="text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left ">
               Secure Your Financial<br />Future Today
             </h1>
             <p className="text-lg lg:text-xl text-white leading-relaxed tracking-wide max-w-xl text-center lg:text-left">

@@ -1,4 +1,8 @@
-export default function Page2() {
+
+import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
+export default function FeaturesSection() {
   return (
     <div className=" w-full">
       <div className="p-5">
@@ -41,8 +45,27 @@ export default function Page2() {
               </p>
             </div>
 
-            <div className=" bg-[url(/background/corsole-bg.png)] bg-no-repeat bg-cover 3xl:bg-cover  rounded-2xl shadow-xl w-full md:w-1/3 h-96 text-white flex flex-col items-center justify-center overflow-hidden">
-              {/* Blurry circles background effect */}
+            <div
+              className="relative rounded-2xl shadow-xl w-full md:w-1/3 h-96 text-white flex flex-col items-center justify-center overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #00BCD4, #3F51B5, #673AB7)",
+              }}
+            >
+              {/* Top-left decorative image */}
+              <img
+                src="/icons/Rectangle 5.png"
+                alt="rectangleimage"
+                className="absolute top-0 left-0"
+              />
+
+              {/* Bottom-right decorative image */}
+              <img
+                src="/icons/Rectangle 6.png"
+                alt="rectangleimage"
+                className="absolute bottom-0 right-0"
+              />
+
+              {/* Wallet Icon */}
               <div className="w-20 h-20 flex items-center justify-center mb-6">
                 <img
                   src="/icons/account_balance_wallet.png"
@@ -50,13 +73,15 @@ export default function Page2() {
                   className="w-20 h-20"
                 />
               </div>
-              <h3 className="text-2xl font-bold mb-4">Financial Management</h3>
-              <p className="text-white/90 text-lg text-center">
-                Lorem ipsum dolor sit amet consectetur. Amet magna a aliquet
-                praesent rhoncus diam.
-              </p>{" "}
-              *
+
+              {/* Text content */}
+              <h3 className="text-3xl font-bold mb-4">Financial Management</h3>
+              <p className="text-white/90 text-lg text-center w-70">
+                Lorem ipsum dolor sit amet consectetur. Amet magna a aliquet praesent
+                rhoncus diam.
+              </p>
             </div>
+
 
             {/* Safety Compliance Card */}
             <div
@@ -81,12 +106,13 @@ export default function Page2() {
         </div>
 
         <div className="flex justify-center mt-12 cursor-pointer">
-          <button className="bg-teal-500 hover:bg-blue-700 hover:pr-2 text-white font-medium py-3 px-8 rounded-md flex items-center gap-2 transition-all cursor-pointer">
+          <Link  to="/free-trial" className="bg-teal-500 hover:bg-blue-700 hover:pr-2 text-white font-medium py-3 px-8 rounded-md flex items-center gap-2 transition-all cursor-pointer">
             Try WOFR Apps for Free
             <img src="/icons/arrow.png" alt="" className="pl-6" />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
   );
 }
+

@@ -64,9 +64,11 @@ const DashboardOverview = () => {
         >
           {[
             { label: "Active Leases", value: "247", text: "+12 this month" },
-            { label: "ROU Asset Value", value: "$2.4M", text: "Total value" },
+            // { label: "ROU Asset Value", value: "$2.4M", text: "Total value" },
             { label: "Lease Liability", value: "$1.8M", text: "Outstanding" },
             { label: "Expiring Soon", value: "15", text: "Next 90 days" },
+            { label: "Pending Leases", value: "15", text: "Next 90 days" },
+
           ].map((stat, idx) => (
             <Card key={idx} className="bg-[#fcfcfc] h-40 cursor-pointer">
               <CardContent className="p-6">

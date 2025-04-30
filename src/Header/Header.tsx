@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { TbWorld } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
@@ -9,32 +8,22 @@ import { Link, NavLink } from "react-router-dom";
 const openCalendly = () => {
   window.Calendly?.initPopupWidget({
     url: "https://calendly.com/maitriai-sales/business-meet",
-
     prefill: {},
-
     utm: {},
-
     parentElement: undefined,
-
     text: {
       submitText: "Schedule Meeting",
-
       headerText: "Book Your Demo Session",
     },
-
     color: {
       primary: "#2C3E50",
-
       secondary: "#3498DB",
-
       background: "#F8F9FA",
     },
-
     pageSettings: {
       height: 5500,
     },
   });
-
   return false;
 };
 
@@ -134,12 +123,12 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden flex flex-col items-center space-y-4 py-4 bg-[#0049AC] text-white absolute w-full z-50">
             <ul className="space-y-4 w-full">
-              <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              <Link to="{/}"  className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
                 Home
-              </li>
-              <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              </Link>
+              <Link to="{/explore-solutions}" className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
                 About Us
-              </li>
+              </Link>
               <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
                 Services
               </li>

@@ -61,7 +61,7 @@ const OrganizationRegister: React.FC<RegisterFormProps> = () => {
     <MainLayout>
       <div
         className="min-h-screen bg-cover bg-center flex items-center justify-center px-2"
-        style={{ backgroundImage: "url('background/background.png')" }}
+        style={{ backgroundImage: "url('background/Landingbg-img.png')" }}
       >
         <div className="flex flex-col lg:flex-row justify-between items-center gap-8 w-full max-w-7xl px-6 py-0">
           <div className="flex-1 flex flex-col items-start lg:items-start space-y-8 mb-8 lg:mb-0">

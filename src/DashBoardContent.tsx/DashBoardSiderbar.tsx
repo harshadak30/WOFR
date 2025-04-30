@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu } from "lucide-react";
-import { DashboardRoutes } from "../../router/DashboardRoutes";
+import { DashboardRoutes } from "../router/DashboardRoutes";
+
 
 const DashboardSidebar = () => {
   const location = useLocation();

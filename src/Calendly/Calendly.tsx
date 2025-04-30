@@ -38,7 +38,7 @@ const Calendly = () => {
       <div className='flex items-center backdiv'>
         {showBackButton && (
           <NavLink to="/">
-            <button className='back flex gap-2 items-center fixed cursor-pointer bg-blue-600 p-4 rounded-full mt-5 ms-4'>
+            <button className='back flex gap-2 items-center fixed cursor-pointer bg-blue-200 p-4 rounded-full mt-5 ms-4'>
               <FaArrowLeft /> Back to home
             </button>
           </NavLink>

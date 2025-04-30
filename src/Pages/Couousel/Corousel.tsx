@@ -6,10 +6,10 @@ import { motion } from 'framer-motion';
 import { div } from 'framer-motion/client';
 
 const apps = [
-  { name: 'WOFR Lease Manager', image: '/background/lease.png', left_image: "/background/corsole1.png" },
-  { name: 'WOFR ESOP Manager', image: '/background/esop.png', left_image: "/background/corsole2.png" },
-  { name: 'WOFR Consol TB Generator', image: '/background/tb.png', left_image: "/background/corsole3.png" },
-  { name: 'WOFR EIR Calculator', image: '/background/eir.png', left_image: "/background/corsole4.png" }
+  { name: 'WOFR Lease Manager', image: '/background/lease.png', left_image: "/background/Corousel1.png" },
+  { name: 'WOFR ESOP Manager', image: '/background/esop.png', left_image: "/background/Corousel2.png" },
+  { name: 'WOFR Consol TB Generator', image: '/background/tb.png', left_image: "/background/Corousel3.png" },
+  { name: 'WOFR EIR Calculator', image: '/background/eir.png', left_image: "/background/Corousel4.png" }
 ];
 
 function Corousel(){
@@ -38,7 +38,7 @@ function Corousel(){
       newApps.push(firstApp);
       setAppsList(newApps);
       setTransitioning(false);
-    }, 300); // Animation duration
+    }, 1000); // Animation duration
   };
 
   const handleLeftClick = () => {
@@ -53,7 +53,7 @@ function Corousel(){
       newApps.unshift(lastApp);
       setAppsList(newApps);
       setTransitioning(false);
-    }, 100);
+    }, 1000);
   };
 
   // Auto-scroll effect
@@ -62,7 +62,7 @@ function Corousel(){
       if (!transitioning) {
         handleRightClick();
       }
-    }, 5000); // Show each card for 5 seconds
+    }, 3000); // Show each card for 5 seconds
 
     return () => clearInterval(interval);
   }, [appsList, transitioning]);
@@ -71,8 +71,8 @@ function Corousel(){
     <div className="w-full">
       {/* Header Section */}
       <div className="bg-white w-full mb-6">
-        <h1 className="text-3xl font-bold text-blue-900 text-center">WOFR Apps</h1>
-        <p className="text-gray-600 mt-1 text-center text-lg">
+        <h1 className="text-6xl font-bold text-blue-900 text-center">WOFR Apps</h1>
+        <p className="text-gray-600 mt-5 mb-10 text-center text-xl ">
           Lorem ipsum dolor sit amet consectetur. Gravida convallis neque pulvinar turpis pharetra erat vulputate.
         </p>
       </div>
@@ -100,11 +100,11 @@ function Corousel(){
            <motion.div
                 key={app.name} // Using name as a unique key is better than index
                 className={`bg-white z-20 p-6 flex flex-col shadow-xl items-center rounded-xl ${
-                  index === 0 ? 'h-52 w-60 shadow-2xl shadow-gray-800  mt-22 ml-6' : 'h-52 w-60 mt-22'
+                  index === 0 ? 'h-52 w-60 shadow-2xl shadow-gray-800  mt-22 ml-6' : 'h-52 w-80 mt-22'
                 }`}
-                initial={{ opacity: 0, x: index === 0 ? 0 : 100 }}
+                initial={{ opacity: 0, x: index === 0 ? 0 : 300 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: index === 0 ? 0 : -100 }}
+                exit={{ opacity: 0, x: index === 0 ? 0 : -300 }}
                 transition={{ duration: 0.3 }}
               >
                 <div className="text-teal-500 mb-4">
