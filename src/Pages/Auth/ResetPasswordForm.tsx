@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "../../helper/axios";
@@ -9,7 +8,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const ResetPasswordModal: React.FC = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<{ password: string; confirmPassword: string }>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<{ password: string; confirmPassword: string }>();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -20,8 +24,6 @@ const ResetPasswordModal: React.FC = () => {
   }
   const query = useQuery();
   const email = query.get("email");
-
-  // const apiBaseUrl = "https://4ab7-2405-201-37-21d9-7d02-467c-4a0f-1aca.ngrok-free.app";
 
   const showNotification = (message: string, isSuccess: boolean) => {
     Swal.fire({
@@ -36,12 +38,17 @@ const ResetPasswordModal: React.FC = () => {
       iconColor: isSuccess ? "#22c55e" : "#ef4444",
       customClass: {
         popup: "w-auto text-sm px-4 py-2 shadow-md rounded-md",
-        title: isSuccess ? "text-green-700 font-medium" : "text-red-700 font-medium",
+        title: isSuccess
+          ? "text-green-700 font-medium"
+          : "text-red-700 font-medium",
       },
     });
   };
 
-  const onSubmit = async (data: { password: string; confirmPassword: string }) => {
+  const onSubmit = async (data: {
+    password: string;
+    confirmPassword: string;
+  }) => {
     if (data.password !== data.confirmPassword) {
       return showNotification("Passwords do not match", false);
     }
@@ -90,11 +97,13 @@ const ResetPasswordModal: React.FC = () => {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="New Password"
-              className={`w-full border p-2 rounded pr-10 focus:outline-none focus:ring-2 focus:ring-[#FC8503]/30 ${errors.password ? "border-red-500" : "border-gray-300"}`}
+              className={`w-full border p-2 rounded pr-10 focus:outline-none focus:ring-2 focus:ring-[#FC8503]/30 ${
+                errors.password ? "border-red-500" : "border-gray-300"
+              }`}
               {...register("password", { required: "Password is required" })}
             />
             <span
-              onClick={() => setShowPassword(prev => !prev)}
+              onClick={() => setShowPassword((prev) => !prev)}
               className="absolute right-3 top-2.5 text-gray-500 cursor-pointer text-lg"
             >
               {showPassword ? <FaEye /> : <LuEyeClosed />}
@@ -113,14 +122,17 @@ const ResetPasswordModal: React.FC = () => {
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm Password"
-              className={`w-full border p-2 rounded pr-10 focus:outline-none focus:ring-2 focus:ring-[#FC8503]/30 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
+              className={`w-full border p-2 rounded pr-10 focus:outline-none focus:ring-2 focus:ring-[#FC8503]/30 ${
+                errors.confirmPassword ? "border-red-500" : "border-gray-300"
+              }`}
               {...register("confirmPassword", {
                 required: "Confirm your password",
-                validate: (value) => value === watch("password") || "Passwords do not match",
+                validate: (value) =>
+                  value === watch("password") || "Passwords do not match",
               })}
             />
             <span
-              onClick={() => setShowConfirmPassword(prev => !prev)}
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
               className="absolute right-3 top-2.5 text-gray-500 cursor-pointer text-lg"
             >
               {showConfirmPassword ? <FaEye /> : <LuEyeClosed />}
@@ -146,5 +158,3 @@ const ResetPasswordModal: React.FC = () => {
 };
 
 export default ResetPasswordModal;
-
-

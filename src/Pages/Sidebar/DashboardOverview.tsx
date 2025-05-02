@@ -1,5 +1,5 @@
 import { Card, CardContent } from "../../component/ui/Card";
-import { Input } from "../../component/ui/input";
+import { Input } from "../../component/ui/Input";
 import { useState } from "react";
 import {
   Select,
@@ -7,11 +7,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../component/ui/select";
+} from "../../component/ui/Select";
 import { FunnelIcon } from "lucide-react";
-import LeaseMaturityChart from "../../component/charts/LeaseMaturityChart";
-import MonthlyExpenseChart from "../../component/charts/MonthlyExpenseChart";
-import RecentAlerts from "../../component/charts/RecentAlert";
+import LeaseMaturityChart from "../../component/Charts/LeaseMaturityChart";
+import MonthlyExpenseChart from "../../component/Charts/MonthlyExpenseChart";
+import RecentAlerts from "../../component/Charts/RecentAlert";
 
 const DashboardOverview = () => {
   const [search, setSearch] = useState("");
@@ -51,8 +51,7 @@ const DashboardOverview = () => {
                 <FunnelIcon size={16} />
                 <span className="font-medium">More Filters</span>
               </button>
-              </div>
-        
+            </div>
           </div>
         </div>{" "}
       </div>
@@ -68,7 +67,6 @@ const DashboardOverview = () => {
             { label: "Lease Liability", value: "$1.8M", text: "Outstanding" },
             { label: "Expiring Soon", value: "15", text: "Next 90 days" },
             { label: "Pending Leases", value: "15", text: "Next 90 days" },
-
           ].map((stat, idx) => (
             <Card key={idx} className="bg-[#fcfcfc] h-40 cursor-pointer">
               <CardContent className="p-6">

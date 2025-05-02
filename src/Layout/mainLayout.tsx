@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Header from "../component/Shared/Header/Header";
+import Footer from "../component/Shared/Footer/Footer";
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -17,4 +17,3 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 };
 
 export default MainLayout;
-

@@ -1,11 +1,11 @@
 import React from "react";
 import TrialForm from "./TrialForm";
-import MainLayout from "../../Layout/mainLayout";
+import MainLayout from "../../Layout/MainLayout";
 
-const dashboardImage = "/background/freetrial.png";
-const backgroundImage = "/background/Vector.png";
+const dashboardImage = "/background/freeTrialBanner.png";
+const backgroundImage = "/background/arrowVector.png";
 
-const FreeTrialPage: React.FC = () => {
+const FreeTrial: React.FC = () => {
   return (
     <MainLayout>
       <div className="w-full bg-white">
@@ -36,7 +36,7 @@ const FreeTrialPage: React.FC = () => {
                 <img
                   src={dashboardImage}
                   alt="Dashboard preview"
-                  className="w-full h-auto object-contain lg:object-cover"
+                  className="w-full h-auto object-contain lg:object-cover sm:items-center"
                   style={{ maxHeight: "750px" }}
                 />
               </div>
@@ -48,4 +48,4 @@ const FreeTrialPage: React.FC = () => {
   );
 };
 
-export default FreeTrialPage;
+export default FreeTrial;

@@ -12,7 +12,8 @@ import {
   FaFileInvoice,
   FaTasks,
 } from "react-icons/fa";
-import MainLayout from "../../Layout/mainLayout";
+import MainLayout from "../../Layout/MainLayout";
+import backgroundImages from "../../../public/background";
 
 const appData = [
   {
@@ -72,7 +73,7 @@ const appData = [
   },
 ];
 
-const AppSolutionsPage: React.FC = () => {
+const AppSolutions: React.FC = () => {
   return (
     <MainLayout>
       <div className="w-full">
@@ -83,7 +84,7 @@ const AppSolutionsPage: React.FC = () => {
           </h1>
           <div>
             <img
-              src="background/More_to_Discover.png"
+              src={backgroundImages.moreToDiscoverBanner}
               alt="WOFR Apps"
               className="mt-8 lg:mt-14 w-auto max-w-full"
             />
@@ -148,4 +149,4 @@ const AppSolutionsPage: React.FC = () => {
   );
 };
 
-export default AppSolutionsPage;
+export default AppSolutions;
