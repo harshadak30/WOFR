@@ -114,7 +114,7 @@ const TrialForm: React.FC = () => {
             <ArrowRight className="ml-2 h-4 w-4" />
           </button>
           <Link
-          to="/register"
+            to="/register"
             type="button"
             className="flex justify-center items-center px-5 py-2 text-base border border-black text-black rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 min-w-[230px]"
           >

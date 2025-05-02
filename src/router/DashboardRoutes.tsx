@@ -1,9 +1,9 @@
 
-import DashboardOverview from "../Pages/SidebarPage/DashboardOverview";
-import NewLease from "../Pages/SidebarPage/NewLease";
-import AllLease from "../Pages/SidebarPage/AllLease";
-import Analytics from "../Pages/SidebarPage/Analytics";
-import Reports from "../Pages/SidebarPage/Reports";
+import DashboardOverview from "../Pages/Sidebar/DashboardOverview";
+import NewLease from "../Pages/Sidebar/NewLease";
+import AllLease from "../Pages/Sidebar/AllLease";
+import Analytics from "../Pages/Sidebar/Analytics";
+import Reports from "../Pages/Sidebar/Reports";
 import icons from "../../public/icons/index";
 
 export const DashboardRoutes = [

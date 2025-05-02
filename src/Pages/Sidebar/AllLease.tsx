@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Input } from "../../component/ui/input";
+import { Input } from "../../component/ui/Input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../component/ui/select";
+} from "../../component/ui/Select";
 import {
   Table,
   TableBody,
@@ -14,8 +14,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../component/ui/table";
-import Pagination from "../../component/ui/pagination";
+} from "../../component/ui/Table";
+import Pagination from "../../component/ui/Pagination";
 import axios from "../../helper/axios";
 import { FunnelPlus } from "lucide-react";
 

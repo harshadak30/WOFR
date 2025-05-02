@@ -1,25 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
-import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
-import axios from "../../helper/axios"
+import Swal from "sweetalert2";
+import apiClient from "../../helper/axios";
+import backgroundImages from "../../../public/background";
 
-interface OtpVerificationPopupProps {
+interface OtpVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
   email: string;
   onVerify: (otp: string) => void;
 }
 
-const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
+const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
   isOpen,
   onClose,
   email,
   onVerify,
 }) => {
-  const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
-  const [timeLeft, setTimeLeft] = useState<number>(60);
-  const [isResendActive, setIsResendActive] = useState<boolean>(false);
-  const inputRefs = [
+  // State management
+  const [otpDigits, setOtpDigits] = useState<string[]>(["", "", "", ""]);
+  const [remainingTime, setRemainingTime] = useState<number>(60);
+  const [canResendOtp, setCanResendOtp] = useState<boolean>(false);
+
+  // Input refs for focus management
+  const otpInputRefs = [
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
@@ -28,49 +32,56 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
 
   const { handleSubmit } = useForm();
 
+  // Timer effect for OTP countdown
   useEffect(() => {
     if (!isOpen) return;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
+    const countdownTimer = setInterval(() => {
+      setRemainingTime((prevTime) => {
         if (prevTime <= 1) {
-          setIsResendActive(true);
-          clearInterval(timer);
+          setCanResendOtp(true);
+          clearInterval(countdownTimer);
           return 0;
         }
         return prevTime - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(countdownTimer);
   }, [isOpen]);
 
-  const handleChange = (index: number, value: string): void => {
+  // Handle OTP input changes
+  const handleOtpChange = (index: number, value: string): void => {
+    // Ensure only one digit is processed
     if (value.length > 1) {
       value = value.slice(0, 1);
     }
 
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+    // Update OTP state
+    const updatedOtpDigits = [...otpDigits];
+    updatedOtpDigits[index] = value;
+    setOtpDigits(updatedOtpDigits);
 
+    // Auto-focus next input if value is entered
     if (value !== "" && index < 3) {
-      inputRefs[index + 1]?.current?.focus();
+      otpInputRefs[index + 1]?.current?.focus();
     }
   };
 
-  const handleKeyDown = (
+  // Handle keyboard navigation between OTP inputs
+  const handleOtpKeyDown = (
     index: number,
     e: React.KeyboardEvent<HTMLInputElement>
   ): void => {
-    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
-      inputRefs[index - 1]?.current?.focus();
+    if (e.key === "Backspace" && otpDigits[index] === "" && index > 0) {
+      otpInputRefs[index - 1]?.current?.focus();
     }
   };
 
-  const showToast = (
-    icon: "success" | "error" | "warning" | "info",
-    title: string
+  // Toast notification helper
+  const displayNotification = (
+    type: "success" | "error" | "warning" | "info",
+    message: string
   ) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -85,30 +96,51 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
     });
 
     Toast.fire({
-      icon,
-      title,
+      icon: type,
+      title: message,
     });
   };
 
-  const handleResend = (): void => {
-    if (!isResendActive) return;
+  // Handle OTP resend
+  const handleOtpResend = async (): Promise<void> => {
+    if (!canResendOtp) return;
 
-    setTimeLeft(60);
-    setIsResendActive(false);
-    setOtp(["", "", "", ""]);
+    try {
+      await apiClient.post(
+        `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
+          email
+        )}`,
+        null,
+        {
+          headers: {
+            accept: "application/json",
+          },
+        }
+      );
+
+      displayNotification("success", "OTP resent successfully");
+      setRemainingTime(60);
+      setCanResendOtp(false);
+      setOtpDigits(["", "", "", ""]);
+    } catch (error: any) {
+      displayNotification(
+        "error",
+        error?.response?.data?.detail || "Failed to resend OTP"
+      );
+    }
   };
 
-  const onOtpSubmit = async () => {
-    const otpValue = otp.join("");
+  // OTP submission handler
+  const submitOtpVerification = async () => {
+    const otpValue = otpDigits.join("");
 
     if (otpValue.length < 4) {
-      showToast("error", "Please enter all 4 digits of the OTP");
-
+      displayNotification("error", "Please enter all 4 digits of the OTP");
       return;
     }
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "/api/auth/v1/pre-register/verify-otp",
         {
           email,
@@ -123,31 +155,33 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
       );
 
       if (response.status === 200) {
-        showToast("success", "mail has been successfully verified.");
-
+        displayNotification("success", "Email has been successfully verified.");
         onVerify(otpValue);
         onClose();
       }
     } catch (error: any) {
-      showToast(
+      displayNotification(
         "error",
         error?.response?.data?.detail || "Something went wrong. Try again."
       );
     }
   };
 
+  // Early return if modal is not open
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md relative">
+    <div className="fixed inset-0 backdrop-blur-sm bg-black/10 flex items-center justify-center z-50 px-4 py-6">
+      <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md relative">
+        {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          className="absolute top-3 sm:top-4 right-3 sm:right-4 text-gray-400 hover:text-gray-600"
+          aria-label="Close"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
+            className="h-5 w-5 sm:h-6 sm:w-6"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -161,62 +195,68 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
           </svg>
         </button>
 
-        <div className="flex flex-col items-center mb-6">
-          <div className="w-20 h-20 mb-4 flex items-center justify-center">
+        {/* Modal content */}
+        <div className="flex flex-col items-center mb-4 sm:mb-6">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mb-3 sm:mb-4 flex items-center justify-center">
             <img
-              src="background/OTPverfication.gif"
+              src={backgroundImages.otpVerification}
               alt="Email verification"
-              className="w-20 h-20"
+              className="w-16 h-16 sm:w-20 sm:h-20"
             />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">
             Email Verification
           </h2>
-          <p className="text-[#AAADB2] text-center mt-2">
+          <p className="text-sm sm:text-base text-[#AAADB2] text-center mt-1 sm:mt-2">
             We have sent a verification code to
           </p>
-          <p className="font-medium text-gray-800">{email}</p>
+          <p className="text-sm sm:text-base font-medium text-gray-800">
+            {email}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit(onOtpSubmit)}>
-          <div className="flex justify-center space-x-3 mb-6">
-            {otp.map((digit, index) => (
+        {/* OTP form */}
+        <form onSubmit={handleSubmit(submitOtpVerification)}>
+          <div className="flex justify-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+            {otpDigits.map((digit, index) => (
               <input
                 key={index}
-                ref={inputRefs[index]}
+                ref={otpInputRefs[index]}
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
                 maxLength={1}
                 value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-14 h-14 text-center text-xl font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                onChange={(e) => handleOtpChange(index, e.target.value)}
+                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                className="w-12 h-12 sm:w-14 sm:h-14 text-center text-lg sm:text-xl font-semibold border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                aria-label={`OTP digit ${index + 1}`}
               />
             ))}
           </div>
 
           <button
             type="submit"
-            className="w-1/2 block mx-auto bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 px-6 rounded-2xl focus:outline-none transition duration-300 text-lg mb-4"
+            className="w-full sm:w-1/2 block mx-auto bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 sm:py-3 px-4 sm:px-6 rounded-xl sm:rounded-2xl focus:outline-none transition duration-300 text-base sm:text-lg mb-3 sm:mb-4"
           >
             Submit
           </button>
         </form>
 
+        {/* Resend OTP section */}
         <div className="text-center">
           <button
-            onClick={handleResend}
-            className={`text-[#3474fd] font-bold ${
-              !isResendActive && "opacity-50 cursor-not-allowed"
+            onClick={handleOtpResend}
+            className={`text-[#3474fd] font-bold text-sm sm:text-base ${
+              !canResendOtp && "opacity-50 cursor-not-allowed"
             }`}
-            disabled={!isResendActive}
+            disabled={!canResendOtp}
           >
             Resend OTP
           </button>
-          {!isResendActive && (
-            <p className="text-sm text-gray-500 mt-1">
-              Resend available in {timeLeft} seconds
+          {!canResendOtp && (
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              Resend available in {remainingTime} seconds
             </p>
           )}
         </div>
@@ -225,4 +265,4 @@ const OtpVerificationPopup: React.FC<OtpVerificationPopupProps> = ({
   );
 };
 
-export default OtpVerificationPopup;
+export default OtpVerificationModal;

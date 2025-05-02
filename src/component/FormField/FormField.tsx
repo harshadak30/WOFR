@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface FormFieldProps {
   label: string;
@@ -11,14 +11,13 @@ interface FormFieldProps {
 
 const FormField: React.FC<FormFieldProps> = ({
   label,
-  type = 'text',
+  type = "text",
   name,
-  placeholder = '',
   required = false,
-  half = false
+  half = false,
 }) => {
   return (
-    <div className={`relative mb-4 ${half ? 'w-full' : ''}`}>
+    <div className={`relative mb-4 ${half ? "w-full" : ""}`}>
       <input
         type={type}
         id={name}

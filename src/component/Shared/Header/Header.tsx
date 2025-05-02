@@ -4,6 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 import { Link, NavLink } from "react-router-dom";
+import backgroundImages from "../../../../public/background";
 
 const openCalendly = () => {
   window.Calendly?.initPopupWidget({
@@ -38,7 +39,7 @@ const Header: React.FC = () => {
   return (
     <div className="w-full">
       {/* Announcement Bar */}
-      <div className="bg-black flex flex-col sm:flex-row justify-between text-white text-center sm:text-left text-sm p-3">
+      <div className="bg-black flex flex-col sm:flex-row justify-between text-white text-center sm:text-left text-sm p-3 px-6">
         <div className="sm:ml-10">
           This announcement bar can be used to inform visitors of{" "}
           <span className="text-blue-600">something important!</span>
@@ -68,9 +69,9 @@ const Header: React.FC = () => {
       </div>
 
       {/* Logo and Social Links */}
-      <div className="bg-white p-2 flex items-center justify-between">
+      <div className="bg-white p-2 flex items-center justify-between px-5">
         <img
-          src="background/company-logo.png"
+          src={backgroundImages.companyLogo}
           alt="Logo"
           className="pl-4 md:pl-20 h-16 sm:h-20"
         />
@@ -83,7 +84,7 @@ const Header: React.FC = () => {
 
       {/* Navigation */}
       <nav className="bg-[#0049AC] shadow-md relative">
-        <div className="flex justify-between items-center p-4">
+        <div className="flex justify-between items-center p-4 px-12">
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-6 text-white pl-4 md:pl-20">
             <li className="cursor-pointer hover:text-gray-300">Home</li>
@@ -105,9 +106,6 @@ const Header: React.FC = () => {
                 Sign In
               </button>
             </Link>
-            {/* <button className="bg-[#008F98] text-white px-2 sm:px-4 py-1 sm:py-2 rounded text-sm sm:text-base">
-              Book a Demo
-            </button> */}
             <NavLink to="/book-demo">
               <button
                 className="bg-[#008F98] text-white px-4 py-2 rounded cursor-pointer"
@@ -123,10 +121,16 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden flex flex-col items-center space-y-4 py-4 bg-[#0049AC] text-white absolute w-full z-50">
             <ul className="space-y-4 w-full">
-              <Link to="{/}"  className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              <Link
+                to="{/}"
+                className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center"
+              >
                 Home
               </Link>
-              <Link to="{/explore-solutions}" className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              <Link
+                to="{/explore-solutions}"
+                className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center"
+              >
                 About Us
               </Link>
               <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">

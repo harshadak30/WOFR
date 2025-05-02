@@ -1,14 +1,15 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import OtpVerificationPopup from "./OtpVerificationPopup";
-import MainLayout from "../../Layout/mainLayout";
-import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "../../helper/axios";
+import Swal from "sweetalert2";
 
-// Define types for form inputs
-interface RegisterFormInputs {
+import OtpVerificationPopup from "./OtpVerificationPopup";
+import apiClient from "../../helper/axios";
+import MainLayout from "../../Layout/MainLayout";
+import backgroundImages from "../../../public/background";
+
+interface RegistrationFormData {
   email: string;
   name: string;
   phoneNumber: string;
@@ -17,28 +18,28 @@ interface RegisterFormInputs {
   confirmPassword: string;
 }
 
-interface RegisterFormProps {
+interface RegistrationProps {
   email?: string;
 }
 
-const Register: React.FC<RegisterFormProps> = () => {
-  const [verifyingEmail, setVerifyingEmail] = useState<boolean>(false);
+const Registration: React.FC<RegistrationProps> = () => {
+  const [isVerifyingEmail, setIsVerifyingEmail] = useState<boolean>(false);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const [isOtpVerified, setIsOtpVerified] = useState<boolean>(false);
-  const [isOtpModalOpen, setIsOtpModalOpen] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isOtpModalVisible, setIsOtpModalVisible] = useState<boolean>(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState<boolean>(false);
 
   const navigate = useNavigate();
 
-  // Initialize React Hook Form
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
     getValues,
-  } = useForm<RegisterFormInputs>({
+  } = useForm<RegistrationFormData>({
     defaultValues: {
       email: "",
       name: "",
@@ -49,10 +50,9 @@ const Register: React.FC<RegisterFormProps> = () => {
     },
   });
 
-  // Show toast notification
-  const showToast = (
-    icon: "success" | "error" | "warning" | "info",
-    title: string
+  const displayNotification = (
+    type: "success" | "error" | "warning" | "info",
+    message: string
   ) => {
     const Toast = Swal.mixin({
       toast: true,
@@ -67,31 +67,32 @@ const Register: React.FC<RegisterFormProps> = () => {
     });
 
     Toast.fire({
-      icon,
-      title,
+      icon: type,
+      title: message,
     });
   };
 
-  const handleEmailVerify = async () => {
+  const verifyEmail = async () => {
     const email = getValues("email");
 
     if (!email) {
-      showToast("error", "Please enter a valid email first");
+      displayNotification("error", "Please enter a valid email first");
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     if (!emailRegex.test(email)) {
-      showToast("error", "Invalid email format");
+      displayNotification("error", "Invalid email format");
       return;
     }
 
-    setVerifyingEmail(true);
+    setIsVerifyingEmail(true);
 
     try {
-      const response = await axios.post(
-        `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(email)}`,
+      const response = await apiClient.post(
+        `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
+          email
+        )}`,
         null,
         {
           headers: {
@@ -101,13 +102,19 @@ const Register: React.FC<RegisterFormProps> = () => {
       );
 
       setIsEmailVerified(true);
-      setIsOtpModalOpen(true);
-      showToast("success", response.data.msg || "OTP sent to your email");
+      setIsOtpModalVisible(true);
+      displayNotification(
+        "success",
+        response.data.msg || "OTP sent to your email"
+      );
     } catch (error: any) {
-      console.error("Error verifying email:", error);
-      showToast("error", error?.response?.data?.detail || "Failed to send OTP");
+      console.error("Email verification error:", error);
+      displayNotification(
+        "error",
+        error?.response?.data?.detail || "Failed to send OTP"
+      );
     } finally {
-      setVerifyingEmail(false);
+      setIsVerifyingEmail(false);
     }
   };
 
@@ -115,17 +122,17 @@ const Register: React.FC<RegisterFormProps> = () => {
     try {
       const formData = getValues();
 
-      const urlEncodedData = new URLSearchParams();
-      urlEncodedData.append("user_name", formData.name);
-      urlEncodedData.append("user_email", formData.email);
-      urlEncodedData.append("phone", formData.phoneNumber);
-      urlEncodedData.append("organization_name", formData.organization);
-      urlEncodedData.append("user_password", formData.password);
-      urlEncodedData.append("confirm_password", formData.confirmPassword);
+      const formDataUrlEncoded = new URLSearchParams();
+      formDataUrlEncoded.append("user_name", formData.name);
+      formDataUrlEncoded.append("user_email", formData.email);
+      formDataUrlEncoded.append("phone", formData.phoneNumber);
+      formDataUrlEncoded.append("organization_name", formData.organization);
+      formDataUrlEncoded.append("user_password", formData.password);
+      formDataUrlEncoded.append("confirm_password", formData.confirmPassword);
 
-      const response = await axios.post(
-        "/api/auth/v1/register", 
-        urlEncodedData.toString(),
+      await apiClient.post(
+        "/api/auth/v1/register",
+        formDataUrlEncoded.toString(),
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -134,65 +141,67 @@ const Register: React.FC<RegisterFormProps> = () => {
         }
       );
 
-      showToast(
+      displayNotification(
         "success",
         "Registration Successful! You can now login to your account"
       );
       navigate("/login");
     } catch (error: any) {
-      console.error("Error during registration:", error);
-      showToast(
+      console.error("Registration error:", error);
+      displayNotification(
         "error",
-        error?.response?.data?.detail || 
-        error?.response?.data?.message || 
-        "Registration failed"
+        error?.response?.data?.detail ||
+          error?.response?.data?.message ||
+          "Registration failed"
       );
     }
   };
 
-  const onSubmit: SubmitHandler<RegisterFormInputs> = () => {
+  const onSubmit: SubmitHandler<RegistrationFormData> = () => {
     if (!isEmailVerified) {
-      showToast("warning", "Please verify your email first");
+      displayNotification("warning", "Please verify your email first");
       return;
     }
 
     submitRegistration();
   };
 
-  // Handle submit button click when email is not verified
-  const handleSubmitButtonClick = () => {
+  const handleRegistrationSubmit = () => {
     if (!isEmailVerified) {
-      showToast("warning", "Please verify your email first");
+      displayNotification("warning", "Please verify your email first");
       return;
     }
 
     submitRegistration();
   };
+
+  const togglePasswordVisibility = () =>
+    setIsPasswordVisible(!isPasswordVisible);
+  const toggleConfirmPasswordVisibility = () =>
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
 
   return (
     <MainLayout>
       <div
-        className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
-        style={{ backgroundImage: "url('background/Landingbg-img.png')" }}
+        className="min-h-screen bg-cover bg-center flex items-center justify-center px-4 py-8 sm:py-12"
+        style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
       >
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-8 w-full max-w-7xl px-6 py-0">
-          {/* Left Column - Branding */}
-          <div className="flex-1 flex flex-col items-start lg:items-start space-y-8 mb-8 lg:mb-0">
-            <div className="w-full flex justify-center lg:justify-center">
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
+          {/* Left side - Branding */}
+          <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">
+            <div className="w-full flex justify-center lg:justify-start">
               <img
-                src="background/company-logo.png"
+                src={backgroundImages.companyLogo}
                 alt="Logo"
-                className="w-40 mb-4"
+                className="w-32 md:w-40 mb-2 md:mb-4"
               />
             </div>
-
-            <h1 className="text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left">
+            <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left">
               Secure Your Financial
               <br />
               Future Today
             </h1>
-
-            <p className="text-lg lg:text-xl text-white leading-relaxed tracking-wide max-w-xl text-center lg:text-left">
+            <p className="text-base md:text-lg lg:text-xl text-white leading-relaxed tracking-wide max-w-xl text-center lg:text-left">
               Access your portfolio, track investments, and manage your wealth
               with our advanced financial platform.
             </p>
@@ -200,12 +209,15 @@ const Register: React.FC<RegisterFormProps> = () => {
 
           {/* Right Column - Registration Form */}
           <div className="flex-1 w-full max-w-3xl">
-            <div className="bg-white rounded-lg shadow-xl p-10 w-full max-w-3xl mx-auto my-20">
-              <h2 className="text-3xl font-medium text-gray-800 text-center mb-8">
+            <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl mx-auto my-8 sm:my-12 lg:my-20">
+              <h2 className="text-2xl sm:text-3xl font-medium text-gray-800 text-center mb-6 sm:mb-8">
                 Register Your Account
               </h2>
 
-              <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+              <form
+                className="space-y-4 sm:space-y-6"
+                onSubmit={handleSubmit(onSubmit)}
+              >
                 {/* Email Field with Verification */}
                 <div className="relative">
                   <label
@@ -214,14 +226,18 @@ const Register: React.FC<RegisterFormProps> = () => {
                   >
                     Email ID <span className="text-red-500">*</span>
                   </label>
-                  <div className="flex">
+                  <div className="flex flex-col sm:flex-row">
                     <input
                       type="email"
                       id="email"
                       placeholder="example@gmail.com"
-                      className={`w-full px-4 py-4 bg-gray-200 border ${
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border ${
                         errors.email ? "border-red-500" : "border-gray-200"
-                      } rounded-l-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
+                      } ${
+                        isEmailVerified
+                          ? "rounded-t-md sm:rounded-t-none sm:rounded-l-md"
+                          : "rounded-t-md sm:rounded-l-md"
+                      } focus:outline-none focus:ring-2 focus:ring-teal-500`}
                       disabled={isEmailVerified}
                       {...register("email", {
                         required: "Email is required",
@@ -233,17 +249,21 @@ const Register: React.FC<RegisterFormProps> = () => {
                     />
                     <button
                       type="button"
-                      onClick={handleEmailVerify}
-                      disabled={verifyingEmail || isEmailVerified}
-                      className={`px-4 py-2 w-2/5 ${
+                      onClick={verifyEmail}
+                      disabled={isVerifyingEmail || isEmailVerified}
+                      className={`px-4 py-2 sm:w-2/5 w-full ${
                         isEmailVerified
                           ? "bg-green-600"
-                          : verifyingEmail
+                          : isVerifyingEmail
                           ? "bg-gray-500"
                           : "bg-teal-600 hover:bg-teal-700"
-                      } text-white rounded-r-md transition`}
+                      } text-white ${
+                        isEmailVerified
+                          ? "rounded-b-md sm:rounded-b-none sm:rounded-r-md"
+                          : "rounded-b-md sm:rounded-r-md"
+                      } transition`}
                     >
-                      {verifyingEmail
+                      {isVerifyingEmail
                         ? "Verifying..."
                         : isEmailVerified
                         ? "Verified"
@@ -269,7 +289,7 @@ const Register: React.FC<RegisterFormProps> = () => {
                     type="text"
                     id="name"
                     placeholder="Enter your name"
-                    className={`w-full px-4 py-4 bg-gray-200 border ${
+                    className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border ${
                       errors.name ? "border-red-500" : "border-gray-200"
                     } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
                     {...register("name", {
@@ -287,8 +307,8 @@ const Register: React.FC<RegisterFormProps> = () => {
                   )}
                 </div>
 
-                {/* Two-column layout for remaining fields */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+   
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Phone Number Field */}
                   <div>
                     <label
@@ -301,7 +321,7 @@ const Register: React.FC<RegisterFormProps> = () => {
                       type="tel"
                       id="phoneNumber"
                       placeholder="+917768423612"
-                      className={`w-full px-4 py-4 bg-gray-200 border ${
+                      className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border ${
                         errors.phoneNumber
                           ? "border-red-500"
                           : "border-gray-200"
@@ -334,7 +354,7 @@ const Register: React.FC<RegisterFormProps> = () => {
                       id="organization"
                       placeholder="xyz"
                       disabled
-                      className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                       {...register("organization")}
                     />
                   </div>
@@ -349,10 +369,10 @@ const Register: React.FC<RegisterFormProps> = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type={showPassword ? "text" : "password"}
+                        type={isPasswordVisible ? "text" : "password"}
                         id="password"
                         placeholder="******"
-                        className={`w-full px-4 py-4 bg-gray-200 border ${
+                        className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border ${
                           errors.password ? "border-red-500" : "border-gray-200"
                         } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
                         {...register("password", {
@@ -370,12 +390,13 @@ const Register: React.FC<RegisterFormProps> = () => {
                           },
                         })}
                       />
-                      <span
+                      <button
+                        type="button"
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={togglePasswordVisibility}
                       >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </span>
+                        {isPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
                     {errors.password && (
                       <p className="mt-1 text-xs text-red-500">
@@ -394,10 +415,10 @@ const Register: React.FC<RegisterFormProps> = () => {
                     </label>
                     <div className="relative">
                       <input
-                        type={showConfirmPassword ? "text" : "password"}
+                        type={isConfirmPasswordVisible ? "text" : "password"}
                         id="confirmPassword"
                         placeholder="******"
-                        className={`w-full px-4 py-4 bg-gray-200 border ${
+                        className={`w-full px-3 sm:px-4 py-3 sm:py-4 bg-gray-200 border ${
                           errors.confirmPassword
                             ? "border-red-500"
                             : "border-gray-200"
@@ -408,16 +429,14 @@ const Register: React.FC<RegisterFormProps> = () => {
                             value === watch("password") ||
                             "Passwords do not match",
                         })}
-                        required
                       />
-                      <span
+                      <button
+                        type="button"
                         className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600"
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
+                        onClick={toggleConfirmPasswordVisibility}
                       >
-                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                      </span>
+                        {isConfirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
                     {errors.confirmPassword && (
                       <p className="mt-1 text-xs text-red-500">
@@ -428,15 +447,15 @@ const Register: React.FC<RegisterFormProps> = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="pt-8 pb-4">
+                <div className="pt-6 sm:pt-8 pb-2 sm:pb-4">
                   <button
                     type="button"
-                    onClick={handleSubmitButtonClick}
-                    className={`w-[70%] mx-auto block ${
+                    onClick={handleRegistrationSubmit}
+                    className={`w-full sm:w-[70%] mx-auto block ${
                       isEmailVerified && isOtpVerified
                         ? "bg-teal-600 hover:bg-teal-700"
                         : "bg-gray-400"
-                    } text-white font-medium py-2 px-6 rounded-md focus:outline-none transition duration-300 text-lg`}
+                    } text-white font-medium py-2 px-6 rounded-md focus:outline-none transition duration-300 text-base sm:text-lg`}
                     disabled={!isEmailVerified || !isOtpVerified}
                   >
                     Submit
@@ -450,17 +469,16 @@ const Register: React.FC<RegisterFormProps> = () => {
 
       {/* OTP Verification Popup */}
       <OtpVerificationPopup
-        isOpen={isOtpModalOpen}
-        onClose={() => setIsOtpModalOpen(false)}
+        isOpen={isOtpModalVisible}
+        onClose={() => setIsOtpModalVisible(false)}
         email={getValues("email")}
         onVerify={() => {
           setIsOtpVerified(true);
-          setIsOtpModalOpen(false);
+          setIsOtpModalVisible(false);
         }}
       />
     </MainLayout>
   );
 };
 
-export default Register;
-
+export default Registration;

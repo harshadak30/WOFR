@@ -1,6 +1,6 @@
 
-import Corousel from "../Pages/Couousel/Corousel";
-import MainLayout from "../Layout/mainLayout";
+import Corousel from "./Corousel";
+import MainLayout from "../../Layout/MainLayout";
 import HeroSection from "./HeroSection";
 import FeaturesSection from "./FeaturesSection";
 import TestimonialsSection from "./TestimonialsSection";
