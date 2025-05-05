@@ -17,6 +17,7 @@ import ProtectedRoute from "./router/ProtectedRoute";
 import { DashboardRoutes } from "./router/DashboardRoutes";
 import DashboardLayout from "./component/layout/DashboardLayout";
 import Calendly from "./Calendly/Calendly";
+import NotFound from "./Pages/NotFound";
 
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
         <Route path="/free-trial" element={<FreeTrial />} />
         <Route path="/explore-solutions" element={<AppSolutions />} />{" "}
         <Route path="/reset-password" element={<ResetPasswordForm />} />
+        <Route path="*" element={<NotFound />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<ProtectedRoute />}>
@@ -47,7 +49,7 @@ const App: React.FC = () => {
             </Route>
           </Route>
         </Route>
-        
+
       </Routes>
     </Router>
   );
