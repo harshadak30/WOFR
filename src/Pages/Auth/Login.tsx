@@ -417,8 +417,8 @@ const Login: React.FC = () => {
                 )}
 
                 {/* Remember me / Forgot password */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
+                <div className="flex items-center justify-end">
+                  {/* <div className="flex items-center">
                     <input
                       id="remember"
                       type="checkbox"
@@ -430,7 +430,7 @@ const Login: React.FC = () => {
                     >
                       Remember me
                     </label>
-                  </div>
+                  </div> */}
                   <button
                     type="button"
                     onClick={openResetPasswordModal}

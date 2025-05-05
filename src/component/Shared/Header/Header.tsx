@@ -39,7 +39,7 @@ const Header: React.FC = () => {
   return (
     <div className="w-full">
       {/* Announcement Bar */}
-      <div className="bg-black flex flex-col sm:flex-row justify-between text-white text-center sm:text-left text-sm p-3 px-6">
+      {/* <div className="bg-black flex flex-col sm:flex-row justify-between text-white text-center sm:text-left text-sm p-3 px-6">
         <div className="sm:ml-10">
           This announcement bar can be used to inform visitors of{" "}
           <span className="text-blue-600">something important!</span>
@@ -66,15 +66,17 @@ const Header: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </div> */}
 
       {/* Logo and Social Links */}
       <div className="bg-white p-2 flex items-center justify-between px-5">
-        <img
-          src={backgroundImages.companyLogo}
-          alt="Logo"
-          className="pl-4 md:pl-20 h-16 sm:h-20"
-        />
+        <a href="/" rel="logo">
+          <img
+            src={backgroundImages.companyLogo}
+            alt="Logo"
+            className="pl-4 md:pl-20 h-16 sm:h-20"
+          />
+        </a>
         <div className="flex gap-3 sm:gap-5 text-gray-500 pr-4 md:pr-20">
           <FaFacebook className="text-lg sm:text-xl" />
           <FaInstagram className="text-lg sm:text-xl" />
@@ -87,8 +89,15 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center p-4 px-12">
           {/* Desktop Menu */}
           <ul className="hidden md:flex space-x-6 text-white pl-4 md:pl-20">
-            <li className="cursor-pointer hover:text-gray-300">Home</li>
-            <li className="cursor-pointer hover:text-gray-300">About Us</li>
+            <Link to="/" className="cursor-pointer hover:text-gray-300">
+              Home
+            </Link>
+            <Link
+              to="/explore-solutions"
+              className="cursor-pointer hover:text-gray-300"
+            >
+              About Us
+            </Link>
             <li className="cursor-pointer hover:text-gray-300">Services</li>
             <li className="cursor-pointer hover:text-gray-300">Resources</li>
             <li className="cursor-pointer hover:text-gray-300">Testimonials</li>
