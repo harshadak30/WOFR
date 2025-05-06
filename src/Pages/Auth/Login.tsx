@@ -311,11 +311,11 @@ const Login: React.FC = () => {
   return (
     <MainLayout>
       <div
-        className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
+        className="bg-cover bg-center flex items-center justify-center px-4"
         style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
       >
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-6 md:gap-8 lg:gap-12 w-full max-w-7xl px-4 md:px-6 py-0">
-          {/* Left side - Branding */}
+        <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
+        {/* Left side - Branding */}
           <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">
             <div className="w-full flex justify-center lg:justify-start">
               <img
@@ -337,8 +337,8 @@ const Login: React.FC = () => {
 
           {/* Right side - Login Form */}
           <div className="flex-1 w-full max-w-md md:max-w-lg lg:max-w-xl">
-            <div className="bg-white rounded-lg p-5 md:p-8 w-full">
-              <h2 className="text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
+          <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl mx-auto my-8 sm:my-12 lg:my-20">
+          <h2 className="text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
                 Log in to your Account
               </h2>
 
