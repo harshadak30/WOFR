@@ -1,12 +1,5 @@
-import { Input } from "../../component/ui/Input";
 import { useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../component/ui/Select";
+
 import {
   BarChart,
   Bar,
@@ -29,11 +22,11 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import LeaseMaturityChart from "../../component/Charts/LeaseMaturityChart";
-import MonthlyExpenseChart from "../../component/Charts/MonthlyExpenseChart";
-import RecentAlerts from "../../component/Charts/RecentAlert";
+
 import { motion } from "framer-motion";
 import Card from "../../component/ui/Card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../component/ui/Select";
+import { Input } from "../../component/ui/Input";
 
 const COLORS = ["#3b82f6", "#0ea5e9", "#f59e0b", "#10b981"];
 
@@ -169,7 +162,7 @@ const DashboardOverview = () => {
         </div>{" "}
       </div>
 
-      <div className="flex flex-col flex-1  overflow-y-auto m-5 min-h-screen">
+      <div className="flex flex-col flex-1  m-5 ">
         {/* <div
           id="main-stats"
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
