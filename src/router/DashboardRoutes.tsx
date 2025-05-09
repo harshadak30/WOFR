@@ -19,17 +19,45 @@ export const DashboardRoutes = [
      icon: icons.Newlease,
     element: <NewLease />,
   },
-  {
-    path: "All-lease",
-    label: "All Leases",
+  // {
+  //   path: "All-lease",
+  //   label: "All Leases",
+  //    icon: icons.Alllease,
+  //   element: <AllLease />,
+  // },
+  // {
+  //   path: "analytics",
+  //   label: "Analytics",
+  //    icon: icons.Analytics,
+  //   element: <Analytics />,
+  // },
+
+
+    {
+    path: "Modules with Action",
+    label: "Modules with Action",
      icon: icons.Alllease,
     element: <AllLease />,
   },
   {
-    path: "analytics",
-    label: "Analytics",
+    path: "Roles permission",
+    label: "Roles permission",
      icon: icons.Analytics,
     element: <Analytics />,
+    items: [
+      {
+            path: "User",
+            label: "User",
+             icon: icons.Report,
+            element: <Reports />,
+          },
+          {
+            path: "Entity",
+            label: "Entity",
+             icon: icons.Report,
+            element: <Reports />,
+          },
+    ],
   },
   {
     path: "Report",

@@ -1,5 +1,7 @@
-import React from "react";
-import { Plus } from "lucide-react";
+import {
+  CircleUserRound,
+  LogOut,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -34,43 +36,31 @@ const DashboardHeader: React.FC = () => {
 
   const user = localStorage.getItem("name");
   return (
-    <header className="  p-6">
-      <div className="flex justify-between items-center">
-        <div id="search-bar" className="relative flex-1 max-w-md space-y-2.5">
-          {/* <Select>
-            <SelectTrigger className="w-[180px] border-gray-300  text-black  font-semibold cursor-not-allowed">
-              <SelectValue placeholder="Select Entity" />
-            </SelectTrigger>
-            <SelectContent className="border-gray-300">
-              <SelectItem value="all">All Roles</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-              <SelectItem value="super">Super Admin</SelectItem>
-            </SelectContent>
-          </Select> */}
-          <h3 className=" ml-5.5 text-2xl font-semibold">Hey {user}!!</h3>
-        </div>
-        <div className="flex items-center">
-          <button
-            className="flex items-center m-1 bg-[#2563EB] hover:bg-[#2553eb] text-white py-2 px-4 rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60 cursor-pointer"
-            aria-label="Add new user"
-          >
-            <span className="font-medium">Export</span>
-          </button>
-          <button
-            className="flex items-center  bg-[#059669] hover:bg-[#059641] text-white py-2 px-4  rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60  cursor-pointer"
-            aria-label="logout"
-          >
-            <Plus size={16} />
-            <span className="font-medium">New Lease</span>
-          </button>
-          <button
-            className="flex items-center m-1 bg-[#059669] hover:bg-[#059641] text-white py-2 px-4  rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60  cursor-pointer"
-            aria-label="logout"
-          >
-            <span className="font-medium" onClick={handleLogout}>
-              Logout
-            </span>
-          </button>
+    <header className="bg-white shadow-sm z-10">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center">
+            <div className="relative ml-2 md:ml-10">
+              <h3 className="text-2xl font-semibold">Welcome back {user}!!</h3>
+            </div>
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <button
+              className="flex items-center m-3 bg-[#262e2b] hover:bg-[#059641] text-white py-2 px-4  rounded-md transition-colors duration-200 shadow-sm disabled:opacity-60  cursor-pointer"
+              aria-label="logout"
+            >
+              <span className="font-medium" onClick={handleLogout}>
+                <LogOut />
+              </span>
+            </button>
+
+            <button className="flex items-center text-sm font-medium text-gray-700 hover:text-primary-600 focus:outline-none">
+              <div className="h-8 w-8 rounded-full bg-primary-600 flex items-center justify-center">
+                <CircleUserRound className="h-7 w-7" />
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </header>

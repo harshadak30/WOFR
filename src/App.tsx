@@ -35,8 +35,8 @@ const App: React.FC = () => {
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="*" element={<NotFound />} />
 
-        <Route element={<ProtectedRoute />}>
-          <Route element={<ProtectedRoute />}>
+        {/* <Route element={<ProtectedRoute />}> */}
+
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<Navigate to="overview" replace />} />
               {DashboardRoutes.map((route) => (
@@ -46,9 +46,9 @@ const App: React.FC = () => {
                   element={route.element}
                 />
               ))}
-            </Route>
+    
           </Route>
-        </Route>
+        {/* </Route> */}
 
       </Routes>
     </Router>
