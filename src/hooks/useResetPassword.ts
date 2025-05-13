@@ -67,9 +67,9 @@ export const useResetPassword = (): UseResetPasswordReturn => {
       setTimeout(() => {
         navigate("/login");
       }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Reset password error:", error);
-      showNotification("Failed to reset password", false);
+      showNotification(error.response.data.detail, false);
     } finally {
       setIsSubmitting(false);
     }

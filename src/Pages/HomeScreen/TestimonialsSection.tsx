@@ -223,56 +223,6 @@ export default function TestimonialsSection() {
         </div>
       </div>
 
-      {/* Feature Cards */}
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-        <div className="bg-gray-50 rounded-3xl p-10 relative lg:h-120 overflow-hidden ">
-          <img src={icons.phone2} alt="Phone" className="w-14 h-14 mb-4" />
-          <h3 className="text-3xl lg:text-4xl font-semibold mb-10 ">
-            Hold money in 30+ currencies
-          </h3>
-          <img
-            src={backgroundImages.mainBackground}
-            alt="Currency Background"
-            className="absolute bottom-0 w-full"
-          />
-        </div>
-
-
-        <motion.div
-          className="bg-gray-50 rounded-3xl p-10 relative h-120 overflow-hidden"
-          initial={{ y: 0 }}
-          whileHover={{ y: -20 }}
-          whileTap={{ y: -5 }}
-        >
-          <img src={icons.list} alt="List Icon" className="w-14 h-14 mb-4" />
-          <h3 className="text-3xl lg:text-4xl font-semibold mb-4 z-10 relative">
-            Subscriptions you control in one place
-          </h3>
-          <img
-            src={backgroundImages.featureStepThree}
-            alt="Subscription BG"
-            className="absolute bottom-0 w-full z-0"
-          />
-        </motion.div>
-
-
-        <div className="bg-gray-50 rounded-3xl relative h-120 overflow-hidden cursor-pointer">
-          <img
-            src={backgroundImages.featureStepFour}
-            alt="Product Features"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 flex flex-col justify-center p-10 bg-opacity-30 rounded-3xl">
-            <h3 className="text-white text-3xl lg:text-4xl font-semibold mb-4">
-              Check our other product features
-            </h3>
-            <button className="bg-[#008F98]  hover:bg-yellow-500 text-white px-6 py-5  mt-5 rounded-full font-medium transition-transform duration-300 hover:scale-105 w-1/3">
-              View More {"->"}
-            </button>
-          </div>
-        </div>
-      </div> */}
-
       {/* Feature Cards - Responsive on all devices */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-10 px-4 sm:px-6 lg:px-0">
         {/* Multi-Currency */}

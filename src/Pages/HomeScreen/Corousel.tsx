@@ -207,7 +207,6 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import "./Corousel.css";
 
 const apps = [
   {

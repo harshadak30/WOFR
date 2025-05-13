@@ -163,32 +163,6 @@ const DashboardOverview = () => {
       </div>
 
       <div className="flex flex-col flex-1  m-5 ">
-        {/* <div
-          id="main-stats"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-        >
-          {[
-            { label: "Active Leases", value: "247", text: "+12 this month" },
-            // { label: "ROU Asset Value", value: "$2.4M", text: "Total value" },
-            { label: "Lease Liability", value: "$1.8M", text: "Outstanding" },
-            { label: "Expiring Soon", value: "15", text: "Next 90 days" },
-            { label: "Pending Leases", value: "15", text: "Next 90 days" },
-          ].map((stat, idx) => (
-            <Card key={idx} className="bg-[#fcfcfc] h-40 cursor-pointer">
-              <CardContent className="p-6">
-                <div className="flex items-center">
-                  <div className="ml-4">
-                    <p className="text-base font-medium text-gray-500 leading-none">
-                      {stat.label}
-                    </p>
-                    <h3 className="text-2xl font-bold mt-6">{stat.value}</h3>{" "}
-                    <h3 className="text-l">{stat.text}</h3>{" "}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Leases"
