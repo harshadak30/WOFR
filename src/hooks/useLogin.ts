@@ -1,9 +1,8 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
-import axios from '../helper/axios';
-import { useAuth } from './useAuth';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import axios from "../helper/axios";
+import { useAuth } from "./useAuth";
 
 interface UseLoginReturn {
   isPasswordVisible: boolean;
@@ -21,7 +20,10 @@ interface UseLoginReturn {
   submitOtpVerification: (email: string, otpCode: string) => Promise<void>;
   resendOtpCode: (email: string, password?: string) => Promise<void>;
   initiateGoogleAuth: () => Promise<void>;
-  handleGoogleAuthCallback: (code: string, state: string | null) => Promise<void>;
+  handleGoogleAuthCallback: (
+    code: string,
+    state: string | null
+  ) => Promise<void>;
   openResetPasswordModal: (e: React.MouseEvent) => void;
   closeResetModal: () => void;
   handleModalOutsideClick: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -39,10 +41,13 @@ export const useLogin = (): UseLoginReturn => {
   const [isOtpDelivered, setIsOtpDelivered] = useState<boolean>(false);
   const [isOtpProcessing, setIsOtpProcessing] = useState<boolean>(false);
   const [isOtpVerifying, setIsOtpVerifying] = useState<boolean>(false);
-  const [isGoogleAuthenticating, setIsGoogleAuthenticating] = useState<boolean>(false);
-  const [isResetModalVisible, setIsResetModalVisible] = useState<boolean>(false);
+  const [isGoogleAuthenticating, setIsGoogleAuthenticating] =
+    useState<boolean>(false);
+  const [isResetModalVisible, setIsResetModalVisible] =
+    useState<boolean>(false);
   const [resetEmailAddress, setResetEmailAddress] = useState<string>("");
-  const [isPasswordResetProcessing, setIsPasswordResetProcessing] = useState<boolean>(false);
+  const [isPasswordResetProcessing, setIsPasswordResetProcessing] =
+    useState<boolean>(false);
 
   // Notification helper
   const showNotification = (message: string, isSuccess: boolean) => {
@@ -123,9 +128,9 @@ export const useLogin = (): UseLoginReturn => {
 
       if (response.data) {
         if (response.data.token) {
-        //   login(response.data.token, response.data.username);
-        localStorage.setItem("token", response.data.token);
-                 localStorage.setItem("name", response.data.username);
+          //   login(response.data.token, response.data.username);
+          localStorage.setItem("token", response.data.token);
+          localStorage.setItem("name", response.data.username);
         }
         showNotification("Login successful", true);
 
@@ -144,7 +149,8 @@ export const useLogin = (): UseLoginReturn => {
   };
 
   // Resend OTP
-  const resendOtpCode = (email: string, password?: string) => requestOtpCode(email, password);
+  const resendOtpCode = (email: string, password?: string) =>
+    requestOtpCode(email, password);
 
   // Google authentication
   const initiateGoogleAuth = async () => {
@@ -223,10 +229,7 @@ export const useLogin = (): UseLoginReturn => {
   const requestPasswordReset = async (e: React.FormEvent, email: string) => {
     e.preventDefault();
 
-    if (
-      !email ||
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
-    ) {
+    if (!email || !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
       showNotification("Please enter a valid email address", false);
       return;
     }
@@ -272,6 +275,6 @@ export const useLogin = (): UseLoginReturn => {
     closeResetModal,
     handleModalOutsideClick,
     requestPasswordReset,
-    setResetEmailAddress
+    setResetEmailAddress,
   };
 };

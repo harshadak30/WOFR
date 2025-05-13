@@ -18,7 +18,8 @@ const icons = {
     phone: "/icons/phone.png",
     phone2: "/icons/phone2.png",
     supportAgent: "/icons/support_agent.png",
-    tb: "/icons/tb.png"  
+    tb: "/icons/tb.png"  ,
+    logo:"/icons/Dashbaord-main-logo.png"
 
   };
  

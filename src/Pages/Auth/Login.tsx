@@ -1,614 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import { Link, useNavigate, useLocation } from "react-router-dom";
-// import { useForm } from "react-hook-form";
-// import Swal from "sweetalert2";
-// import { FaEye, FaEyeSlash } from "react-icons/fa";
-// import axios from "../../helper/axios";
-// import backgroundImages from "../../../public/background";
-// import MainLayout from "../../Layout/MainLayout";
-
-// type AuthMethod = "password" | "otp" | "both";
-// type LoginFormValues = {
-//   email: string;
-//   password: string;
-// };
-
-// const Login: React.FC = () => {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-//   const authMethodConfig: AuthMethod = "both";
-
-//   // State management
-//   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-//   const [otpDigits, setOtpDigits] = useState<string[]>(["", "", "", ""]);
-//   const [isOtpDelivered, setIsOtpDelivered] = useState<boolean>(false);
-//   const [isOtpProcessing, setIsOtpProcessing] = useState<boolean>(false);
-//   const [isOtpVerifying, setIsOtpVerifying] = useState<boolean>(false);
-//   const [isGoogleAuthenticating, setIsGoogleAuthenticating] =
-//     useState<boolean>(false);
-//   const [isResetModalVisible, setIsResetModalVisible] =
-//     useState<boolean>(false);
-//   const [resetEmailAddress, setResetEmailAddress] = useState<string>("");
-//   const [isPasswordResetProcessing, setIsPasswordResetProcessing] =
-//     useState<boolean>(false);
-
-//   const {
-//     register,
-//     formState: { errors },
-//     getValues,
-//   } = useForm<LoginFormValues>({
-//     defaultValues: {
-//       email: "",
-//       password: "",
-//     },
-//   });
-
-//   type LoginMethod = "password" | "otp" | "both";
-//   const loginMethodFromAdmin: LoginMethod = "both";
-//   const isPasswordAuthEnabled =
-//     loginMethodFromAdmin === ("password" as LoginMethod) ||
-//     loginMethodFromAdmin === ("both" as LoginMethod);
-
-//   const isOtpAuthEnabled =
-//     loginMethodFromAdmin === ("otp" as LoginMethod) ||
-//     loginMethodFromAdmin === ("both" as LoginMethod);
-
-//   // Check for Google callback on component mount
-//   useEffect(() => {
-//     const searchParams = new URLSearchParams(location.search);
-//     const code = searchParams.get("code");
-//     const error = searchParams.get("error");
-//     const state = searchParams.get("state");
-
-//     if (code && !error) {
-//       handleGoogleAuthCallback(code, state);
-//     } else if (error) {
-//       showNotification("Google login failed: " + error, false);
-//       window.history.replaceState({}, document.title, window.location.pathname);
-//     }
-//   }, [location]);
-
-//   // Handle Escape key and body overflow for modal
-//   useEffect(() => {
-//     const handleEscapeKey = (e: KeyboardEvent) => {
-//       if (e.key === "Escape" && isResetModalVisible) {
-//         closeResetModal();
-//       }
-//     };
-
-//     document.addEventListener("keydown", handleEscapeKey);
-
-//     if (isResetModalVisible) {
-//       document.body.classList.add("overflow-hidden");
-//     } else {
-//       document.body.classList.remove("overflow-hidden");
-//     }
-
-//     return () => {
-//       document.removeEventListener("keydown", handleEscapeKey);
-//       document.body.classList.remove("overflow-hidden");
-//     };
-//   }, [isResetModalVisible]);
-
-//   // Notification helper
-//   const showNotification = (message: string, isSuccess: boolean) => {
-//     Swal.fire({
-//       toast: true,
-//       position: "top-end",
-//       icon: isSuccess ? "success" : "error",
-//       title: message,
-//       showConfirmButton: false,
-//       timer: 3000,
-//     });
-//   };
-
-//   const togglePasswordVisibility = () => setIsPasswordVisible((prev) => !prev);
-
-//   // OTP input handling
-//   const handleOtpDigitChange = (index: number, value: string) => {
-//     if (value && !/^\d*$/.test(value)) return;
-
-//     const updatedDigits = [...otpDigits];
-//     updatedDigits[index] = value;
-//     setOtpDigits(updatedDigits);
-
-//     // Auto-focus next input
-//     if (value && index < 3) {
-//       const nextInput = document.getElementById(`otp-${index + 1}`);
-//       if (nextInput) {
-//         nextInput.focus();
-//       }
-//     }
-//   };
-
-//   // Generate OTP
-//   const requestOtpCode = async () => {
-//     const email = getValues("email");
-//     const password = getValues("password");
-
-//     if (!email) {
-//       showNotification("Email is required", false);
-//       return;
-//     }
-
-//     if (isPasswordAuthEnabled && !password) {
-//       showNotification("Password is required", false);
-//       return;
-//     }
-
-//     setIsOtpProcessing(true);
-
-//     try {
-//       const response = await axios.post(`api/auth/v1/login`, {
-//         email_or_phone: email,
-//         password: isPasswordAuthEnabled ? password : undefined,
-//       });
-
-//       if (response.data) {
-//         setIsOtpDelivered(true);
-//         showNotification("OTP sent to your email", true);
-//         setOtpDigits(["", "", "", ""]);
-//       }
-//     } catch (error: any) {
-//       console.error("OTP generation error:", error);
-//       const errorMessage =
-//         error.response?.data?.detail ||
-//         "Failed to generate OTP. Please try again.";
-//       showNotification(errorMessage, false);
-//     } finally {
-//       setIsOtpProcessing(false);
-//     }
-//   };
-
-//   // Verify OTP
-//   const submitOtpVerification = async () => {
-//     const email = getValues("email");
-//     const otpCode = otpDigits.join("");
-
-//     if (otpCode.length !== 4) {
-//       showNotification("Please enter the complete 4-digit OTP", false);
-//       return;
-//     }
-
-//     setIsOtpVerifying(true);
-
-//     try {
-//       const response = await axios.post(`api/auth/v1/verify-login-otp`, {
-//         email_or_phone: email,
-//         otp_code: otpCode,
-//       });
-
-//       if (response.data) {
-//         if (response.data.token) {
-//           localStorage.setItem("token", response.data.token);
-//           localStorage.setItem("name", response.data.username);
-//         }
-//         showNotification("Login successful", true);
-
-//         setTimeout(() => {
-//           navigate("/dashboard");
-//         }, 1000);
-//       }
-//     } catch (error: any) {
-//       console.error("OTP verification error:", error);
-//       const errorMessage =
-//         error.response?.data?.detail || "Invalid OTP. Please try again.";
-//       showNotification(errorMessage, false);
-//     } finally {
-//       setIsOtpVerifying(false);
-//     }
-//   };
-
-//   // Resend OTP
-//   const resendOtpCode = () => requestOtpCode();
-
-//   // Google authentication
-//   const initiateGoogleAuth = async () => {
-//     setIsGoogleAuthenticating(true);
-//     try {
-//       const response = await axios.get(`auth/v1/google/login`);
-
-//       if (response.data && response.data.authUrl) {
-//         window.location.href = response.data.authUrl;
-//       } else {
-//         window.location.href = `auth/v1/google/login`;
-//       }
-//     } catch (error) {
-//       console.error("Google login error:", error);
-//       showNotification(
-//         "Failed to connect with Google. Please try again.",
-//         false
-//       );
-//       setIsGoogleAuthenticating(false);
-//     }
-//   };
-
-//   // Google callback handling
-//   const handleGoogleAuthCallback = async (
-//     code: string,
-//     state: string | null
-//   ) => {
-//     setIsGoogleAuthenticating(true);
-//     try {
-//       const response = await axios.post(`v1/auth/google/callback`, {
-//         code,
-//         state: state || "",
-//       });
-
-//       if (response.data) {
-//         if (response.data.token) {
-//           localStorage.setItem("token", response.data.token);
-//         }
-
-//         showNotification("Google login successful", true);
-
-//         setTimeout(() => {
-//           navigate("/");
-//         }, 1000);
-//       }
-//     } catch (error: any) {
-//       console.error("Google callback error:", error);
-//       const errorMessage =
-//         error.response?.data?.detail ||
-//         "Failed to authenticate with Google. Please try again.";
-//       showNotification(errorMessage, false);
-//     } finally {
-//       setIsGoogleAuthenticating(false);
-//       window.history.replaceState({}, document.title, window.location.pathname);
-//     }
-//   };
-
-//   // Forgot password handling
-//   const openResetPasswordModal = (e: React.MouseEvent) => {
-//     e.preventDefault();
-//     setResetEmailAddress(getValues("email") || "");
-//     setIsResetModalVisible(true);
-//   };
-
-//   const handleModalOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-//     if (e.target === e.currentTarget) {
-//       closeResetModal();
-//     }
-//   };
-
-//   const closeResetModal = () => {
-//     setIsResetModalVisible(false);
-//     setResetEmailAddress("");
-//   };
-
-//   // Send password reset link
-//   const requestPasswordReset = async (e: React.FormEvent) => {
-//     e.preventDefault();
-
-//     if (
-//       !resetEmailAddress ||
-//       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(resetEmailAddress)
-//     ) {
-//       showNotification("Please enter a valid email address", false);
-//       return;
-//     }
-
-//     setIsPasswordResetProcessing(true);
-
-//     try {
-//       await axios.post(`api/auth/v1/forgot-password/send-link`, null, {
-//         params: { email: resetEmailAddress },
-//       });
-
-//       showNotification("Password reset link sent to your email", true);
-//       setIsResetModalVisible(false);
-//     } catch (error: any) {
-//       console.error("Forgot password error:", error);
-//       const errorMessage =
-//         error.response?.data?.detail ||
-//         "Failed to send password reset link. Please try again.";
-//       showNotification(errorMessage, false);
-//     } finally {
-//       setIsPasswordResetProcessing(false);
-//     }
-//   };
-
-//   return (
-//     <MainLayout>
-//       <div
-//         className="bg-[url('/background/landingHeroImage.png')]  bg-cover bg-center flex items-center justify-center px-4"
-//         // style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
-//       >
-//         <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
-//         {/* Left side - Branding */}
-//           <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">
-//             <div className="w-full flex justify-center lg:justify-start">
-//               <img
-//                 src={backgroundImages.companyLogo}
-//                 alt="Logo"
-//                 className="w-32 md:w-40 mb-2 md:mb-4"
-//               />
-//             </div>
-//             <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl text-white font-bold leading-tight text-center lg:text-left">
-//               Secure Your Financial
-//               <br />
-//               Future Today
-//             </h1>
-//             <p className="text-base md:text-lg lg:text-xl text-white leading-relaxed tracking-wide max-w-xl text-center lg:text-left">
-//               Access your portfolio, track investments, and manage your wealth
-//               with our advanced financial platform.
-//             </p>
-//           </div>
-
-//           {/* Right side - Login Form */}
-//           <div className="flex-1 w-full max-w-md md:max-w-lg lg:max-w-xl">
-//           <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl mx-auto my-8 sm:my-12 lg:my-20">
-//           <h2 className="text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
-//                 Log in to your Account
-//               </h2>
-
-//               <form className="space-y-4 md:space-y-6">
-//                 {/* Email */}
-//                 <div>
-//                   <label
-//                     htmlFor="email"
-//                     className="block text-sm font-medium text-gray-700 mb-1"
-//                   >
-//                     Email ID
-//                   </label>
-//                   <input
-//                     type="email"
-//                     id="email"
-//                     placeholder="example@gmail.com"
-//                     className={`w-full px-3 md:px-4 py-2 md:py-3 bg-gray-100 border ${
-//                       errors.email ? "border-red-500" : "border-gray-200"
-//                     } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
-//                     {...register("email", {
-//                       required: "Email is required",
-//                       pattern: {
-//                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-//                         message: "Invalid email address",
-//                       },
-//                     })}
-//                   />
-//                   {errors.email && (
-//                     <p className="text-red-500 text-sm mt-1">
-//                       {errors.email.message}
-//                     </p>
-//                   )}
-//                 </div>
-
-//                 {/* Password */}
-//                 {isPasswordAuthEnabled && (
-//                   <div>
-//                     <label
-//                       htmlFor="password"
-//                       className="block text-sm font-medium text-gray-700 mb-1"
-//                     >
-//                       Password
-//                     </label>
-//                     <div className="relative">
-//                       <input
-//                         type={isPasswordVisible ? "text" : "password"}
-//                         id="password"
-//                         placeholder="••••••"
-//                         className={`w-full px-3 md:px-4 py-2 md:py-3 bg-gray-100 border ${
-//                           errors.password ? "border-red-500" : "border-gray-200"
-//                         } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
-//                         {...register("password", {
-//                           required: isPasswordAuthEnabled
-//                             ? "Password is required"
-//                             : false,
-//                           minLength: {
-//                             value: 6,
-//                             message: "Password must be at least 6 characters",
-//                           },
-//                         })}
-//                       />
-//                       <button
-//                         type="button"
-//                         className="absolute inset-y-0 right-3 flex items-center"
-//                         onClick={togglePasswordVisibility}
-//                       >
-//                         {isPasswordVisible ? <FaEye /> : <FaEyeSlash />}
-//                       </button>
-//                     </div>
-//                     {errors.password && (
-//                       <p className="text-red-500 text-sm mt-1">
-//                         {errors.password.message}
-//                       </p>
-//                     )}
-//                   </div>
-//                 )}
-
-//                 {/* Remember me / Forgot password */}
-//                 <div className="flex items-center justify-end">
-//                   {/* <div className="flex items-center">
-//                     <input
-//                       id="remember"
-//                       type="checkbox"
-//                       className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
-//                     />
-//                     <label
-//                       htmlFor="remember"
-//                       className="ml-2 block text-sm text-gray-700"
-//                     >
-//                       Remember me
-//                     </label>
-//                   </div> */}
-//                   <button
-//                     type="button"
-//                     onClick={openResetPasswordModal}
-//                     className="text-sm text-teal-600 hover:text-teal-500 font-medium"
-//                   >
-//                     Forgot Password?
-//                   </button>
-//                 </div>
-
-//                 {/* Generate OTP Button */}
-//                 {isOtpAuthEnabled && (
-//                   <>
-//                     <button
-//                       type="button"
-//                       onClick={requestOtpCode}
-//                       disabled={isOtpProcessing}
-//                       className="w-full sm:w-[90%] mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 md:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500 transition-colors"
-//                     >
-//                       {isOtpProcessing
-//                         ? "Sending..."
-//                         : "Generate OTP for Verification"}
-//                     </button>
-
-//                     {/* OTP Section */}
-//                     <div className="mt-4 flex flex-col items-center text-center">
-//                       <p className="text-sm text-gray-600 mb-3 md:mb-4">
-//                         {isOtpDelivered
-//                           ? "We've sent a verification code to your email"
-//                           : "Generate OTP to verify your account"}
-//                       </p>
-//                       <div className="flex items-center space-x-2">
-//                         {otpDigits.map((value, index) => (
-//                           <input
-//                             key={index}
-//                             id={`otp-${index}`}
-//                             type="text"
-//                             maxLength={1}
-//                             value={value}
-//                             onChange={(e) =>
-//                               handleOtpDigitChange(index, e.target.value)
-//                             }
-//                             className="w-10 h-10 md:w-12 md:h-12 text-center border rounded-md"
-//                             disabled={!isOtpDelivered || isOtpVerifying}
-//                           />
-//                         ))}
-//                       </div>
-//                       {isOtpDelivered && (
-//                         <button
-//                           type="button"
-//                           onClick={resendOtpCode}
-//                           disabled={isOtpProcessing}
-//                           className="mt-3 text-sm text-teal-600 hover:underline disabled:text-gray-400"
-//                         >
-//                           {isOtpProcessing ? "Sending..." : "Resend OTP"}
-//                         </button>
-//                       )}
-//                     </div>
-//                   </>
-//                 )}
-
-//                 {/* Login Button */}
-//                 <button
-//                   type="button"
-//                   onClick={submitOtpVerification}
-//                   disabled={!isOtpDelivered || isOtpVerifying}
-//                   className="w-full sm:w-[90%] mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 md:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500 transition-colors"
-//                 >
-//                   {isOtpVerifying ? "Verifying..." : "Login"}
-//                 </button>
-
-//                 {/* Redirect to Register */}
-//                 <p className="text-center text-sm text-gray-600 mt-4">
-//                   Don't have an account?{" "}
-//                   <Link
-//                     to={"/register"}
-//                     className="text-teal-600 hover:text-teal-500 font-medium"
-//                   >
-//                     Sign up
-//                   </Link>
-//                 </p>
-//               </form>
-
-//               {/* Google Login - Commented out in original code */}
-//               {/* <div>
-//                 <button
-//                   type="button"
-//                   onClick={initiateGoogleAuth}
-//                   disabled={isGoogleAuthenticating}
-//                   className="w-full sm:w-[50%] mx-auto flex items-center justify-center gap-2 border mt-6 md:mt-10 border-black hover:bg-gray-100 text-black font-medium py-2 md:py-3 px-4 rounded-md focus:outline-none transition-colors"
-//                 >
-//                   <img src="icons/google.png" alt="Google" className="w-5 h-5 md:w-6 md:h-6" />
-//                   <span>{isGoogleAuthenticating ? "Connecting..." : "Google"}</span>
-//                 </button>
-//               </div> */}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Password Reset Modal */}
-//       {isResetModalVisible && (
-//         <div
-//           className="fixed bg-black/40 backdrop-blur-sm inset-0 z-50 overflow-auto flex items-center justify-center px-4"
-//           onClick={handleModalOutsideClick}
-//           aria-modal="true"
-//           role="dialog"
-//         >
-//           <div
-//             className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden"
-//             onClick={(e) => e.stopPropagation()}
-//           >
-//             <div className="px-4 md:px-6 py-3 md:py-4 border-b border-gray-200">
-//               <h3 className="text-base md:text-lg font-medium text-gray-900">
-//                 Reset Password
-//               </h3>
-//             </div>
-
-//             <form onSubmit={requestPasswordReset}>
-//               <div className="px-4 md:px-6 py-3 md:py-4">
-//                 <p className="text-sm text-gray-500 mb-3 md:mb-4">
-//                   Enter your email address and we'll send you a link to reset
-//                   your password.
-//                 </p>
-//                 <div>
-//                   <label
-//                     htmlFor="resetEmailAddress"
-//                     className="block text-sm font-medium text-gray-700 mb-1"
-//                   >
-//                     Email
-//                   </label>
-//                   <input
-//                     type="email"
-//                     id="resetEmailAddress"
-//                     value={resetEmailAddress}
-//                     onChange={(e) => setResetEmailAddress(e.target.value)}
-//                     placeholder="example@gmail.com"
-//                     className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-//                     required
-//                     autoFocus
-//                   />
-//                 </div>
-//               </div>
-
-//               <div className="px-4 md:px-6 py-3 md:py-4 bg-gray-50 flex flex-row-reverse">
-//                 <button
-//                   type="submit"
-//                   disabled={isPasswordResetProcessing}
-//                   className="ml-3 inline-flex justify-center px-4 py-2 bg-teal-600 text-white font-medium rounded-md hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors"
-//                 >
-//                   {isPasswordResetProcessing ? "Sending..." : "Send Reset Link"}
-//                 </button>
-//                 <button
-//                   type="button"
-//                   onClick={closeResetModal}
-//                   className="inline-flex justify-center px-4 py-2 bg-white text-gray-700 font-medium rounded-md border border-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors"
-//                 >
-//                   Cancel
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       )}
-//     </MainLayout>
-//   );
-// };
-
-// export default Login;
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -649,7 +38,7 @@ const Login: React.FC = () => {
     closeResetModal,
     handleModalOutsideClick,
     requestPasswordReset,
-    setResetEmailAddress
+    setResetEmailAddress,
   } = useLogin();
 
   const {
@@ -667,7 +56,6 @@ const Login: React.FC = () => {
       navigate("/dashboard");
     }
   }, [authState.isAuthenticated, navigate]);
-  
 
   type LoginMethod = "password" | "otp" | "both";
   const loginMethodFromAdmin: LoginMethod = "both";
@@ -723,7 +111,7 @@ const Login: React.FC = () => {
         style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
       >
         <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
-        {/* Left side - Branding */}
+          {/* Left side - Branding */}
           <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">
             <div className="w-full flex justify-center lg:justify-start">
               <img
@@ -745,8 +133,8 @@ const Login: React.FC = () => {
 
           {/* Right side - Login Form */}
           <div className="flex-1 w-full max-w-md md:max-w-lg lg:max-w-xl">
-          <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl mx-auto my-8 sm:my-12 lg:my-20">
-          <h2 className="text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
+            <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8 lg:p-10 w-full max-w-3xl mx-auto my-8 sm:my-12 lg:my-20">
+              <h2 className="text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
                 Log in to your Account
               </h2>
 
@@ -853,7 +241,14 @@ const Login: React.FC = () => {
                   <>
                     <button
                       type="button"
-                      onClick={() => requestOtpCode(getValues("email"), isPasswordAuthEnabled ? getValues("password") : undefined)}
+                      onClick={() =>
+                        requestOtpCode(
+                          getValues("email"),
+                          isPasswordAuthEnabled
+                            ? getValues("password")
+                            : undefined
+                        )
+                      }
                       disabled={isOtpProcessing}
                       className="w-full sm:w-[90%] mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 md:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500 transition-colors"
                     >
@@ -888,7 +283,14 @@ const Login: React.FC = () => {
                       {isOtpDelivered && (
                         <button
                           type="button"
-                          onClick={() => resendOtpCode(getValues("email"), isPasswordAuthEnabled ? getValues("password") : undefined)}
+                          onClick={() =>
+                            resendOtpCode(
+                              getValues("email"),
+                              isPasswordAuthEnabled
+                                ? getValues("password")
+                                : undefined
+                            )
+                          }
                           disabled={isOtpProcessing}
                           className="mt-3 text-sm text-teal-600 hover:underline disabled:text-gray-400"
                         >
@@ -902,7 +304,12 @@ const Login: React.FC = () => {
                 {/* Login Button */}
                 <button
                   type="button"
-                  onClick={() => submitOtpVerification(getValues("email"), otpDigits.join(""))}
+                  onClick={() =>
+                    submitOtpVerification(
+                      getValues("email"),
+                      otpDigits.join("")
+                    )
+                  }
                   disabled={!isOtpDelivered || isOtpVerifying}
                   className="w-full sm:w-[90%] mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 md:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-500 transition-colors"
                 >
@@ -1007,5 +414,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-
-
