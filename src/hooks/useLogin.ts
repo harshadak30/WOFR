@@ -131,6 +131,7 @@ export const useLogin = (): UseLoginReturn => {
           //   login(response.data.token, response.data.username);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("name", response.data.username);
+          localStorage.setItem("user_type", response.data.user_type);
         }
         showNotification("Login successful", true);
 
@@ -187,7 +188,11 @@ export const useLogin = (): UseLoginReturn => {
 
       if (response.data) {
         if (response.data.token) {
-          login(response.data.token, response.data.username || "User");
+          login(
+            response.data.token,
+            response.data.username,
+            response.data.user_type || "User"
+          );
         }
 
         showNotification("Google login successful", true);

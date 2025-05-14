@@ -106,10 +106,11 @@ const Login: React.FC = () => {
 
   return (
     <MainLayout>
-      <div
+      {/* <div
         className="bg-cover bg-center flex items-center justify-center px-4"
         style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
-      >
+      > */}
+      <div className="bg-[url('/background/landingHeroImage.png')] bg-cover bg-center flex items-center justify-center px-4">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
           {/* Left side - Branding */}
           <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">

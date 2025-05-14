@@ -1,8 +1,5 @@
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -25,13 +22,26 @@ import {
 
 import { motion } from "framer-motion";
 import Card from "../../component/ui/Card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../component/ui/Select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../component/ui/Select";
 import { Input } from "../../component/ui/Input";
 
 const COLORS = ["#3b82f6", "#0ea5e9", "#f59e0b", "#10b981"];
 
 const DashboardOverview = () => {
   const [search, setSearch] = useState("");
+  const [userType, setUserType] = useState<string | null>(null);
+
+  useEffect(() => {
+    const type = localStorage.getItem("user_type");
+    setUserType(type);
+  }, []);
+
   const leaseStats = {
     active: 237,
     pending: 42,
@@ -99,19 +109,19 @@ const DashboardOverview = () => {
           {trend === "up" ? (
             <TrendingUp
               className={`h-4 w-4 ${
-                isTrendPositive ? "text-success-500" : "text-error-500"
+                isTrendPositive ? "text-green-500" : "text-red-500"
               }`}
             />
           ) : (
             <TrendingDown
               className={`h-4 w-4 ${
-                isTrendPositive ? "text-success-500" : "text-error-500"
+                isTrendPositive ? "text-green-500" : "text-red-500"
               }`}
             />
           )}
           <span
             className={`ml-1 text-sm font-medium ${
-              isTrendPositive ? "text-success-700" : "text-error-700"
+              isTrendPositive ? "text-green-700" : "text-red-700"
             }`}
           >
             {change}
@@ -124,45 +134,42 @@ const DashboardOverview = () => {
 
   return (
     <>
-      <div className="">
-        <div className="container mx-auto  ">
-          {/* Search and filters */}
-          <div className="mb-8">
-            <div className="flex flex-wrap gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm">
-              <Input
-                type="text"
-                placeholder="Search leases..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-grow max-w-3xl border-gray-300"
-              />
+      <div className="container mx-auto">
+        {/* Search and filters */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm">
+            <Input
+              type="text"
+              placeholder="Search leases..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="flex-grow max-w-3xl border-gray-300"
+            />
 
-              <button className="flex items-center bg-[#F3F4F6] hover:bg-[#E5E7EB] text-gray-700 py-2 px-4 rounded-md transition-colors duration-200">
-                <span className="font-medium">mm/dd/yyyy</span>
-              </button>
+            <button className="flex items-center bg-[#F3F4F6] hover:bg-[#E5E7EB] text-gray-700 py-2 px-4 rounded-md transition-colors duration-200">
+              <span className="font-medium">mm/dd/yyyy</span>
+            </button>
 
-              <Select>
-                <SelectTrigger className="w-[180px] border-gray-300">
-                  <SelectValue placeholder="Lease Type" />
-                </SelectTrigger>
-                <SelectContent className="border-gray-300">
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="office">Office</SelectItem>
-                  <SelectItem value="retail">Retail</SelectItem>
-                  <SelectItem value="warehouse">Warehouse</SelectItem>
-                </SelectContent>
-              </Select>
+            <Select>
+              <SelectTrigger className="w-[180px] border-gray-300">
+                <SelectValue placeholder="Lease Type" />
+              </SelectTrigger>
+              <SelectContent className="border-gray-300">
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="office">Office</SelectItem>
+                <SelectItem value="retail">Retail</SelectItem>
+                <SelectItem value="warehouse">Warehouse</SelectItem>
+              </SelectContent>
+            </Select>
 
-              <button className="flex items-center gap-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-gray-700 py-2 px-4 rounded-md transition-colors duration-200">
-                <FunnelIcon size={16} />
-                <span className="font-medium">More Filters</span>
-              </button>
-            </div>
+            <button className="flex items-center gap-2 bg-[#F3F4F6] hover:bg-[#E5E7EB] text-gray-700 py-2 px-4 rounded-md transition-colors duration-200">
+              <FunnelIcon size={16} />
+              <span className="font-medium">More Filters</span>
+            </button>
           </div>
-        </div>{" "}
-      </div>
+        </div>
 
-      <div className="flex flex-col flex-1  m-5 ">
+        {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
             title="Total Leases"
@@ -171,41 +178,37 @@ const DashboardOverview = () => {
             change={`${leaseStats.percentChange}%`}
             trend="up"
           />
-          <StatCard
-            title="Active Users"
-            value={128}
-            icon={<Users />}
-            change="8%"
-            trend="up"
-          />
-          <StatCard
-            title="System Uptime"
-            value="99.9%"
-            icon={<Repeat />}
-            change="0.1%"
-            trend="up"
-          />
-          <StatCard
-            title="Resource Usage"
-            value="68%"
-            icon={<TrendingUp />}
-            change="5%"
-            trend="down"
-            trendIsGood={true}
-          />
+
+          {/* Super Admin Only */}
+          {userType === "master_admin" && (
+            <>
+              <StatCard
+                title="Active Users"
+                value={128}
+                icon={<Users />}
+                change="8%"
+                trend="up"
+              />
+              <StatCard
+                title="System Uptime"
+                value="99.9%"
+                icon={<Repeat />}
+                change="0.1%"
+                trend="up"
+              />
+              <StatCard
+                title="Resource Usage"
+                value="68%"
+                icon={<TrendingUp />}
+                change="5%"
+                trend="down"
+                trendIsGood={true}
+              />
+            </>
+          )}
         </div>
 
         {/* Charts */}
-        {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <LeaseMaturityChart />
-          <MonthlyExpenseChart />
-        </div> */}
-
-        {/* Recent alerts */}
-        {/* <div className="mb-8">
-          <RecentAlerts />
-        </div> */}
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
           <Card
             className="lg:col-span-2"
@@ -235,34 +238,37 @@ const DashboardOverview = () => {
             </div>
           </Card>
 
-          <Card title="Lease Distribution" subtitle="By property type">
-            <div className="h-80 flex items-center justify-center">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={leaseTypeData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) =>
-                      `${name}: ${(percent * 100).toFixed(0)}%`
-                    }
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {leaseTypeData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
+          {/* Super Admin Only Pie Chart */}
+          {userType === "super_admin" && (
+            <Card title="Lease Distribution" subtitle="By property type">
+              <div className="h-80 flex items-center justify-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={leaseTypeData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) =>
+                        `${name}: ${(percent * 100).toFixed(0)}%`
+                      }
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {leaseTypeData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          )}
         </div>
       </div>
     </>

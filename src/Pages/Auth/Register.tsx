@@ -1,4 +1,3 @@
-
 // // import React, { useState } from "react";
 // // import { useForm, SubmitHandler, Controller } from "react-hook-form";
 // // import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -311,7 +310,6 @@
 // //                   )}
 // //                 </div>
 
-   
 // //                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 // //                   {/* Phone Number Field with react-phone-number-input */}
 // //                   <div>
@@ -497,7 +495,6 @@
 
 // // export default Registration;
 
-
 import React from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import OtpVerificationPopup from "./OtpVerificationPopup";
@@ -523,7 +520,7 @@ const Registration: React.FC<RegistrationProps> = () => {
     togglePasswordVisibility,
     toggleConfirmPasswordVisibility,
     setIsOtpModalVisible,
-    setIsOtpVerified
+    setIsOtpVerified,
   } = useRegister();
 
   const {
@@ -542,10 +539,7 @@ const Registration: React.FC<RegistrationProps> = () => {
 
   return (
     <MainLayout>
-      <div
-        className="bg-cover bg-center flex items-center justify-center px-4"
-        style={{ backgroundImage: "url('background/landingHeroImage.png')" }}
-      >
+      <div className="bg-[url('/background/landingHeroImage.png')] bg-cover bg-center flex items-center justify-center px-4">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-4 sm:gap-8 w-full max-w-7xl px-4 sm:px-6">
           {/* Left side - Branding */}
           <div className="flex-1 flex flex-col items-center lg:items-start space-y-6 md:space-y-8 mb-6 lg:mb-0 w-full">
@@ -659,7 +653,7 @@ const Registration: React.FC<RegistrationProps> = () => {
                   <ErrorMessage message={errors.name?.message} />
                 </div>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Phone Number Field */}
                   <div>
                     <label

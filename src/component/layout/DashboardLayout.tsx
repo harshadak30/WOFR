@@ -8,9 +8,13 @@ const DashboardLayout = () => {
 
   return (
     <div className="flex h-screen bg-[#f0f1f5]">
-      <DashboardSidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
+      <DashboardSidebar
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+        toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+      />
       <div className="flex-1 overflow-y-auto">
-        <DashboardHeader toggleSidebar={() => setSidebarOpen(!sidebarOpen)}/>
+        <DashboardHeader />
         <div className="p-4">
           <Outlet />
         </div>
