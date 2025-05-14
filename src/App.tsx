@@ -33,30 +33,21 @@ const App: React.FC = () => {
         <Route path="/explore-solutions" element={<AppSolutions />} />{" "}
         <Route path="/reset-password" element={<ResetPasswordForm />} />
         <Route path="*" element={<NotFound />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardLayout />}>
+        {/* <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="overview" replace />} />
-            {/* {DashboardRoutes.map((route) => (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={route.element}
-                />
-              ))} */}
-
             {DashboardRoutes.map((route) => {
               if (route.children) {
                 return [
                   <Route
                     key={route.path}
                     path={route.path}
-                    element={route.element }
+                    element={route.element}
                   />,
                   ...route.children.map((child) => (
                     <Route
                       key={child.path}
                       path={child.path}
-                      element={child.element }
+                      element={child.element}
                     />
                   )),
                 ];
@@ -70,7 +61,36 @@ const App: React.FC = () => {
                 />
               );
             })}
-          </Route>
+          </Route> */}
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="overview" replace />} />
+          {DashboardRoutes.flatMap((route) => {
+            if (route.children) {
+              return route.children.map((child) => (
+                <Route
+                  key={child.path}
+                  path={child.path}
+                  element={
+                    <ProtectedRoute allowedRoles={child.allowedRoles}>
+                      {child.element}
+                    </ProtectedRoute>
+                  }
+                />
+              ));
+            }
+
+            return (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={
+                  <ProtectedRoute allowedRoles={route.allowedRoles}>
+                    {route.element}
+                  </ProtectedRoute>
+                }
+              />
+            );
+          })}
         </Route>
       </Routes>
     </Router>
