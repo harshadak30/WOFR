@@ -80,7 +80,6 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
-  // Generate OTP
   const requestOtpCode = async (email: string, password?: string) => {
     if (!email) {
       showNotification("Email is required", false);
@@ -104,6 +103,7 @@ export const useLogin = (): UseLoginReturn => {
       console.error("OTP generation error:", error);
       const errorMessage =
         error.response?.data?.detail ||
+        error.message ||
         "Failed to generate OTP. Please try again.";
       showNotification(errorMessage, false);
     } finally {
@@ -111,7 +111,6 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
-  // Verify OTP
   const submitOtpVerification = async (email: string, otpCode: string) => {
     if (otpCode.length !== 4) {
       showNotification("Please enter the complete 4-digit OTP", false);
@@ -149,11 +148,9 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
-  // Resend OTP
   const resendOtpCode = (email: string, password?: string) =>
     requestOtpCode(email, password);
 
-  // Google authentication
   const initiateGoogleAuth = async () => {
     setIsGoogleAuthenticating(true);
     try {
@@ -174,7 +171,6 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
-  // Google callback handling
   const handleGoogleAuthCallback = async (
     code: string,
     state: string | null
@@ -213,7 +209,6 @@ export const useLogin = (): UseLoginReturn => {
     }
   };
 
-  // Forgot password handling
   const openResetPasswordModal = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResetModalVisible(true);

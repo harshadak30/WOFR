@@ -1,9 +1,8 @@
-
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import Swal from 'sweetalert2';
-import apiClient from '../helper/axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm, UseFormReturn } from "react-hook-form";
+import Swal from "sweetalert2";
+import apiClient from "../helper/axios";
 
 interface RegistrationFormData {
   email: string;
@@ -28,20 +27,24 @@ interface UseRegisterReturn {
   handleRegistrationSubmit: () => void;
   togglePasswordVisibility: () => void;
   toggleConfirmPasswordVisibility: () => void;
-  displayNotification: (type: "success" | "error" | "warning" | "info", message: string) => void;
+  displayNotification: (
+    type: "success" | "error" | "warning" | "info",
+    message: string
+  ) => void;
   setIsOtpModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   setIsOtpVerified: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const useRegister = (): UseRegisterReturn => {
   const navigate = useNavigate();
-  
+
   const [isVerifyingEmail, setIsVerifyingEmail] = useState<boolean>(false);
   const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
   const [isOtpVerified, setIsOtpVerified] = useState<boolean>(false);
   const [isOtpModalVisible, setIsOtpModalVisible] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState<boolean>(false);
 
   const form = useForm<RegistrationFormData>({
     defaultValues: {
@@ -179,8 +182,10 @@ export const useRegister = (): UseRegisterReturn => {
     submitRegistration();
   };
 
-  const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
-  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  const togglePasswordVisibility = () =>
+    setIsPasswordVisible(!isPasswordVisible);
+  const toggleConfirmPasswordVisibility = () =>
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
 
   return {
     isVerifyingEmail,
@@ -198,7 +203,6 @@ export const useRegister = (): UseRegisterReturn => {
     toggleConfirmPasswordVisibility,
     displayNotification,
     setIsOtpModalVisible,
-    setIsOtpVerified
+    setIsOtpVerified,
   };
 };
-

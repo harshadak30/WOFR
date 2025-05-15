@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import Swal from 'sweetalert2';
-import axios from '../helper/axios';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useForm, UseFormReturn } from "react-hook-form";
+import Swal from "sweetalert2";
+import axios from "../helper/axios";
 
 interface ResetPasswordFormData {
   password: string;
@@ -75,8 +75,9 @@ export const useResetPassword = (): UseResetPasswordReturn => {
     }
   };
 
-  const togglePasswordVisibility = () => setShowPassword(prev => !prev);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(prev => !prev);
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword((prev) => !prev);
 
   return {
     showPassword,
@@ -86,6 +87,6 @@ export const useResetPassword = (): UseResetPasswordReturn => {
     togglePasswordVisibility,
     toggleConfirmPasswordVisibility,
     showNotification,
-    onSubmit
+    onSubmit,
   };
 };

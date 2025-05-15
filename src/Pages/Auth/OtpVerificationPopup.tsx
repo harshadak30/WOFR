@@ -1,15 +1,15 @@
 import React from "react";
 import backgroundImages from "../../../public/background";
-import { useOtp } from "../../hooks/useOtp";
+import { useOTP } from "../../hooks/useOTP";
 
-interface OtpVerificationModalProps {
+interface OTPVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
   email: string;
   onVerify: (otp: string) => void;
 }
 
-const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
+const OTPVerificationModal: React.FC<OTPVerificationModalProps> = ({
   isOpen,
   onClose,
   email,
@@ -23,8 +23,8 @@ const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
     handleOtpChange,
     handleOtpKeyDown,
     handleOtpResend,
-    submitOtpVerification
-  } = useOtp(isOpen);
+    submitOtpVerification,
+  } = useOTP(isOpen);
 
   // Early return if modal is not open
   if (!isOpen) return null;
@@ -75,10 +75,12 @@ const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
         </div>
 
         {/* OTP form */}
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          submitOtpVerification(email, onVerify);
-        }}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            submitOtpVerification(email, onVerify);
+          }}
+        >
           <div className="flex justify-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
             {otpDigits.map((digit, index) => (
               <input
@@ -127,5 +129,4 @@ const OtpVerificationModal: React.FC<OtpVerificationModalProps> = ({
   );
 };
 
-export default OtpVerificationModal;
-
+export default OTPVerificationModal;

@@ -1,10 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 
-export const DashboardHeader = () => {
+interface HeaderProps {
+  toggleSidebar?: () => void;
+}
+
+export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (isNotificationsOpen && !target.closest("[data-notifications]")) {
+        setIsNotificationsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNotificationsOpen]);
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -48,15 +76,29 @@ export const DashboardHeader = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 z-20">
+    <header className="bg-white border-b border-gray-200 z-20 sticky top-0">
       <div className="px-4 py-3 sm:px-6 flex items-center justify-between">
-        <div className="flex items-center">
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800">
+        <div className="flex items-center space-x-4">
+          {isMobile && (
+            <button
+              onClick={toggleSidebar}
+              className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={20} />
+            </button>
+          )}
+
+          <div className={isMobile ? "max-w-[200px]" : ""}>
+            <h1
+              className={`font-semibold text-gray-800 ${
+                isMobile ? "text-lg" : "text-2xl"
+              } truncate`}
+            >
               {getPageTitle()}
             </h1>
-            {getPageDescription() && (
-              <p className="text-sm text-gray-500 mt-1">
+            {getPageDescription() && !isMobile && (
+              <p className="text-sm text-gray-500 mt-1 truncate">
                 {getPageDescription()}
               </p>
             )}
@@ -64,10 +106,11 @@ export const DashboardHeader = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="relative">
+          <div className="relative" data-notifications>
             <button
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
               className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative"
+              aria-label="Notifications"
             >
               <Bell size={20} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -114,6 +157,13 @@ export const DashboardHeader = () => {
           </div>
         </div>
       </div>
+
+      {/* Mobile description */}
+      {isMobile && getPageDescription() && (
+        <div className="px-4 pb-2">
+          <p className="text-xs text-gray-500">{getPageDescription()}</p>
+        </div>
+      )}
     </header>
   );
 };

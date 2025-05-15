@@ -14,7 +14,7 @@ interface UseOtpReturn {
   displayNotification: (type: "success" | "error" | "warning" | "info", message: string) => void;
 }
 
-export const useOtp = (isModalOpen: boolean): UseOtpReturn => {
+export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
   // State management
   const [otpDigits, setOtpDigits] = useState<string[]>(["", "", "", ""]);
   const [remainingTime, setRemainingTime] = useState<number>(60);

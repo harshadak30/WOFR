@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent, MouseEvent } from "react";
-import OtpVerificationPopup from "./OtpVerificationPopup";
-import MainLayout from "../../Layout/MainLayout";
+import OTPVerificationPopup from "./OTPVerificationPopup";
+import MainLayout from "../../component/Layout/MainLayout";
 import backgroundImages from "../../../public/background/index";
 interface RegisterFormProps {
   email?: string;
@@ -247,7 +247,7 @@ const OrganizationRegister: React.FC<RegisterFormProps> = () => {
                     Submit
                   </button>
                 </div>
-                <OtpVerificationPopup
+                <OTPVerificationPopup
                   isOpen={isPopupOpen}
                   onClose={() => setIsPopupOpen(false)}
                   email="support@gmail.com"

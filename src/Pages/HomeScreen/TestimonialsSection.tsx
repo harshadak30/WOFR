@@ -9,10 +9,8 @@ export default function TestimonialsSection() {
   const [headerVisible, setHeaderVisible] = useState(false);
 
   useEffect(() => {
-    // Set flag visible immediately on load
     setFlagVisible(true);
 
-    // Delay the header appearance for a smoother sequence
     const timer = setTimeout(() => {
       setHeaderVisible(true);
     }, 800);
@@ -47,9 +45,7 @@ export default function TestimonialsSection() {
 
           {/* Hover group - Visa Cards */}
           <div className="relative overflow-hidden cursor-pointer h-52 sm:h-64 md:h-72 lg:h-80">
-            {/* Container to control card positioning */}
             <div className="absolute inset-0 group">
-              {/* Card 2 - Front (Positioned in front) */}
               <img
                 src={backgroundImages.visaCardFront}
                 alt="visaCardFront"
@@ -60,8 +56,6 @@ export default function TestimonialsSection() {
                   transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
                 }}
               />
-
-              {/* Card 1 - Back (Positioned slightly behind) */}
               <img
                 src={backgroundImages.visaCardBack}
                 alt="visaCardBack"
@@ -91,18 +85,14 @@ export default function TestimonialsSection() {
           <p className="text-sm md:text-base lg:text-xl text-gray-400 mb-6 md:mb-10 ml-2 md:ml-3">
             Simplify equity distribution and employee stock management.
           </p>
-          {/* ESOP Graph Animation Container */}
           <div className="relative h-52 sm:h-64 md:h-72 lg:h-80 overflow-hidden">
-            {/* Container to prevent overflow and handle positioning */}
             <div className="absolute inset-0 flex items-center justify-center group">
-              {/* Main graph image */}
               <img
                 src={backgroundImages.featureStepTwo}
                 className="w-60 sm:w-68 md:w-75 lg:w-85 transition-all duration-[1500ms] ease-out
                         transform group-hover:translate-y-2 group-hover:translate-x-2"
                 alt="featureStepTwo"
               />
-              {/* Overlay graph image */}
               <img
                 src={backgroundImages.featureStepOne}
                 alt="featureStepOne"
@@ -117,51 +107,6 @@ export default function TestimonialsSection() {
           </div>
         </div>
       </div>
-
-      {/* Trial Balance Section with Enhanced Animations */}
-      {/* <div className="bg-gray-50 p-5 rounded-3xl overflow-hidden">
-        <img
-          src={icons.dollarIcon}
-          alt="Dollar Icon"
-          className="object-contain w-12 h-12 ml-10 mt-3"
-        />
-        <div className="mt-6 flex flex-col lg:flex-row">
-          <div className="w-full lg:w-[40%] mt-3 m-4 lg:m-10">
-            <h2 className="text-3xl lg:text-5xl font-semibold mb-1 w-full lg:w-[80%]">
-              Automated Trial Balance Consolidation
-            </h2>
-            <p className="text-xl lg:text-3xl text-gray-400 mt-5 lg:mt-10">
-              Streamline financial reporting with accurate TB generation.
-            </p>
-          </div>
-         
-          <div className="w-full lg:w-[60%] relative">
-            <img
-              src={backgroundImages.mapBackground}
-              alt="World map visualization"
-              className="w-full h-auto object-cover -mt-5 lg:-mt-20"
-            />
-           
-            <div className={`absolute right-5 lg:-top-9 lg:right-20 w-1/6 lg:w-1/5 transform transition-all duration-700 ease-out ${flagVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-              <img
-                src={backgroundImages.flagIcon}
-                alt="Flag Icon"
-                className="w-full h-auto"
-              />
-            </div>
-           
-            <div className={`absolute -top-5 lg:-top-20 left-5 lg:left-20 w-2/5 lg:w-2/4 transform transition-all duration-700 ease-out ${headerVisible ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
-              <img
-                src={backgroundImages.featureHeader}
-                alt="Feature Visualization"
-                className="w-full transition-transform duration-300 hover:scale-110"
-              />
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* Trial Balance Section with Enhanced Animations */}
       <div className="bg-gray-50 p-5 rounded-3xl overflow-hidden">
         <img
           src={icons.dollarIcon}
@@ -225,7 +170,6 @@ export default function TestimonialsSection() {
 
       {/* Feature Cards - Responsive on all devices */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-10 px-4 sm:px-6 lg:px-0">
-        {/* Multi-Currency */}
         <div className="bg-gray-50 rounded-3xl p-6 sm:p-8 lg:p-10 relative h-96 sm:h-100 lg:h-120 overflow-hidden">
           <img
             src={icons.phone2}
@@ -242,21 +186,17 @@ export default function TestimonialsSection() {
           />
         </div>
 
-        {/* Subscriptions */}
-        {/* Subscriptions */}
         <motion.div
           className="bg-gray-50 rounded-3xl p-6 sm:p-8 lg:p-10 relative h-96 sm:h-100 lg:h-120 overflow-hidden"
           initial={{ y: 0 }}
           whileTap={{ y: -5 }}
         >
-          {/* List icon - stays in place */}
           <img
             src={icons.list}
             alt="List Icon"
             className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 mb-4 relative z-10"
           />
 
-          {/* H3 heading in its own motion div */}
           <motion.div
             className="relative z-10"
             initial={{ y: 20 }}
@@ -266,15 +206,14 @@ export default function TestimonialsSection() {
               Subscriptions you control in one place
             </h3>
 
-            {/* Background image in its own motion div */}
             <motion.img
               src={backgroundImages.featureStepThree}
               alt="Subscription BG"
               className="absolute bottom-0 left-0 w-full z-0 object-contain"
               initial={{ bottom: "-250px" }}
               whileHover={{
-                bottom: "-250px", // Move up from -280px to -180px on hover
-                y: -10, // Also apply the same upward movement as the heading
+                bottom: "-250px",
+                y: -10,
               }}
             />
           </motion.div>

@@ -1,98 +1,16 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, useRoutes } from "react-router-dom";
+import { dashboardRoutes, publicRoutes } from "./router/routes";
 
-import Login from "./Pages/Auth/Login";
-import Register from "./Pages/Auth/Register";
-import AppSolutions from "./Pages/WORF/AppSolution";
-import FreeTrial from "./Pages/WORF/FreeTrial";
-import WofrLeaseIntro from "./Pages/WORF/WofrLeaseIntro";
-import OrganizationRegister from "./Pages/Auth/OrganizationRegister";
-import ResetPasswordForm from "./Pages/Auth/ResetPasswordForm";
-import WOFRDashboard from "./Pages/HomeScreen/Dashboard";
-import ProtectedRoute from "./router/ProtectedRoute";
-import { DashboardRoutes } from "./router/DashboardRoutes";
-import DashboardLayout from "./component/Layout/DashboardLayout";
-import Calendly from "./Calendly/Calendly";
-import NotFound from "./Pages/NotFound";
+const AppRoutes = () => {
+  // Combine all routes
+  const routes = [...publicRoutes, ...dashboardRoutes];
+  return useRoutes(routes);
+};
 
 const App: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/book-demo" element={<Calendly />} />
-        <Route path="/" element={<WOFRDashboard />} />
-        <Route path="/wofr/lease-intro" element={<WofrLeaseIntro />} />
-        <Route path="/org-signup" element={<OrganizationRegister />} />
-        <Route path="/free-trial" element={<FreeTrial />} />
-        <Route path="/explore-solutions" element={<AppSolutions />} />{" "}
-        <Route path="/reset-password" element={<ResetPasswordForm />} />
-        <Route path="*" element={<NotFound />} />
-        {/* <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route index element={<Navigate to="overview" replace />} />
-            {DashboardRoutes.map((route) => {
-              if (route.children) {
-                return [
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={route.element}
-                  />,
-                  ...route.children.map((child) => (
-                    <Route
-                      key={child.path}
-                      path={child.path}
-                      element={child.element}
-                    />
-                  )),
-                ];
-              }
-
-              return (
-                <Route
-                  key={route.path}
-                  path={route.path}
-                  element={route.element}
-                />
-              );
-            })}
-          </Route> */}
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="overview" replace />} />
-          {DashboardRoutes.flatMap((route) => {
-            if (route.children) {
-              return route.children.map((child) => (
-                <Route
-                  key={child.path}
-                  path={child.path}
-                  element={
-                    <ProtectedRoute allowedRoles={child.allowedRoles}>
-                      {child.element}
-                    </ProtectedRoute>
-                  }
-                />
-              ));
-            }
-
-            return (
-              <Route
-                key={route.path}
-                path={route.path}
-                element={
-                  <ProtectedRoute allowedRoles={route.allowedRoles}>
-                    {route.element}
-                  </ProtectedRoute>
-                }
-              />
-            );
-          })}
-        </Route>
-      </Routes>
+      <AppRoutes />
     </Router>
   );
 };

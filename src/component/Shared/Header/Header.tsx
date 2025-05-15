@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { TbWorld } from "react-icons/tb";
-import { IoIosArrowDown } from "react-icons/io";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 import { Link, NavLink } from "react-router-dom";

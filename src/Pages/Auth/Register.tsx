@@ -497,8 +497,8 @@
 
 import React from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import OtpVerificationPopup from "./OtpVerificationPopup";
-import MainLayout from "../../Layout/MainLayout";
+import OTPVerificationPopup from "./OTPVerificationPopup";
+import MainLayout from "../../component/Layout/MainLayout";
 import backgroundImages from "../../../public/background";
 import { useRegister } from "../../hooks/useRegistration";
 
@@ -801,7 +801,7 @@ const Registration: React.FC<RegistrationProps> = () => {
       </div>
 
       {/* OTP Verification Popup */}
-      <OtpVerificationPopup
+      <OTPVerificationPopup
         isOpen={isOtpModalVisible}
         onClose={() => setIsOtpModalVisible(false)}
         email={getValues("email")}
