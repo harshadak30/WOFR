@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import backgroundImages from "../../../public/background";
 import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../hooks/useAuth";
-import MainLayout from "../../Layout/MainLayout";
+import MainLayout from "../../component/Layout/MainLayout";
 
 type LoginFormValues = {
   email: string;

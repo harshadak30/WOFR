@@ -1,13 +1,3 @@
-// import { Navigate, Outlet } from "react-router-dom";
-
-// const ProtectedRoute = () => {
-//   const token = localStorage.getItem("token");
-
-//   return token ? <Outlet /> : <Navigate to="/login" replace />;
-// };
-
-// export default ProtectedRoute;
-
 import { Navigate, useLocation } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -26,13 +16,21 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const isAuthenticated = !!token;
   const isAuthorized = isAuthenticated && allowedRoles.includes(userType || "");
 
-  console.log({ token, userType, allowedRoles, isAuthorized });
+  console.log(isAuthorized);
 
-  return isAuthorized ? (
-    <>{children}</>
-  ) : (
-    <Navigate to="/unauthorized" state={{ from: location }} replace />
-  );
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (!isAuthorized) {
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
+
+
+
+

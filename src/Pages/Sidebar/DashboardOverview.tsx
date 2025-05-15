@@ -21,15 +21,15 @@ import {
 } from "lucide-react";
 
 import { motion } from "framer-motion";
-import Card from "../../component/ui/Card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../component/ui/Select";
-import { Input } from "../../component/ui/Input";
+} from "../../component/common/ui/Select";
+import { Input } from "../../component/common/ui/Input";
+import { Card } from "../../component/common/ui/Card";
 
 const COLORS = ["#3b82f6", "#0ea5e9", "#f59e0b", "#10b981"];
 
@@ -134,7 +134,7 @@ const DashboardOverview = () => {
 
   return (
     <>
-      <div className="container mx-auto">
+      <div className=" mx-auto">
         {/* Search and filters */}
         <div className="mb-8">
           <div className="flex flex-wrap gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm">
@@ -171,17 +171,18 @@ const DashboardOverview = () => {
 
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
+        
+
+          {/* Super Admin Only */}
+          {userType === "master_admin" && (
+            <>
+              <StatCard
             title="Total Leases"
             value={leaseStats.active}
             icon={<FileText />}
             change={`${leaseStats.percentChange}%`}
             trend="up"
           />
-
-          {/* Super Admin Only */}
-          {userType === "master_admin" && (
-            <>
               <StatCard
                 title="Active Users"
                 value={128}
@@ -213,7 +214,7 @@ const DashboardOverview = () => {
           <Card
             className="lg:col-span-2"
             title="Lease Activity"
-            subtitle="Monthly trends"
+            // subtitle="Monthly trends"
           >
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
@@ -240,7 +241,7 @@ const DashboardOverview = () => {
 
           {/* Super Admin Only Pie Chart */}
           {userType === "super_admin" && (
-            <Card title="Lease Distribution" subtitle="By property type">
+            <Card title="Lease Distribution" >
               <div className="h-80 flex items-center justify-center">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

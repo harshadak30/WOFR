@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import MainLayout from "../../Layout/MainLayout";
+import MainLayout from "../../component/Layout/MainLayout";
 import backgroundImages from "../../../public/background";
 
 const WofrLeaseIntro: React.FC = () => {

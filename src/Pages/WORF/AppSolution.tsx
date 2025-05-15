@@ -12,7 +12,7 @@ import {
   FaFileInvoice,
   FaTasks,
 } from "react-icons/fa";
-import MainLayout from "../../Layout/MainLayout";
+import MainLayout from "../../component/Layout/MainLayout";
 import backgroundImages from "../../../public/background";
 
 const appData = [

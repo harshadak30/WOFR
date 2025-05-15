@@ -1,6 +1,7 @@
 import React from "react";
-import { Card, CardContent } from "../ui/Card";
+// import { Card, CardContent } from "../ui/Card";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
+import { Card, CardContent } from "../ui/Card";
 
 interface Alert {
   id: string;

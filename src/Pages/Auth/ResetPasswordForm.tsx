@@ -15,14 +15,14 @@ const ResetPasswordModal: React.FC = () => {
     form,
     togglePasswordVisibility,
     toggleConfirmPasswordVisibility,
-    onSubmit
+    onSubmit,
   } = useResetPassword();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch
+    watch,
   } = form;
 
   function useQuery() {
@@ -114,5 +114,3 @@ const ResetPasswordModal: React.FC = () => {
 };
 
 export default ResetPasswordModal;
-
-

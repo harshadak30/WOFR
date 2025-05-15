@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Search, Edit, ChevronDown } from "lucide-react";
-import { Switch } from "../../component/ui/Switch";
-import { DataTable } from "../../component/ui/DataTable";
+import { Switch } from "../../../component/common/ui/Switch";
+import { DataTable } from "../../../component/common/ui/DataTable";
+
 
 interface UserData {
   id: number;

@@ -514,7 +514,7 @@ export default function Myuser() {
       id: 3,
       name: "Lease",
       description:
-        "Lease management module for tracking property leases, tenant information, payment schedules, and le",
+        "Lease management module for tracking property leases, TENANT information, payment schedules, and le",
       enabled: true,
       actions: ["View", "Edit", "Delete"],
       roles: ["Admin"],
@@ -574,7 +574,7 @@ export default function Myuser() {
       id: 9,
       name: "Lease Pro",
       description:
-        "Lease management module for tracking property leases, tenant information, payment schedules, and le",
+        "Lease management module for tracking property leases, TENANT information, payment schedules, and le",
       enabled: true,
       actions: [],
       roles: [],

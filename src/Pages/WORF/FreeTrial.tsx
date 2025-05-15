@@ -1,6 +1,6 @@
 import React from "react";
 import TrialForm from "./TrialForm";
-import MainLayout from "../../Layout/MainLayout";
+import MainLayout from "../../component/Layout/MainLayout";
 
 const dashboardImage = "/background/freeTrialBanner.png";
 const backgroundImage = "/background/arrowVector.png";

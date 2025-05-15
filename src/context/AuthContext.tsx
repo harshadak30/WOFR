@@ -1,4 +1,3 @@
-
 // import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
 // // Define the shape of our authentication state
@@ -38,7 +37,7 @@
 //     // Initialize auth state from localStorage
 //     const token = localStorage.getItem('token');
 //     const username = localStorage.getItem('name');
-    
+
 //     return {
 //       isAuthenticated: !!token,
 //       token,
@@ -53,7 +52,7 @@
 //     } else {
 //       localStorage.removeItem('token');
 //     }
-    
+
 //     if (authState.username) {
 //       localStorage.setItem('name', authState.username);
 //     } else {
