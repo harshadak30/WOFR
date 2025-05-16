@@ -28,6 +28,45 @@ export const actionOptions: Option[] = [
   { id: "view", label: "View" },
 ];
 
+export interface Module {
+  id: number;
+  name: string;
+  description: string;
+  enabled: boolean;
+  features: string[];
+  price?: string;
+}
+
+export const PurchasemoduleData: Module[] = [
+  {
+    id: 1,
+    name: "CRM",
+    description:
+      "Customer Relationship Management module for tracking sales, managing contacts, and automating workflows.",
+    enabled: true,
+    features: ["Contact management", "Sales pipeline", "Email integration"],
+    price: "$99/month",
+  },
+  {
+    id: 2,
+    name: "Project",
+    description:
+      "Project management module for planning, tracking, and reporting on projects. Includes Gantt charts, tools.",
+    enabled: true,
+    features: ["Task tracking", "Gantt charts", "Time logging"],
+    price: "$129/month",
+  },
+  {
+    id: 3,
+    name: "Lease",
+    description:
+      "Lease management module for tracking property leases, tenant information, payment schedules, and lease terms.",
+    enabled: false,
+    features: ["Lease tracking", "Payment schedules", "Document management"],
+    price: "$149/month",
+  },
+];
+
 export const moduleData: ModuleData[] = [
   {
     id: 1,
@@ -88,9 +127,10 @@ export const moduleData: ModuleData[] = [
 export const userData: UserData[] = [
   {
     id: 1,
-    tenetId: "T001",
+    OrgName: "ABCD",
     name: "Vinay",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -98,9 +138,10 @@ export const userData: UserData[] = [
   },
   {
     id: 2,
-    tenetId: "T002",
+    OrgName: "XYZ",
     name: "Sheerkant",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -108,9 +149,10 @@ export const userData: UserData[] = [
   },
   {
     id: 3,
-    tenetId: "T003",
+    OrgName: "ABCD",
     name: "Raj",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -118,9 +160,10 @@ export const userData: UserData[] = [
   },
   {
     id: 4,
-    tenetId: "T004",
+    OrgName: "ABCD",
     name: "Rohit",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -128,9 +171,10 @@ export const userData: UserData[] = [
   },
   {
     id: 5,
-    tenetId: "T005",
+    OrgName: "ABCD",
     name: "Dinesh",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -138,9 +182,10 @@ export const userData: UserData[] = [
   },
   {
     id: 6,
-    tenetId: "T006",
+    OrgName: "ABCD",
     name: "Shivam",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -148,9 +193,10 @@ export const userData: UserData[] = [
   },
   {
     id: 7,
-    tenetId: "T007",
+    OrgName: "ABCD",
     name: "Yash",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -158,9 +204,10 @@ export const userData: UserData[] = [
   },
   {
     id: 8,
-    tenetId: "T008",
+    OrgName: "ABCD",
     name: "Pawan",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -168,9 +215,10 @@ export const userData: UserData[] = [
   },
   {
     id: 9,
-    tenetId: "T009",
+    OrgName: "ABCD",
     name: "Kartik",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",
@@ -178,9 +226,10 @@ export const userData: UserData[] = [
   },
   {
     id: 10,
-    tenetId: "T010",
+    OrgName: "ABCD",
     name: "Nimesh",
     email: "name@gmail.com",
+    phone: "+91 1234567890",
     roleId: null,
     moduleId: null,
     created: "dd/mm/yy",

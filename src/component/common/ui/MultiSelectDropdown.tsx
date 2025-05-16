@@ -100,7 +100,7 @@ const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
 
       <div className="flex mt-3 space-x-2">
         <button
-          className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          className="px-4 py-2 bg-[#6BC8FE] text-white rounded-md hover:bg-[#6BC8FE] transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
           onClick={handleApply}
         >
           Apply

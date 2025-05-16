@@ -9,7 +9,7 @@ const data = [
 
 const LeaseMaturityChart = () => {
   return (
-    <Card className="bg-[#fcfcfc] p-8 cursor-pointer">
+    <Card className="bg-white p-8 cursor-pointer">
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-2">

@@ -36,7 +36,7 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.tenetId.toLowerCase().includes(searchTerm.toLowerCase())
+      user.OrgName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleToggleChange = (id: number) => {
@@ -151,11 +151,12 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
               <thead className="bg-gray-50">
                 <tr>
                   <TableHeader className="pl-6">ITEM</TableHeader>
-                  <TableHeader>TENET ID</TableHeader>
+                  <TableHeader>Organazation Name</TableHeader>
                   <TableHeader>USER</TableHeader>
                   <TableHeader>EMAIL</TableHeader>
+                  <TableHeader>Phone</TableHeader>
                   <TableHeader>ROLES</TableHeader>
-                  <TableHeader>MODULES</TableHeader>
+                  {/* <TableHeader>MODULES</TableHeader> */}
                   <TableHeader>CREATED</TableHeader>
                   <TableHeader>PERMISSION</TableHeader>
                   <TableHeader>ENABLE/DISABLE</TableHeader>
@@ -173,13 +174,16 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
                       {user.id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.tenetId}
+                      {user.OrgName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {user.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {user.email}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {user.phone}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
@@ -215,7 +219,7 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
                           )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
                         <button
                           onClick={() => toggleDropdown(user.id, "module")}
@@ -248,7 +252,7 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
                             </div>
                           )}
                       </div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.created}
                     </td>

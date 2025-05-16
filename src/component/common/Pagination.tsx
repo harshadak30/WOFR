@@ -90,7 +90,7 @@ const Pagination: React.FC<PaginationProps> = ({
                   onClick={() => onPageChange(page as number)}
                   className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                     currentPage === page
-                      ? "z-10 bg-green-500 text-white focus:outline-offset-0"
+                      ? "z-10 bg-[#6BC8FE] text-white focus:outline-offset-0"
                       : "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0"
                   }`}
                 >

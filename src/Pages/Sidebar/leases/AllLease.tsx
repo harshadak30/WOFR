@@ -19,7 +19,12 @@ import { FunnelPlus } from "lucide-react";
 import axios from "../../../helper/axios";
 import { Input } from "../../../component/common/ui/Input";
 import { Select } from "@radix-ui/react-select";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../component/common/ui/Select";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../component/common/ui/Select";
 
 interface User {
   name: string;

@@ -11,7 +11,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   return (
     <th
-      className={`py-3 px-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}
+      className={`py-3 px-6 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}
     >
       {children}
     </th>

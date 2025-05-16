@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell, Menu } from "lucide-react";
+import { Bell, ChevronRight, Menu } from "lucide-react";
 
 interface HeaderProps {
   toggleSidebar?: () => void;
+  sidebarVisible?: boolean;
 }
 
-export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
+export const DashboardHeader = ({
+  toggleSidebar,
+  sidebarVisible = true,
+}: HeaderProps) => {
   const location = useLocation();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -76,7 +80,7 @@ export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 z-20 sticky top-0">
+    <header className="bg-white border-b border-gray-200 z-20 sticky top-0 ">
       <div className="px-4 py-3 sm:px-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {isMobile && (
@@ -85,7 +89,7 @@ export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
               className="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none"
               aria-label="Toggle sidebar"
             >
-              <Menu size={20} />
+              {sidebarVisible ? <Menu size={20} /> : <ChevronRight size={20} />}
             </button>
           )}
 
@@ -105,14 +109,14 @@ export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 left-2">
           <div className="relative" data-notifications>
             <button
               onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
               className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative"
               aria-label="Notifications"
             >
-              <Bell size={20} />
+              <Bell size={26} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
             {isNotificationsOpen && (
@@ -151,7 +155,7 @@ export const DashboardHeader = ({ toggleSidebar }: HeaderProps) => {
               <img
                 src="https://i.pravatar.cc/40?img=68"
                 alt="User"
-                className="w-8 h-8 rounded-full border-2 border-gray-200"
+                className="w-9 h-9 rounded-full border-2 border-gray-200"
               />
             </button>
           </div>

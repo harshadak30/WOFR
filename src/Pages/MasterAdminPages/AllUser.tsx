@@ -24,12 +24,11 @@ function Alluser() {
             <h2 className="text-lg font-semibold text-gray-800">
               {userType === "master_admin" && showModuleView
                 ? "External Organization User"
-                : "Our Users Management"}
+                : "Internal User"}
             </h2>
 
             {userType === "master_admin" && (
               <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">Toggle View:</span>
                 <button onClick={handleToggleView}>
                   {showModuleView ? <ToggleLeft /> : <ToggleRight />}
                 </button>

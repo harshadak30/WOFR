@@ -23,9 +23,10 @@ export interface Option {
   
   export interface UserData {
     id: number;
-    tenetId: string;
+    OrgName: string;
     name: string;
     email: string;
+    phone:string,
     roleId: string | null;
     moduleId: string | null;
     created: string;

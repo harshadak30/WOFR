@@ -32,7 +32,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ isReadOnly }) => {
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.tenetId.toLowerCase().includes(searchTerm.toLowerCase())
+      user.OrgName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const navigate = useNavigate();
@@ -153,7 +153,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ isReadOnly }) => {
                   <TableHeader>USER</TableHeader>
                   <TableHeader>EMAIL</TableHeader>
                   <TableHeader>ROLES</TableHeader>
-                  <TableHeader>MODULES</TableHeader>
+                  {/* <TableHeader>MODULES</TableHeader> */}
                   <TableHeader>CREATED</TableHeader>
                   <TableHeader>PERMISSION</TableHeader>
                   <TableHeader>ENABLE/DISABLE</TableHeader>
@@ -213,7 +213,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ isReadOnly }) => {
                           )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
                         <button
                           onClick={() => toggleDropdown(user.id, "module")}
@@ -246,7 +246,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ isReadOnly }) => {
                             </div>
                           )}
                       </div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.created}
                     </td>
@@ -270,7 +270,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ isReadOnly }) => {
                         <Edit2 size={18} />
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 py-4 whitespace-nowrap">
                       <Toggle
                         enabled={user.enabled}
                         onChange={() => handleToggleChange(user.id)}
