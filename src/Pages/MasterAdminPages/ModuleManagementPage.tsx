@@ -16,12 +16,35 @@ const ModulesActionsManagement: React.FC = () => {
     type: "action" | "role";
   } | null>(null);
 
+  // const [moduleSelectedRoles, setModuleSelectedRoles] = useState<
+  //   Record<number, string[]>
+  // >({});
+
   const [moduleSelectedRoles, setModuleSelectedRoles] = useState<
     Record<number, string[]>
-  >({});
+  >({
+    1: ["super-admin", "admin"],
+    2: ["manager", "super-admin"],
+    3: ["editor", "admin"],
+    4: ["user", "super-admin"],
+    5: ["admin", "user"],
+    6: ["other"],
+  });
+
+  // const [moduleSelectedActions, setModuleSelectedActions] = useState<
+  //   Record<number, string[]>
+  // >({});
+
   const [moduleSelectedActions, setModuleSelectedActions] = useState<
     Record<number, string[]>
-  >({});
+  >({
+    1: ["read", "update"],
+    2: ["create", "update"],
+    3: ["view"],
+    4: ["read", "update"],
+    5: ["create", "update"],
+    6: ["view", "create", "read"],
+  });
 
   const filteredModules = modules.filter(
     (module) =>
@@ -45,13 +68,13 @@ const ModulesActionsManagement: React.FC = () => {
     setSelectedModule(null);
   };
 
-  const handleApplyActions = (moduleId: number, selectedActions: string[]) => {
-    setModuleSelectedActions({
-      ...moduleSelectedActions,
-      [moduleId]: selectedActions,
-    });
-    setSelectedModule(null);
-  };
+  // const handleApplyActions = (moduleId: number, selectedActions: string[]) => {
+  //   setModuleSelectedActions({
+  //     ...moduleSelectedActions,
+  //     [moduleId]: selectedActions,
+  //   });
+  //   setSelectedModule(null);
+  // };
 
   const handleResetRoles = (moduleId: number) => {
     setModuleSelectedRoles({
@@ -61,12 +84,12 @@ const ModulesActionsManagement: React.FC = () => {
   };
 
   // Reset actions for a module
-  const handleResetActions = (moduleId: number) => {
-    setModuleSelectedActions({
-      ...moduleSelectedActions,
-      [moduleId]: [],
-    });
-  };
+  // const handleResetActions = (moduleId: number) => {
+  //   setModuleSelectedActions({
+  //     ...moduleSelectedActions,
+  //     [moduleId]: [],
+  //   });
+  // };
 
   // Toggle dropdown for a specific module and type
   const toggleDropdown = (moduleId: number, type: "action" | "role") => {
@@ -93,10 +116,10 @@ const ModulesActionsManagement: React.FC = () => {
     return (
       <div className="relative group">
         <span>{`${selectedLabels.length} Selected`}</span>
-        <div className="absolute left-0 top-full mt-1 bg-white shadow-lg rounded-md p-2 hidden group-hover:block z-50 min-w-[200px]">
+        <div className="absolute left-0 top-full mt-1 bg-white shadow-lg rounded-md p-1 hidden group-hover:block z-50 min-w-[150px]">
           <ul className="text-sm">
             {selectedLabels.map((label, index) => (
-              <li key={index} className="py-1">
+              <li key={index} className="py-1 p-4">
                 {label}
               </li>
             ))}
@@ -153,9 +176,9 @@ const ModulesActionsManagement: React.FC = () => {
                         {module.description}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
-                        <button
+                        {/* <button
                           onClick={() => toggleDropdown(module.id, "action")}
                           className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                         >
@@ -178,10 +201,31 @@ const ModulesActionsManagement: React.FC = () => {
                                 onReset={() => handleResetActions(module.id)}
                               />
                             </div>
-                          )}
+                          )} */}
+
+                    {/* <div className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm group">
+                          {getSelectedText(module.id, "action")}
+
+                          <ChevronDown
+                            size={16}
+                            className="ml-2 text-gray-400"
+                          />
+                        </div>
+                      </div>
+                    </td> */}
+
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="relative">
+                        <div className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm group">
+                          {getSelectedText(module.id, "action")}
+                          {/* <ChevronDown
+                            size={16}
+                            className="ml-2 text-gray-400"
+                          /> */}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
                         <button
                           onClick={() => toggleDropdown(module.id, "role")}
@@ -208,8 +252,19 @@ const ModulesActionsManagement: React.FC = () => {
                             </div>
                           )}
                       </div>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="relative">
+                        <div className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm group">
+                          {getSelectedText(module.id, "role")}
+                          {/* <ChevronDown
+                            size={16}
+                            className="ml-2 text-gray-400"
+                          /> */}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 2xl:px-0 py-4 whitespace-nowrap">
                       <Toggle
                         enabled={module.enabled}
                         onChange={() => handleToggleChange(module.id)}

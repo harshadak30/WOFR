@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
-import Swal from 'sweetalert2';
-import apiClient from '../helper/axios';
+import { useState, useRef, useEffect } from "react";
+import Swal from "sweetalert2";
+import apiClient from "../helper/axios";
 
 interface UseOtpReturn {
   otpDigits: string[];
@@ -8,10 +8,19 @@ interface UseOtpReturn {
   canResendOtp: boolean;
   otpInputRefs: React.RefObject<HTMLInputElement>[];
   handleOtpChange: (index: number, value: string) => void;
-  handleOtpKeyDown: (index: number, e: React.KeyboardEvent<HTMLInputElement>) => void;
+  handleOtpKeyDown: (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => void;
   handleOtpResend: (email: string) => Promise<void>;
-  submitOtpVerification: (email: string, onVerifySuccess: (otpValue: string) => void) => Promise<void>;
-  displayNotification: (type: "success" | "error" | "warning" | "info", message: string) => void;
+  submitOtpVerification: (
+    email: string,
+    onVerifySuccess: (otpValue: string) => void
+  ) => Promise<void>;
+  displayNotification: (
+    type: "success" | "error" | "warning" | "info",
+    message: string
+  ) => void;
 }
 
 export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
@@ -128,7 +137,7 @@ export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
 
   // OTP submission handler
   const submitOtpVerification = async (
-    email: string, 
+    email: string,
     onVerifySuccess: (otpValue: string) => void
   ) => {
     const otpValue = otpDigits.join("");
@@ -174,6 +183,6 @@ export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
     handleOtpKeyDown,
     handleOtpResend,
     submitOtpVerification,
-    displayNotification
+    displayNotification,
   };
 };

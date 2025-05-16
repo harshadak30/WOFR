@@ -30,16 +30,18 @@ import {
 } from "../../component/common/ui/Select";
 import { Input } from "../../component/common/ui/Input";
 import { Card } from "../../component/common/ui/Card";
+import RecentAlerts from "../../component/common/Charts/RecentAlert";
+import MonthlyExpenseChart from "../../component/common/Charts/MonthlyExpenseChart";
 
 const COLORS = ["#3b82f6", "#0ea5e9", "#f59e0b", "#10b981"];
 
 const DashboardOverview = () => {
   const [search, setSearch] = useState("");
-  const [userType, setUserType] = useState<string | null>(null);
+  // const [userType, setUserType] = useState<string | null>(null);
 
   useEffect(() => {
     const type = localStorage.getItem("user_type");
-    setUserType(type);
+    // setUserType(type);
   }, []);
 
   const leaseStats = {
@@ -137,7 +139,7 @@ const DashboardOverview = () => {
       <div className=" mx-auto">
         {/* Search and filters */}
         <div className="mb-8">
-          <div className="flex flex-wrap gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm">
+          <div className="flex flex-wrap justify-between gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm ">
             <Input
               type="text"
               placeholder="Search leases..."
@@ -171,48 +173,46 @@ const DashboardOverview = () => {
 
         {/* Stats Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        
-
           {/* Super Admin Only */}
-          {userType === "master_admin" && (
-            <>
-              <StatCard
-            title="Total Leases"
-            value={leaseStats.active}
-            icon={<FileText />}
-            change={`${leaseStats.percentChange}%`}
-            trend="up"
-          />
-              <StatCard
-                title="Active Users"
-                value={128}
-                icon={<Users />}
-                change="8%"
-                trend="up"
-              />
-              <StatCard
-                title="System Uptime"
-                value="99.9%"
-                icon={<Repeat />}
-                change="0.1%"
-                trend="up"
-              />
-              <StatCard
-                title="Resource Usage"
-                value="68%"
-                icon={<TrendingUp />}
-                change="5%"
-                trend="down"
-                trendIsGood={true}
-              />
-            </>
-          )}
+          {/* {userType === "master_admin" && ( */}
+          <>
+            <StatCard
+              title="Total Leases"
+              value={leaseStats.active}
+              icon={<FileText />}
+              change={`${leaseStats.percentChange}%`}
+              trend="up"
+            />
+            <StatCard
+              title="Active Users"
+              value={128}
+              icon={<Users />}
+              change="8%"
+              trend="up"
+            />
+            <StatCard
+              title="System Uptime"
+              value="99.9%"
+              icon={<Repeat />}
+              change="0.1%"
+              trend="up"
+            />
+            <StatCard
+              title="Resource Usage"
+              value="68%"
+              icon={<TrendingUp />}
+              change="5%"
+              trend="down"
+              trendIsGood={true}
+            />
+          </>
+          {/* )} */}
         </div>
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-10">
           <Card
-            className="lg:col-span-2"
+            className="lg:col-span-2 bg-white p-5"
             title="Lease Activity"
             // subtitle="Monthly trends"
           >
@@ -240,36 +240,44 @@ const DashboardOverview = () => {
           </Card>
 
           {/* Super Admin Only Pie Chart */}
-          {userType === "super_admin" && (
-            <Card title="Lease Distribution" >
-              <div className="h-80 flex items-center justify-center">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={leaseTypeData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) =>
-                        `${name}: ${(percent * 100).toFixed(0)}%`
-                      }
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {leaseTypeData.map((entry, index) => (
-                        <Cell
-                          key={`cell-${index}`}
-                          fill={COLORS[index % COLORS.length]}
-                        />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </Card>
-          )}
+          {/* {userType === "super_admin" && ( */}
+          <Card title="Lease Distribution" className="bg-white">
+            {/* <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={leaseTypeData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name}: ${(percent * 100).toFixed(0)}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {leaseTypeData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer> */}
+
+            <MonthlyExpenseChart />
+          </Card>
+          {/* )} */}
+        </div>
+        <div className="grid grid-cols-1 mt-10">
+          <Card title="Lease Distribution" className="bg-white">
+            {/* <div className="h-80 flex items-center justify-center p-5">
+          
+            </div> */}
+            <RecentAlerts />
+          </Card>
         </div>
       </div>
     </>

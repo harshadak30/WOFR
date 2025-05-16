@@ -9,10 +9,10 @@ import {
 } from "lucide-react";
 
 import { JSX } from "react";
-import Myuser from "../Pages/Sidebar/users/Myuser";
-import ModuleManagement from "../Pages/Sidebar/Modules/ModuleManagement";
-import ModulesActionsManagement from "../Pages/MasterAdminPages/ModuleManagementPage";
 import Alluser from "../Pages/MasterAdminPages/AllUser";
+import FinancialDashboard from "../Pages/MasterAdminPages/FinancialDashboard";
+import ModulesBasedOnRolesWrapper from "../Pages/SuperAdminPages/ModulesBasedOnRolesWrapper";
+import OrganizationProfile from "../Pages/SuperAdminPages/OrganizationProfile";
 
 export interface RouteChild {
   name: string;
@@ -32,6 +32,7 @@ export interface RouteItem {
 }
 
 export const DashboardRoutes: RouteItem[] = [
+  
   {
     name: "Dashboard",
     path: "overview",
@@ -43,8 +44,8 @@ export const DashboardRoutes: RouteItem[] = [
     name: "Modules control",
     path: "modules",
     icon: <PackageOpen size={20} />,
-    element: <ModulesActionsManagement />,
-    allowedRoles: ["dev", "master_admin"], // TEMPORARY
+    element: <ModulesBasedOnRolesWrapper />,
+    allowedRoles: ["dev", "master_admin" , "super_admin"], // TEMPORARY
   },
   {
     name: "User Management",
@@ -59,19 +60,12 @@ export const DashboardRoutes: RouteItem[] = [
         element: <Alluser  />,
         allowedRoles: ["dev", "master_admin", "super_admin"],
       },
-      // {
-      //   name: "Add User",
-      //   path: "new",
-      //   icon: <Building2 size={20} />,
-      //   element: <UserManagement />,
-      //   allowedRoles: ["dev" , "master_admin" , "super_admin"],
-      // },
       {
-        name: "Roles",
-        path: "roles",
+        name: "Organization Profile",
+        path: "Profile",
         icon: <Building2 size={20} />,
-        element: <Myuser />,
-        allowedRoles: ["dev", "master_admin", "super_admin"],
+        element: <OrganizationProfile />,
+        allowedRoles: ["dev" , "super_admin"],
       },
     ],
   },
@@ -79,7 +73,7 @@ export const DashboardRoutes: RouteItem[] = [
     name: "Financial Dashboard",
     path: "financial",
     icon: <BarChart3 size={20} />,
-    element: <ModuleManagement />,
+    element: <FinancialDashboard />,
     allowedRoles: ["dev", "master_admin"],
   },
 ];

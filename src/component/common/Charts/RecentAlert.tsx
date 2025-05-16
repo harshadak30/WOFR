@@ -49,7 +49,7 @@ const RecentAlerts: React.FC = () => {
   ];
 
   return (
-    <Card className="bg-[#fcfcfc] hover:shadow-md transition-shadow duration-200">
+    <Card className="bg-white hover:shadow-md transition-shadow duration-200">
       <CardContent className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-semibold text-gray-800">Recent Alerts</h2>
