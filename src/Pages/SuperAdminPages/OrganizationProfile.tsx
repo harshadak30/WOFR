@@ -1,4 +1,6 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ModuleAccess {
   crm: boolean;
@@ -8,13 +10,15 @@ interface ModuleAccess {
 }
 
 interface CompanyInfo {
+  tenant_id: string;
   name: string;
-  website: string;
-  industry: string;
-  location: string;
-  founded: number;
-  totalUsers: number;
-  activeUsers: number;
+  organization_type: string;
+  industry_sector: string;
+  registration_tax_id: string;
+  address: number;
+  country: number;
+  zip_postal_code: number;
+  created_at: number;
 }
 
 interface UserProfileProps {
@@ -29,7 +33,7 @@ const OrganizationProfile: React.FC<UserProfileProps> = ({
   companyInfo,
 }) => {
   return (
-    <div className="bg-white rounded-md shadow-sm w-full  mx-auto">
+    <div className="bg-white rounded-md shadow-sm w-full mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-10">
         <div className="space-y-6">
           <div>
@@ -38,11 +42,25 @@ const OrganizationProfile: React.FC<UserProfileProps> = ({
             </h3>
             <p className="mt-1 text-base font-medium">{companyInfo.name}</p>
             <a
-              href={companyInfo.website}
+              href={companyInfo.tenant_id}
               className="text-blue-600 text-sm hover:underline"
             >
-              {companyInfo.website}
+              {companyInfo.tenant_id}
             </a>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-medium uppercase text-gray-500">
+              organization_type
+            </h3>
+            <p className="mt-1 text-base">{companyInfo.organization_type}</p>
+          </div>
+
+          <div>
+            <h3 className="text-xs font-medium uppercase text-gray-500">
+              registration_tax_id
+            </h3>
+            <p className="mt-1 text-base">{companyInfo.registration_tax_id}</p>
           </div>
           <div>
             <h3 className="text-xs font-medium uppercase text-gray-500">
@@ -50,105 +68,36 @@ const OrganizationProfile: React.FC<UserProfileProps> = ({
             </h3>
             <p className="mt-1 text-base">{createdDate}</p>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-xs font-medium uppercase text-gray-500">
-                INDUSTRY
-              </h3>
-              <p className="mt-1 text-base">{companyInfo.industry}</p>
-            </div>
-            <div>
-              <h3 className="text-xs font-medium uppercase text-gray-500">
-                LOCATION
-              </h3>
-              <p className="mt-1 text-base">{companyInfo.location}</p>
-            </div>
-            <div>
-              <h3 className="text-xs font-medium uppercase text-gray-500">
-                FOUNDED
-              </h3>
-              <p className="mt-1 text-base">{companyInfo.founded}</p>
-            </div>
-          </div>
         </div>
 
-        {/* Modules Section */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
+        <div className="space-y-6">
+          <div>
             <h3 className="text-xs font-medium uppercase text-gray-500">
-              MODULES
+              address{" "}
             </h3>
+            <p className="mt-1 text-base">{companyInfo.address}</p>
           </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center space-x-2">
-              <div
-                className={`flex items-center justify-center w-5 h-5 ${
-                  moduleAccess.crm ? "bg-indigo-600" : "bg-gray-200"
-                } rounded`}
-              >
-                {moduleAccess.crm && (
-                  <span className="text-white text-xs">✓</span>
-                )}
-              </div>
-              <span className="text-base">CRM</span>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div
-                className={`flex items-center justify-center w-5 h-5 ${
-                  moduleAccess.project ? "bg-indigo-600" : "bg-gray-200"
-                } rounded`}
-              >
-                {moduleAccess.project && (
-                  <span className="text-white text-xs">✓</span>
-                )}
-              </div>
-              <span className="text-base">Project</span>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div
-                className={`flex items-center justify-center w-5 h-5 ${
-                  moduleAccess.hr ? "bg-indigo-600" : "bg-gray-200"
-                } rounded`}
-              >
-                {moduleAccess.hr && (
-                  <span className="text-white text-xs">✓</span>
-                )}
-              </div>
-              <span className="text-base">HR</span>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <div
-                className={`flex items-center justify-center w-5 h-5 ${
-                  moduleAccess.finance ? "bg-indigo-600" : "bg-gray-200"
-                } rounded`}
-              >
-                {moduleAccess.finance && (
-                  <span className="text-white text-xs">✓</span>
-                )}
-              </div>
-              <span className="text-base">Finance</span>
-            </div>
+          <div>
+            <h3 className="text-xs font-medium uppercase text-gray-600">
+              country
+            </h3>
+            <p className="mt-1 text-base text-gray-600">
+              {/* {companyInfo.country} */} India
+            </p>
           </div>
-
-          <div className="grid grid-cols-2 gap-6 mt-12">
-            <div>
-              <h3 className="text-xs font-medium uppercase text-gray-500">
-                TOTAL USERS
-              </h3>
-              <p className="mt-1 text-base">{companyInfo.totalUsers}</p>
-            </div>
-            <div>
-              <h3 className="text-xs font-medium uppercase text-green-600">
-                ACTIVE USERS
-              </h3>
-              <p className="mt-1 text-base text-green-600">
-                {companyInfo.activeUsers}
-              </p>
-            </div>
+          <div>
+            <h3 className="text-xs font-medium uppercase text-gray-600">
+              zip_postal_code
+            </h3>
+            <p className="mt-1 text-base text-gray-600">
+              {companyInfo.zip_postal_code}
+            </p>
+          </div>
+          <div>
+            <h3 className="text-xs font-medium uppercase text-gray-500">
+              industry_sector
+            </h3>
+            <p className="mt-1 text-base">{companyInfo.industry_sector}</p>
           </div>
         </div>
       </div>
@@ -156,23 +105,95 @@ const OrganizationProfile: React.FC<UserProfileProps> = ({
   );
 };
 
-const sampleUserData: UserProfileProps = {
-  createdDate: "01-04-2025",
-  moduleAccess: {
-    crm: true,
-    project: true,
-    hr: true,
-    finance: true,
-  },
-  companyInfo: {
-    name: "Tech Solutions International",
-    website: "www.techsolutions.com",
-    industry: "Information Technology",
-    location: "San Francisco, CA",
-    founded: 2015,
-    totalUsers: 100,
-    activeUsers: 80,
-  },
+const OrganizationDashboard = () => {
+  const [profileData, setProfileData] = useState<UserProfileProps | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showDefaultDashboard, setShowDefaultDashboard] = useState(false);
+  const navigate = useNavigate();
+
+  const handletonavigate = () => {
+    navigate("/dashboard/org-form");
+  };
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          "http://192.168.29.82:8000/api/v1/tenant?page=1&limit=10&sort_by=created_at&sort_order=asc",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+console.log(response);
+
+const tenantData = response.data?.data?.tenants?.[0];
+
+        if (!tenantData) {
+          setShowDefaultDashboard(true);
+        } else {
+          const transformedData: UserProfileProps = {
+            createdDate: tenantData.created_at || "N/A",
+            moduleAccess: {
+              crm: tenantData.modules?.includes("CRM"),
+              project: tenantData.modules?.includes("Project"),
+              hr: tenantData.modules?.includes("HR"),
+              finance: tenantData.modules?.includes("Finance"),
+            },
+            companyInfo: {
+              tenant_id: tenantData.tenant_id,
+              name: tenantData.name,
+              organization_type: tenantData.organization_type,
+              industry_sector: tenantData.industry_sector,
+              registration_tax_id: tenantData.registration_tax_id,
+              address: tenantData.address,
+              country: tenantData.country,
+              zip_postal_code: tenantData.zip_postal_code,
+              created_at: tenantData.created_at,
+            },
+          };
+
+          setProfileData(transformedData);
+        }
+      } catch (error) {
+        console.error("Error fetching organization profile:", error);
+        setShowDefaultDashboard(true); // Error fallback
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchModules();
+  }, []);
+
+  if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+
+  if (showDefaultDashboard) {
+    return (
+      <div className="flex items-center justify-center">
+        <p className=" mt-10 text-gray-600">No data....</p>
+        <p className=" mt-10 text-gray-600">
+          Go back to your organization Form
+        </p>
+        <button
+          className=" w-2/5 mx-auto block bg-teal-600 hover:bg-teal-700 text-white font-medium py-3 rounded-md transition duration-300 text-lg"
+          onClick={handletonavigate}
+        >
+          Organization Form
+        </button>
+      </div>
+    );
+  }
+
+  return profileData ? (
+    <OrganizationProfile {...profileData} />
+  ) : (
+    <p className="text-center mt-10 text-red-600">Something went wrong.</p>
+  );
 };
 
-export default () => <OrganizationProfile {...sampleUserData} />;
+export default OrganizationDashboard;
