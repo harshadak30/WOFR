@@ -3,7 +3,13 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import countries from "world-countries";
-
+import {
+  Selected,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../component/common/ui/Select";
 interface FormData {
   name: string;
   organization: string;
@@ -87,7 +93,7 @@ const OrganizationForm: React.FC = () => {
                     required: "This field is required",
                   })}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Enter your name"
+                  placeholder="Enter Organization name"
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm">{errors.name.message}</p>
@@ -96,15 +102,36 @@ const OrganizationForm: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Organization
+                  Organization Type
                 </label>
-                <input
+                {/* <input
                   {...register("organization", {
                     required: "This field is required",
                   })}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Enter organization name"
+                  placeholder="organization Type"
+                /> */}
+                <Controller
+                  control={control}
+                  name="organization"
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Selected
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="w-full px-7 py-7 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <SelectValue placeholder="Organization Type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="office">Office</SelectItem>
+                        <SelectItem value="retail">Retail</SelectItem>
+                        <SelectItem value="warehouse">Warehouse</SelectItem>
+                      </SelectContent>
+                    </Selected>
+                  )}
                 />
+
                 {errors.organization && (
                   <p className="text-red-500 text-sm">
                     {errors.organization.message}
@@ -116,13 +143,34 @@ const OrganizationForm: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Industry Sector
                 </label>
-                <input
+                {/* <input
                   {...register("Industry_Sector", {
                     required: "This field is required",
                   })}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="Industry_Sector Name"
+                /> */}
+                <Controller
+                  control={control}
+                  name="Industry_Sector"
+                  rules={{ required: "This field is required" }}
+                  render={({ field }) => (
+                    <Selected
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className="w-full px-7 py-7 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <SelectValue placeholder="Industry_Sector Type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="office">Office</SelectItem>
+                        <SelectItem value="retail">Retail</SelectItem>
+                        <SelectItem value="warehouse">Warehouse</SelectItem>
+                      </SelectContent>
+                    </Selected>
+                  )}
                 />
+
                 {errors.Industry_Sector && (
                   <p className="text-red-500 text-sm">
                     {errors.Industry_Sector.message}
@@ -138,8 +186,8 @@ const OrganizationForm: React.FC = () => {
                   type="date"
                   {...register("Date_of_Incorporation")}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Date of incorportation"
-             />
+                  placeholder="Date of incorportation"
+                />
               </div>
 
               <div>
@@ -151,8 +199,8 @@ const OrganizationForm: React.FC = () => {
                     required: "This field is required",
                   })}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-               placeholder="Tax ID"
-              />
+                  placeholder="Tax ID"
+                />
                 {errors.Tax_ID && (
                   <p className="text-red-500 text-sm">
                     {errors.Tax_ID.message}
@@ -169,8 +217,8 @@ const OrganizationForm: React.FC = () => {
                     required: "This field is required",
                   })}
                   className="w-full px-4 py-4 bg-gray-200 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-                placeholder="Address.."
-             />
+                  placeholder="Address.."
+                />
                 {errors.Address && (
                   <p className="text-red-500 text-sm">
                     {errors.Address.message}
