@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown, Edit2 } from "lucide-react";
 import TableHeader from "../../component/common/ui/TableHeader";
 import MultiSelectDropdown from "../../component/common/ui/MultiSelectDropdown";
@@ -7,11 +7,19 @@ import { moduleOptions, roleOptions, userData } from "../../data/mockData";
 import Toggle from "../../component/common/ui/Toggle";
 import Pagination from "../../component/common/Pagination";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 interface UserManagementProps {
   isReadOnly: boolean;
   searchTerm?: string; // Make searchTerm optional
 }
+type ModuleView = {
+  id: number;
+  name: string;
+  description: string;
+  enabled: boolean;
+};
+
 
 const UserManagement: React.FC<UserManagementProps> = ({
   isReadOnly,
@@ -23,6 +31,9 @@ const UserManagement: React.FC<UserManagementProps> = ({
     id: number;
     type: "role" | "module";
   } | null>(null);
+  // const [users, setUsers] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const [userSelectedRoles, setUserSelectedRoles] = useState<
     Record<number, string[]>
@@ -31,6 +42,46 @@ const UserManagement: React.FC<UserManagementProps> = ({
     Record<number, string[]>
   >({});
 
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `http://192.168.29.82:8000/api/v1/tenant-user?page=1&limit=10&sort_by=created_at&sort_order=asc`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Replace with actual token logic
+              Accept: "application/json",
+            },
+          }
+        );
+  console.log("response", response);
+  
+        const rawUsers = response.data.data.tenant_users;
+        console.log("rawUsers", rawUsers);
+        // Map API response to match UserData type
+        const mappedUsers: UserData[] = rawUsers.map((user: any, index: number) => ({
+          id: index + 1, // You can use `user.tenant_user_id` if it's guaranteed to be unique
+          name: user.name,
+          email: user.email,
+          OrgName: user.tenant_name,
+          created: new Date(user.created_at).toLocaleDateString(),
+          enabled: true, // or user.status if available
+        }));
+  
+        setUsers(mappedUsers);
+      } catch (err: any) {
+        setError("Failed to fetch users");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchUsers();
+  }, [currentPage]);
+  
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
