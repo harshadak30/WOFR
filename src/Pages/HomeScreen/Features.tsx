@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import icons from "../../../public/icons";
 import backgroundImages from "../../../public/background";
 
-export default function FeaturesSection() {
+export default function Features() {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
   useEffect(() => {
@@ -17,24 +17,25 @@ export default function FeaturesSection() {
 
   return (
     <div className="w-full">
-      <div className="p-5">
-        <div className="flex flex-col md:flex-row justify-between items-start px-4 sm:px-6 md:px-8 lg:px-10 mx-auto w-full mb-10 md:mb-16 lg:mb-20 mt-6 lg:mt-10 max-w-screen-xl">
-          <div className="w-full md:w-2/5 mb-4 md:mb-0">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-700 leading-tight w-full sm:w-[90%] md:w-full lg:w-[90%] xl:w-[80%]">
+      <div className="w">
+        <div className="flex  max-w-screen-xl flex-col md:flex-row justify-between items-start px-2 sm:px-2 md:px-4 lg:px-6 mx-auto w-full mb-8 sm:mb-10 md:mb-14 lg:mb-16 mt-4 lg:mt-6 gap-4 md:gap-8">
+          <div className="w-full md:w-2/5 mb-4 md:mb-0 ">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 leading-tight">
               Why Use WOFR Apps?
             </h1>
           </div>
-          <div className="w-full md:w-2/5 text-gray-500 text-base sm:text-lg mt-3">
-            <p className="pr-0 md:pr-2 lg:pr-4">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
-              quasi possimus ratione, facere neque beatae eum at voluptate
-              placeat mollitia obcaecati quidem cupiditate consectetur dolore
-              laborum repellendus exercitationem. Maxime, omnis?
+          <div className="w-full md:w-1/2 text-gray-600 text-base sm:text-lg">
+            <p>
+              WOFR apps are built to streamline your business operations,
+              enhance productivity, and ensure compliance across all key
+              functions. Whether you're managing teams, finances, or safety
+              protocols, our apps provide seamless solutions tailored to your
+              needs.
             </p>
           </div>
         </div>
 
-        <div className="relative mb-16">
+        <div className="relative mb-16 p-10">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div
               className="rounded-2xl shadow-2xl shadow-dark p-8  md:pl-5 w-full md:w-1/3 h-100 flex flex-col justify-start items-start"

@@ -1,30 +1,24 @@
 import { useState, useEffect } from "react";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "../../component/common/Select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../component/ui/Table";
-import Pagination from "../../component/ui/Pagination";
+
 import { FunnelPlus } from "lucide-react";
-import axios from "../../../helper/axios";
-import { Input } from "../../../component/common/ui/Input";
+import axios from "../../helper/axios";
+import { Input } from "../../component/common/ui/Input";
 import { Select } from "@radix-ui/react-select";
 import {
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../component/common/ui/Select";
+} from "../../component/common/ui/Select";
+import Pagination from "../../component/common/Pagination";
+import TableHeader from "../../component/common/ui/TableHeader";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "../../component/common/ui/Table";
 
 interface User {
   name: string;

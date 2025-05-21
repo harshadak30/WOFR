@@ -1,136 +1,59 @@
-// import React from 'react';
-// import { motion } from 'framer-motion';
-
-// interface CardProps {
-//   title?: string;
-//   subtitle?: string;
-//   children: React.ReactNode;
-//   footer?: React.ReactNode;
-//   className?: string;
-//   hover?: boolean;
-//   animated?: boolean;
-// }
-
-// const Card: React.FC<CardProps> = ({
-//   title,
-//   subtitle,
-//   children,
-//   footer,
-//   className = '',
-//   hover = false,
-//   animated = false,
-// }) => {
-//   const baseClasses = 'bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden';
-//   const hoverClasses = hover ? 'transition-all duration-200 hover:shadow-md' : '';
-
-//   const cardContent = (
-//     <div className={`${baseClasses} ${hoverClasses} ${className}`}>
-//       {(title || subtitle) && (
-//         <div className="px-6 py-4 border-b border-gray-100">
-//           {title && <h3 className="text-lg font-medium text-gray-900">{title}</h3>}
-//           {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
-//         </div>
-//       )}
-//       <div className="px-6 py-5">{children}</div>
-//       {footer && (
-//         <div className="px-6 py-3 bg-gray-50 border-t border-gray-100">{footer}</div>
-//       )}
-//     </div>
-//   );
-
-//   if (animated) {
-//     return (
-//       <motion.div
-//         initial={{ opacity: 0, y: 10 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         transition={{ duration: 0.3 }}
-//       >
-//         {cardContent}
-//       </motion.div>
-//     );
-//   }
-
-//   return cardContent;
-// };
-
-// export default Card;
-
 import * as React from "react";
 import { cn } from "../../../lib/utils";
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg  bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-));
-Card.displayName = "Card";
+// Create a higher-order component to reduce repetition
+const createCardComponent = <T extends React.ElementType>(
+  Component: T,
+  defaultClassName: string,
+  displayName: string
+) => {
+  const CardComponent = React.forwardRef<
+    React.ElementRef<T>,
+    React.ComponentPropsWithoutRef<T>
+  >(({ className, ...props }, ref) => (
+    <Component
+      ref={ref}
+      className={cn(defaultClassName, className)}
+      {...props}
+    />
+  ));
 
-const CardHeader = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
-    {...props}
-  />
-));
-CardHeader.displayName = "CardHeader";
+  CardComponent.displayName = displayName;
+  return CardComponent;
+};
 
-const CardTitle = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
->(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
-      className
-    )}
-    {...props}
-  />
-));
-CardTitle.displayName = "CardTitle";
+// Create the card components using the factory function
+const Card = createCardComponent(
+  "div",
+  "rounded-lg bg-card text-card-foreground shadow-sm",
+  "Card"
+);
 
-const CardDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props}
-  />
-));
-CardDescription.displayName = "CardDescription";
+const CardHeader = createCardComponent(
+  "div",
+  "flex flex-col space-y-1.5 p-6",
+  "CardHeader"
+);
 
-const CardContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-));
-CardContent.displayName = "CardContent";
+const CardTitle = createCardComponent(
+  "h3",
+  "text-2xl font-semibold leading-none tracking-tight",
+  "CardTitle"
+);
 
-const CardFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
-    {...props}
-  />
-));
-CardFooter.displayName = "CardFooter";
+const CardDescription = createCardComponent(
+  "p",
+  "text-sm text-muted-foreground",
+  "CardDescription"
+);
+
+const CardContent = createCardComponent("div", "p-6 pt-0", "CardContent");
+
+const CardFooter = createCardComponent(
+  "div",
+  "flex items-center p-6 pt-0",
+  "CardFooter"
+);
 
 export {
   Card,

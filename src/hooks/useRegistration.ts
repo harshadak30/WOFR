@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm, UseFormReturn } from "react-hook-form";
 import Swal from "sweetalert2";
@@ -46,6 +46,7 @@ export const useRegister = (): UseRegisterReturn => {
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState<boolean>(false);
 
+  // Initialize form with default values to avoid undefined values
   const form = useForm<RegistrationFormData>({
     defaultValues: {
       email: "",
@@ -55,6 +56,7 @@ export const useRegister = (): UseRegisterReturn => {
       password: "",
       confirmPassword: "",
     },
+    mode: "onChange",
   });
 
   const displayNotification = (
@@ -116,10 +118,9 @@ export const useRegister = (): UseRegisterReturn => {
       );
     } catch (error: any) {
       console.error("Email verification error:", error);
-      displayNotification(
-        "error",
-        error?.response?.data?.detail || "Failed to send OTP"
-      );
+      const errorMessage =
+        error?.response?.data?.detail || "Failed to send OTP";
+      displayNotification("error", errorMessage);
     } finally {
       setIsVerifyingEmail(false);
     }
@@ -129,15 +130,28 @@ export const useRegister = (): UseRegisterReturn => {
     try {
       const formData = form.getValues();
 
+      if (
+        !formData.email ||
+        !formData.name ||
+        !formData.phoneNumber ||
+        !formData.password
+      ) {
+        displayNotification("error", "Please fill all required fields");
+        return;
+      }
+
       const formDataUrlEncoded = new URLSearchParams();
       formDataUrlEncoded.append("user_name", formData.name);
       formDataUrlEncoded.append("user_email", formData.email);
       formDataUrlEncoded.append("phone", formData.phoneNumber);
-      formDataUrlEncoded.append("organization_name", formData.organization);
+      formDataUrlEncoded.append(
+        "organization_name",
+        formData.organization || ""
+      );
       formDataUrlEncoded.append("user_password", formData.password);
       formDataUrlEncoded.append("confirm_password", formData.confirmPassword);
 
-      await apiClient.post(
+      const response = await apiClient.post(
         "/api/auth/v1/register",
         formDataUrlEncoded.toString(),
         {
@@ -152,15 +166,17 @@ export const useRegister = (): UseRegisterReturn => {
         "success",
         "Registration Successful! You can now login to your account"
       );
-      navigate("/login");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
     } catch (error: any) {
       console.error("Registration error:", error);
-      displayNotification(
-        "error",
+      const errorMessage =
         error?.response?.data?.detail ||
-          error?.response?.data?.message ||
-          "Registration failed"
-      );
+        error?.response?.data?.message ||
+        "Registration failed";
+      displayNotification("error", errorMessage);
     }
   };
 
@@ -170,22 +186,25 @@ export const useRegister = (): UseRegisterReturn => {
       return;
     }
 
-    submitRegistration();
-  };
-
-  const handleRegistrationSubmit = () => {
-    if (!isEmailVerified) {
-      displayNotification("warning", "Please verify your email first");
+    if (!isOtpVerified) {
+      displayNotification("warning", "Please verify OTP first");
       return;
     }
 
     submitRegistration();
   };
+  const handleRegistrationSubmit = () => {
+    form.handleSubmit(onSubmit)();
+  };
 
-  const togglePasswordVisibility = () =>
-    setIsPasswordVisible(!isPasswordVisible);
+  const togglePasswordVisibility = () => setIsPasswordVisible((prev) => !prev);
   const toggleConfirmPasswordVisibility = () =>
-    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+    setIsConfirmPasswordVisible((prev) => !prev);
+
+  useEffect(() => {
+    return () => {
+    };
+  }, []);
 
   return {
     isVerifyingEmail,

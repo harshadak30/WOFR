@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { HelpCircle, LogOut, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { DashboardRoutes } from "../../router/DashboardRoutes";
 import Swal from "sweetalert2";
 import icons from "../../../public/icons/index";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -23,11 +25,19 @@ export const DashboardSidebar = ({
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {}
   );
-  const toggleExpand = (name: string) => {
-    setExpandedItems((prev) => ({ ...prev, [name]: !prev[name] }));
-  };
+  const { authState } = useContext(AuthContext);
+  // const userType = authState.user_type || "dev";
+  const userType = useMemo(
+    () => localStorage.getItem("user_type") || "dev",
+    []
+  );
 
-  const handleLogout = () => {
+  // Use useCallback for event handlers to prevent recreation on each render
+  const toggleExpand = useCallback((name: string) => {
+    setExpandedItems((prev) => ({ ...prev, [name]: !prev[name] }));
+  }, []);
+
+  const handleLogout = useCallback(() => {
     Swal.fire({
       title: "Are you sure?",
       text: "You will be logged out!",
@@ -48,9 +58,14 @@ export const DashboardSidebar = ({
         }).then(() => navigate("/login"));
       }
     });
-  };
+  }, [navigate]);
 
-  const userType = localStorage.getItem("user_type") || "dev";
+  // Memoize filtered routes to prevent recalculation on every render
+  const filteredRoutes = useMemo(
+    () =>
+      DashboardRoutes.filter((route) => route.allowedRoles.includes(userType)),
+    [userType]
+  );
 
   return (
     <aside
@@ -67,6 +82,7 @@ export const DashboardSidebar = ({
             className={`h-15 object-contain ${
               !isOpen && !isMobile ? "mx-auto" : ""
             }`}
+            loading="lazy"
           />
         )}
 
@@ -95,16 +111,22 @@ export const DashboardSidebar = ({
       {/* Sidebar Menu */}
       <div className="px-3 py-4 flex-1 overflow-y-auto">
         <nav className="space-y-2">
-          {DashboardRoutes.filter((route) =>
-            route.allowedRoles.includes(userType)
-          ).map((item) => {
-            const visibleChildren = item.children?.filter((child) =>
-              child.allowedRoles.includes(userType)
+          {filteredRoutes.map((item) => {
+            const visibleChildren = useMemo(
+              () =>
+                item.children?.filter((child) =>
+                  child.allowedRoles.includes(userType)
+                ),
+              [item.children, userType]
             );
-            const isParentActive =
-              visibleChildren?.some((child) =>
-                location.pathname.startsWith(`/dashboard/${child.path}`)
-              ) || location.pathname === `/dashboard/${item.path}`;
+
+            const isParentActive = useMemo(
+              () =>
+                visibleChildren?.some((child) =>
+                  location.pathname.startsWith(`/dashboard/${child.path}`)
+                ) || location.pathname === `/dashboard/${item.path}`,
+              [visibleChildren, location.pathname, item.path]
+            );
 
             return (
               <div key={item.name}>

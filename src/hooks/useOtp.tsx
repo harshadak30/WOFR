@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Swal from "sweetalert2";
 import apiClient from "../helper/axios";
 
@@ -37,6 +37,41 @@ export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
     useRef<HTMLInputElement>(null),
   ];
 
+  const Toast = useRef(
+    Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    })
+  ).current;
+
+  // Toast notification helper - memoized with useCallback
+  const displayNotification = useCallback(
+    (type: "success" | "error" | "warning" | "info", message: string): void => {
+      Toast.fire({
+        icon: type,
+        title: message,
+      });
+    },
+    [Toast]
+  );
+
+  // Reset hook state when modal opens/closes
+  useEffect(() => {
+    if (isModalOpen) {
+      // Reset state when modal opens
+      setOtpDigits(["", "", "", ""]);
+      setRemainingTime(60);
+      setCanResendOtp(false);
+    }
+  }, [isModalOpen]);
+
   // Timer effect for OTP countdown
   useEffect(() => {
     if (!isModalOpen) return;
@@ -55,124 +90,109 @@ export const useOTP = (isModalOpen: boolean): UseOtpReturn => {
     return () => clearInterval(countdownTimer);
   }, [isModalOpen]);
 
-  // Toast notification helper
-  const displayNotification = (
-    type: "success" | "error" | "warning" | "info",
-    message: string
-  ) => {
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-      },
-    });
+  const handleOtpChange = useCallback(
+    (index: number, value: string): void => {
+      // Only allow numeric input
+      if (value && !/^[0-9]$/.test(value)) return;
 
-    Toast.fire({
-      icon: type,
-      title: message,
-    });
-  };
+      // Update OTP state
+      setOtpDigits((prev) => {
+        const updated = [...prev];
+        updated[index] = value;
+        return updated;
+      });
 
-  // Handle OTP input changes
-  const handleOtpChange = (index: number, value: string): void => {
-    // Ensure only one digit is processed
-    if (value.length > 1) {
-      value = value.slice(0, 1);
-    }
-
-    // Update OTP state
-    const updatedOtpDigits = [...otpDigits];
-    updatedOtpDigits[index] = value;
-    setOtpDigits(updatedOtpDigits);
-
-    // Auto-focus next input if value is entered
-    if (value !== "" && index < 3) {
-      otpInputRefs[index + 1]?.current?.focus();
-    }
-  };
-
-  // Handle keyboard navigation between OTP inputs
-  const handleOtpKeyDown = (
-    index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
-  ): void => {
-    if (e.key === "Backspace" && otpDigits[index] === "" && index > 0) {
-      otpInputRefs[index - 1]?.current?.focus();
-    }
-  };
-
-  // Handle OTP resend
-  const handleOtpResend = async (email: string): Promise<void> => {
-    if (!canResendOtp) return;
-
-    try {
-      await apiClient.post(
-        `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
-          email
-        )}`,
-        null,
-        {
-          headers: {
-            accept: "application/json",
-          },
-        }
-      );
-
-      displayNotification("success", "OTP resent successfully");
-      setRemainingTime(60);
-      setCanResendOtp(false);
-      setOtpDigits(["", "", "", ""]);
-    } catch (error: any) {
-      displayNotification(
-        "error",
-        error?.response?.data?.detail || "Failed to resend OTP"
-      );
-    }
-  };
-
-  // OTP submission handler
-  const submitOtpVerification = async (
-    email: string,
-    onVerifySuccess: (otpValue: string) => void
-  ) => {
-    const otpValue = otpDigits.join("");
-
-    if (otpValue.length < 4) {
-      displayNotification("error", "Please enter all 4 digits of the OTP");
-      return;
-    }
-
-    try {
-      const response = await apiClient.post(
-        "/api/auth/v1/pre-register/verify-otp",
-        {
-          email,
-          otp_code: otpValue,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        displayNotification("success", "Email has been successfully verified.");
-        onVerifySuccess(otpValue);
+      // Auto-focus next input if value is entered
+      if (value !== "" && index < 3) {
+        otpInputRefs[index + 1]?.current?.focus();
       }
-    } catch (error: any) {
-      displayNotification(
-        "error",
-        error?.response?.data?.detail || "Something went wrong. Try again."
-      );
-    }
-  };
+    },
+    [otpInputRefs]
+  );
+
+  const handleOtpKeyDown = useCallback(
+    (index: number, e: React.KeyboardEvent<HTMLInputElement>): void => {
+      if (e.key === "Backspace" && otpDigits[index] === "" && index > 0) {
+        otpInputRefs[index - 1]?.current?.focus();
+      }
+    },
+    [otpDigits, otpInputRefs]
+  );
+
+  const handleOtpResend = useCallback(
+    async (email: string): Promise<void> => {
+      if (!canResendOtp) return;
+
+      try {
+        await apiClient.post(
+          `/api/auth/v1/pre-register/email-verification?email=${encodeURIComponent(
+            email
+          )}`,
+          null,
+          {
+            headers: {
+              accept: "application/json",
+            },
+          }
+        );
+
+        displayNotification("success", "OTP resent successfully");
+        setRemainingTime(60);
+        setCanResendOtp(false);
+        setOtpDigits(["", "", "", ""]);
+      } catch (error: any) {
+        displayNotification(
+          "error",
+          error?.response?.data?.detail || "Failed to resend OTP"
+        );
+      }
+    },
+    [canResendOtp, displayNotification]
+  );
+
+  const submitOtpVerification = useCallback(
+    async (
+      email: string,
+      onVerifySuccess: (otpValue: string) => void
+    ): Promise<void> => {
+      const otpValue = otpDigits.join("");
+
+      if (otpValue.length < 4) {
+        displayNotification("error", "Please enter all 4 digits of the OTP");
+        return;
+      }
+
+      try {
+        const response = await apiClient.post(
+          "/api/auth/v1/pre-register/verify-otp",
+          {
+            email,
+            otp_code: otpValue,
+          },
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          displayNotification(
+            "success",
+            "Email has been successfully verified."
+          );
+          onVerifySuccess(otpValue);
+        }
+      } catch (error: any) {
+        displayNotification(
+          "error",
+          error?.response?.data?.detail || "Something went wrong. Try again."
+        );
+      }
+    },
+    [otpDigits, displayNotification]
+  );
 
   return {
     otpDigits,

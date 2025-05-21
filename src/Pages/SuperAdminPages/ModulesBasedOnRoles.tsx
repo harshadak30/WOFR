@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import ModulesActionsManagement from "../MasterAdminPages/ModuleManagementPage";
 import { ModulesPurchase } from "./ModulesPurchase";
+import ModulesActionsManagement from "../MasterAdminPages/ModuleManagement";
+import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 interface TabNavigationProps {
   activeTab: "current" | "available";
@@ -12,10 +14,12 @@ export const ModulesBasedOnRoles: React.FC<TabNavigationProps> = ({
   onChange,
 }) => {
   const [userType, setUserType] = useState<string | null>(null);
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
-    const type = localStorage.getItem("user_type");
-    setUserType(type);
+    const userType = localStorage.getItem("user_type");
+    // const userType = authState.user_type ;
+    setUserType(userType);
   }, []);
 
   return (
@@ -23,11 +27,11 @@ export const ModulesBasedOnRoles: React.FC<TabNavigationProps> = ({
       {/* Top Navigation */}
       {userType === "super_admin" && (
         <div className="border-b border-gray-200 bg-white">
-          <nav className="mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="mx-auto max-w-full px-2 sm:px-4 lg:px-6">
             <div className="flex h-16 items-center justify-between">
-              <div className="flex space-x-4">
+              <div className="flex w-full space-x-2 sm:space-x-4 overflow-x-auto">
                 <button
-                  className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`whitespace-nowrap py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 ${
                     activeTab === "current"
                       ? "bg-[#008F98] text-white hover:bg-[#008F98]"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -37,7 +41,7 @@ export const ModulesBasedOnRoles: React.FC<TabNavigationProps> = ({
                   Current Subscriptions
                 </button>
                 <button
-                  className={`py-2 px-4 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  className={`whitespace-nowrap py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 ${
                     activeTab === "available"
                       ? "bg-[#008F98] text-white hover:bg-[#008F98]"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -52,7 +56,7 @@ export const ModulesBasedOnRoles: React.FC<TabNavigationProps> = ({
         </div>
       )}
       {/* Main Content */}
-      <div className="mx-auto p-4">
+      <div className="mx-auto ">
         {userType === "master_admin" ? (
           <ModulesActionsManagement />
         ) : activeTab === "current" ? (

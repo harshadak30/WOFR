@@ -47,7 +47,7 @@ const DashboardLayout = () => {
       {/* Overlay for mobile */}
       {isMobile && sidebarVisible && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20"
+          className="fixed inset-0 bg-transparent z-20"
           onClick={handleOverlayClick}
         ></div>
       )}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Bell, ChevronRight, Menu } from "lucide-react";
 
@@ -6,6 +6,42 @@ interface HeaderProps {
   toggleSidebar?: () => void;
   sidebarVisible?: boolean;
 }
+
+// Path-based page information mapping
+const PAGE_INFO = {
+  "/dashboard/overview": {
+    title: "Welcome back, John!",
+    description:
+      "Here's what's happening with your enterprise dashboard today.",
+  },
+  "/dashboard/modules": {
+    title: "Modules/Actions Management",
+    description: "Manage your application modules and their settings.",
+  },
+  "/dashboard/users": {
+    title: "User Management",
+    description:
+      "View and manage your organization's users and their access rights.",
+  },
+  "/dashboard/new": {
+    title: "Our User Management",
+    description:
+      "View and manage your organization's users and their access rights.",
+  },
+  "/dashboard/roles": {
+    title: "Our role Management",
+    description:
+      "View and manage your organization's users and their access rights.",
+  },
+  "/dashboard/financial": {
+    title: "Financial Dashboard",
+    description: "View financial reports and analytics.",
+  },
+  "/dashboard/role-management": {
+    title: "Role Management",
+    description: "View and manage your roles and thier permissions.",
+  },
+};
 
 export const DashboardHeader = ({
   toggleSidebar,
@@ -15,72 +51,67 @@ export const DashboardHeader = ({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+  // Optimize resize handling with useCallback
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768);
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, [checkMobile]);
+
+  // Optimize click outside handler with useCallback
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
       const target = event.target as Element;
       if (isNotificationsOpen && !target.closest("[data-notifications]")) {
         setIsNotificationsOpen(false);
       }
-    };
+    },
+    [isNotificationsOpen]
+  );
 
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isNotificationsOpen]);
+  }, [handleClickOutside]);
 
-  const getPageTitle = () => {
-    switch (location.pathname) {
-      case "/dashboard/overview":
-        return "Welcome back, John!";
-      case "/dashboard/modules":
-        return "Modules/Actions Management";
-      case "/dashboard/users":
-        return "User Management";
-      case "/dashboard/new":
-        return "Our User Management";
-      case "/dashboard/roles":
-        return "Our role Management";
-      case "/dashboard/financial":
-        return "Financial Dashboard";
-      default:
-        if (location.pathname.startsWith("/users/")) {
-          return "User Profile";
-        }
-        return "Dashboard";
-    }
-  };
+  // Memoize page info to prevent recalculations on every render
+  const { pageTitle, pageDescription } = useMemo(() => {
+    const pathInfo = PAGE_INFO[location.pathname as keyof typeof PAGE_INFO];
 
-  const getPageDescription = () => {
-    switch (location.pathname) {
-      case "/dashboard/overview":
-        return "Here's what's happening with your enterprise dashboard today.";
-      case "/dashboard/modules":
-        return "Manage your application modules and their settings.";
-      case "/dashboard/users":
-        return "View and manage your organization's users and their access rights.";
-      case "/dashboard/new":
-        return "View and manage your organization's users and their access rights.";
-      case "/dashboard/roles":
-        return "View and manage your organization's users and their access rights.";
-      case "/dashboard/financial":
-        return "View financial reports and analytics.";
-      default:
-        return "";
+    if (pathInfo) {
+      return {
+        pageTitle: pathInfo.title,
+        pageDescription: pathInfo.description,
+      };
     }
-  };
+
+    // Handle default cases
+    if (location.pathname.startsWith("/users/")) {
+      return {
+        pageTitle: "User Profile",
+        pageDescription: "",
+      };
+    }
+
+    return {
+      pageTitle: "Dashboard",
+      pageDescription: "",
+    };
+  }, [location.pathname]);
+
+  // Toggle notifications with useCallback
+  const toggleNotifications = useCallback(() => {
+    setIsNotificationsOpen((prev) => !prev);
+  }, []);
 
   return (
-    <header className="bg-white border-b border-gray-200 z-20 sticky top-0 ">
+    <header className="bg-white border-b border-gray-200 z-20 sticky top-0">
       <div className="px-4 py-3 sm:px-6 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           {isMobile && (
@@ -99,11 +130,11 @@ export const DashboardHeader = ({
                 isMobile ? "text-lg" : "text-2xl"
               } truncate`}
             >
-              {getPageTitle()}
+              {pageTitle}
             </h1>
-            {getPageDescription() && !isMobile && (
+            {pageDescription && !isMobile && (
               <p className="text-sm text-gray-500 mt-1 truncate">
-                {getPageDescription()}
+                {pageDescription}
               </p>
             )}
           </div>
@@ -112,12 +143,16 @@ export const DashboardHeader = ({
         <div className="flex items-center space-x-4 left-2">
           <div className="relative" data-notifications>
             <button
-              onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+              onClick={toggleNotifications}
               className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none relative"
               aria-label="Notifications"
+              aria-expanded={isNotificationsOpen}
             >
               <Bell size={26} />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+              <span
+                className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"
+                aria-label="New notifications"
+              ></span>
             </button>
             {isNotificationsOpen && (
               <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-md py-2 z-10 border border-gray-200">
@@ -151,11 +186,14 @@ export const DashboardHeader = ({
           </div>
 
           <div className="relative">
-            <button className="flex items-center">
+            <button className="flex items-center" aria-label="User profile">
               <img
                 src="https://i.pravatar.cc/40?img=68"
-                alt="User"
+                alt="User profile"
                 className="w-9 h-9 rounded-full border-2 border-gray-200"
+                width="36"
+                height="36"
+                loading="lazy"
               />
             </button>
           </div>
@@ -163,9 +201,9 @@ export const DashboardHeader = ({
       </div>
 
       {/* Mobile description */}
-      {isMobile && getPageDescription() && (
+      {isMobile && pageDescription && (
         <div className="px-4 pb-2">
-          <p className="text-xs text-gray-500">{getPageDescription()}</p>
+          <p className="text-xs text-gray-500">{pageDescription}</p>
         </div>
       )}
     </header>
