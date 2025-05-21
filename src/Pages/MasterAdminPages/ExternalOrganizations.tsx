@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Search, ChevronDown, Edit2 } from "lucide-react";
+import { ChevronDown, Edit2 } from "lucide-react";
 import TableHeader from "../../component/common/ui/TableHeader";
 import MultiSelectDropdown from "../../component/common/ui/MultiSelectDropdown";
 import { UserData } from "../../types";
@@ -8,15 +8,16 @@ import Toggle from "../../component/common/ui/Toggle";
 import Pagination from "../../component/common/Pagination";
 import { useNavigate } from "react-router-dom";
 
-interface UserManagementProps {
+interface ExternalOrganizationUserProps {
   isReadOnly: boolean;
+  searchTerm?: string; // Make searchTerm optional
 }
 
-const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
+const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
   isReadOnly,
+  searchTerm = "",
 }) => {
   const [users, setUsers] = useState<UserData[]>(userData);
-  const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
@@ -36,7 +37,9 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.OrgName.toLowerCase().includes(searchTerm.toLowerCase())
+      user.OrgName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.phone &&
+        user.phone.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleToggleChange = (id: number) => {
@@ -56,6 +59,7 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
     });
     setSelectedUser(null);
   };
+
   const handleToNavigate = (user: UserData) => {
     navigate(`userDetails/${user.id}`, {
       state: {
@@ -128,37 +132,21 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
   };
 
   return (
-    <div className=" bg-gray-50">
-      <div className="max-w-8xl mx-auto ">
+    <div className="bg-gray-50">
+      <div className="max-w-8xl mx-auto">
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <div className="relative w-full md:w-72">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent sm:text-sm"
-                placeholder="Search users..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-          </div>
-
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <TableHeader className="pl-6">ITEM</TableHeader>
-                  <TableHeader>Organazation Name</TableHeader>
+                  <TableHeader>ORGANIZATION NAME</TableHeader>
                   <TableHeader>USER</TableHeader>
                   <TableHeader>EMAIL</TableHeader>
-                  <TableHeader>Phone</TableHeader>
+                  <TableHeader>PHONE</TableHeader>
                   <TableHeader>ROLES</TableHeader>
-                  {/* <TableHeader>MODULES</TableHeader> */}
                   <TableHeader>CREATED</TableHeader>
-                  <TableHeader>PERMISSION</TableHeader>
+                  <TableHeader>EDIT</TableHeader>
                   <TableHeader>ENABLE/DISABLE</TableHeader>
                 </tr>
               </thead>
@@ -219,60 +207,17 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
                           )}
                       </div>
                     </td>
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="relative">
-                        <button
-                          onClick={() => toggleDropdown(user.id, "module")}
-                          className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm ${
-                            isReadOnly
-                              ? "cursor-not-allowed opacity-75"
-                              : "hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                          }`}
-                          disabled={isReadOnly}
-                        >
-                          {getSelectedText(user.id, "module")}
-                          <ChevronDown size={16} className="ml-2" />
-                        </button>
-
-                        {!isReadOnly &&
-                          selectedUser?.id === user.id &&
-                          selectedUser?.type === "module" && (
-                            <div className="absolute z-10 mt-1 w-72">
-                              <MultiSelectDropdown
-                                title="Modules"
-                                options={moduleOptions}
-                                selectedOptions={
-                                  userSelectedModules[user.id] || []
-                                }
-                                onApply={(selected) =>
-                                  handleApplyModules(user.id, selected)
-                                }
-                                onReset={() => handleResetModules(user.id)}
-                              />
-                            </div>
-                          )}
-                      </div>
-                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.created}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button
-                        className={`text-gray-500hover:text-gray-700`}
-                        // disabled={isReadOnly}
+                        className="text-gray-500 hover:text-gray-700"
                         onClick={() => handleToNavigate(user)}
                       >
                         <Edit2 size={18} />
                       </button>
                     </td>
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <button 
-                        className={`text-gray-500 ${isReadOnly ? 'cursor-not-allowed opacity-50' : 'hover:text-gray-700'}`}
-                        disabled={isReadOnly}
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Toggle
                         enabled={user.enabled}
@@ -297,4 +242,4 @@ const ExternalOrganizationUser: React.FC<UserManagementProps> = ({
   );
 };
 
-export default ExternalOrganizationUser;
+export default ExternalOrganizations;

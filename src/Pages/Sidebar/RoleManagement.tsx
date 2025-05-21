@@ -1,19 +1,24 @@
 import React, { useState } from "react";
-import { ChevronDown, Edit2 } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import TableHeader from "../../component/common/ui/TableHeader";
 import MultiSelectDropdown from "../../component/common/ui/MultiSelectDropdown";
 import { UserData } from "../../types";
-import { moduleOptions, roleOptions, userData } from "../../data/mockData";
+import {
+  moduleOptions,
+  roleOptions,
+  actionOptions,
+  userData,
+} from "../../data/mockData";
 import Toggle from "../../component/common/ui/Toggle";
 import Pagination from "../../component/common/Pagination";
 import { useNavigate } from "react-router-dom";
 
-interface UserManagementProps {
+interface RoleManagementProps {
   isReadOnly: boolean;
-  searchTerm?: string; // Make searchTerm optional
+  searchTerm?: string;
 }
 
-const UserManagement: React.FC<UserManagementProps> = ({
+const RoleManagement: React.FC<RoleManagementProps> = ({
   isReadOnly,
   searchTerm = "",
 }) => {
@@ -21,12 +26,24 @@ const UserManagement: React.FC<UserManagementProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
-    type: "role" | "module";
+    type: "action" | "module";
   } | null>(null);
 
   const [userSelectedRoles, setUserSelectedRoles] = useState<
     Record<number, string[]>
-  >({});
+  >({
+    1: ["super-admin"],
+    2: ["admin"],
+    3: ["manager"],
+    4: ["editor"],
+    5: ["user"],
+    6: ["other"],
+    7: ["manager"],
+    8: ["editor"],
+    9: ["user"],
+    10: ["other"],
+  });
+
   const [userSelectedModules, setUserSelectedModules] = useState<
     Record<number, string[]>
   >({});
@@ -34,7 +51,6 @@ const UserManagement: React.FC<UserManagementProps> = ({
   const filteredUsers = users.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.OrgName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -93,7 +109,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
     });
   };
 
-  const toggleDropdown = (userId: number, type: "role" | "module") => {
+  const toggleDropdown = (userId: number, type: "action" | "module") => {
     if (isReadOnly) return;
     setSelectedUser(
       selectedUser?.id === userId && selectedUser?.type === type
@@ -102,12 +118,15 @@ const UserManagement: React.FC<UserManagementProps> = ({
     );
   };
 
-  const getSelectedText = (userId: number, type: "role" | "module") => {
+  const getSelectedText = (userId: number, type: "action" | "module") => {
     const items =
-      type === "role" ? userSelectedRoles[userId] : userSelectedModules[userId];
-    if (!items?.length) return type === "role" ? "Roles" : "Standard";
+      type === "action"
+        ? userSelectedRoles[userId]
+        : userSelectedModules[userId];
 
-    const options = type === "role" ? roleOptions : moduleOptions;
+    if (!items?.length) return type === "action" ? "Actions" : "Modules";
+
+    const options = type === "action" ? actionOptions : moduleOptions;
     const selectedLabels = items
       .map((id) => options.find((opt) => opt.id === id)?.label)
       .filter(Boolean);
@@ -137,12 +156,10 @@ const UserManagement: React.FC<UserManagementProps> = ({
               <thead className="bg-gray-50">
                 <tr>
                   <TableHeader className="pl-6">ITEM</TableHeader>
-                  <TableHeader>USER</TableHeader>
-                  <TableHeader>EMAIL</TableHeader>
                   <TableHeader>ROLES</TableHeader>
-                  <TableHeader>CREATED</TableHeader>
-                  <TableHeader>EDIT</TableHeader>
-                  <TableHeader>ENABLE/DISABLE</TableHeader>
+                  <TableHeader>Modules</TableHeader>
+                  <TableHeader>Actions</TableHeader>
+                  <TableHeader>Enable/Disable</TableHeader>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -156,16 +173,20 @@ const UserManagement: React.FC<UserManagementProps> = ({
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.id}
                     </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.name}
+                      {roleOptions
+                        .filter((role) =>
+                          (userSelectedRoles[user.id] || []).includes(role.id)
+                        )
+                        .map((role) => role.label)
+                        .join(", ") || "No Roles Assigned"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.email}
-                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="relative">
                         <button
-                          onClick={() => toggleDropdown(user.id, "role")}
+                          onClick={() => toggleDropdown(user.id, "module")}
                           className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm ${
                             isReadOnly
                               ? "cursor-not-allowed opacity-75"
@@ -173,17 +194,52 @@ const UserManagement: React.FC<UserManagementProps> = ({
                           }`}
                           disabled={isReadOnly}
                         >
-                          {getSelectedText(user.id, "role")}
+                          {getSelectedText(user.id, "module")}
                           <ChevronDown size={16} className="ml-2" />
                         </button>
 
                         {!isReadOnly &&
                           selectedUser?.id === user.id &&
-                          selectedUser?.type === "role" && (
+                          selectedUser?.type === "module" && (
                             <div className="absolute z-10 mt-1 w-72">
                               <MultiSelectDropdown
-                                title="Roles"
-                                options={roleOptions}
+                                title="Modules"
+                                options={moduleOptions}
+                                selectedOptions={
+                                  userSelectedModules[user.id] || []
+                                }
+                                onApply={(selected) =>
+                                  handleApplyModules(user.id, selected)
+                                }
+                                onReset={() => handleResetModules(user.id)}
+                              />
+                            </div>
+                          )}
+                      </div>
+                    </td>
+
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown(user.id, "action")}
+                          className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm ${
+                            isReadOnly
+                              ? "cursor-not-allowed opacity-75"
+                              : "hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          }`}
+                          disabled={isReadOnly}
+                        >
+                          {getSelectedText(user.id, "action")}
+                          <ChevronDown size={16} className="ml-2" />
+                        </button>
+
+                        {!isReadOnly &&
+                          selectedUser?.id === user.id &&
+                          selectedUser?.type === "action" && (
+                            <div className="absolute z-10 mt-1 w-72">
+                              <MultiSelectDropdown
+                                title="action"
+                                options={actionOptions}
                                 selectedOptions={
                                   userSelectedRoles[user.id] || []
                                 }
@@ -196,21 +252,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
                           )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.created}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        className={`text-gray-500 ${
-                          isReadOnly
-                            ? "cursor-not-allowed opacity-50"
-                            : "hover:text-gray-700"
-                        }`}
-                        onClick={() => handleToNavigate(user)}
-                      >
-                        <Edit2 size={18} />
-                      </button>
-                    </td>
+
                     <td className="px-4 py-4 whitespace-nowrap">
                       <Toggle
                         enabled={user.enabled}
@@ -235,4 +277,4 @@ const UserManagement: React.FC<UserManagementProps> = ({
   );
 };
 
-export default UserManagement;
+export default RoleManagement;

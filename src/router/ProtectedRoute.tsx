@@ -1,4 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 interface ProtectedRouteProps {
   allowedRoles: string[];
@@ -9,6 +11,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   allowedRoles,
   children,
 }) => {
+  const { authState } = useContext(AuthContext);
+  // const userType = authState.user_type ;
   const token = localStorage.getItem("token");
   const userType = localStorage.getItem("user_type");
   const location = useLocation();
@@ -30,7 +34,3 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 };
 
 export default ProtectedRoute;
-
-
-
-

@@ -49,7 +49,6 @@ export const useLogin = (): UseLoginReturn => {
   const [isPasswordResetProcessing, setIsPasswordResetProcessing] =
     useState<boolean>(false);
 
-  // Notification helper
   const showNotification = (message: string, isSuccess: boolean) => {
     Swal.fire({
       toast: true,
@@ -58,12 +57,17 @@ export const useLogin = (): UseLoginReturn => {
       title: message,
       showConfirmButton: false,
       timer: 3000,
+      timerProgressBar: true,
+      customClass: {
+        container: "swal-container",
+        popup: "swal-popup-responsive",
+      },
     });
   };
 
   const togglePasswordVisibility = () => setIsPasswordVisible((prev) => !prev);
 
-  // OTP input handling
+  // OTP input handling with improved focus management
   const handleOtpDigitChange = (index: number, value: string) => {
     if (value && !/^\d*$/.test(value)) return;
 
@@ -71,12 +75,13 @@ export const useLogin = (): UseLoginReturn => {
     updatedDigits[index] = value;
     setOtpDigits(updatedDigits);
 
-    // Auto-focus next input
+    // Auto-focus next input or previous input if deleted
     if (value && index < 3) {
       const nextInput = document.getElementById(`otp-${index + 1}`);
-      if (nextInput) {
-        nextInput.focus();
-      }
+      nextInput?.focus();
+    } else if (!value && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      prevInput?.focus();
     }
   };
 
@@ -91,7 +96,7 @@ export const useLogin = (): UseLoginReturn => {
     try {
       const response = await axios.post(`api/auth/v1/login`, {
         email_or_phone: email,
-        password: password,
+        password,
       });
 
       if (response.data) {
@@ -127,16 +132,22 @@ export const useLogin = (): UseLoginReturn => {
 
       if (response.data) {
         if (response.data.token) {
-          //   login(response.data.token, response.data.username);
           localStorage.setItem("token", response.data.token);
           localStorage.setItem("name", response.data.username);
           localStorage.setItem("user_type", response.data.user_type);
         }
+        if (response.data.token) {
+          login(
+            response.data.token,
+            response.data.username,
+            response.data.user_type || "User"
+          );
+
+          console.log(response.data.user_type);
+        }
         showNotification("Login successful", true);
 
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
+        setTimeout(() => navigate("/dashboard"), 1000);
       }
     } catch (error: any) {
       console.error("OTP verification error:", error);
@@ -151,16 +162,12 @@ export const useLogin = (): UseLoginReturn => {
   const resendOtpCode = (email: string, password?: string) =>
     requestOtpCode(email, password);
 
+  // Optimized Google authentication with minimal code
   const initiateGoogleAuth = async () => {
     setIsGoogleAuthenticating(true);
     try {
       const response = await axios.get(`auth/v1/google/login`);
-
-      if (response.data && response.data.authUrl) {
-        window.location.href = response.data.authUrl;
-      } else {
-        window.location.href = `auth/v1/google/login`;
-      }
+      window.location.href = response.data?.authUrl || `auth/v1/google/login`;
     } catch (error) {
       console.error("Google login error:", error);
       showNotification(
@@ -182,42 +189,32 @@ export const useLogin = (): UseLoginReturn => {
         state: state || "",
       });
 
-      if (response.data) {
-        if (response.data.token) {
-          login(
-            response.data.token,
-            response.data.username,
-            response.data.user_type || "User"
-          );
-        }
+      if (response.data?.token) {
+        login(
+          response.data.token,
+          response.data.username,
+          response.data.user_type || "User"
+        );
 
         showNotification("Google login successful", true);
-
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
+        setTimeout(() => navigate("/"), 1000);
       }
     } catch (error: any) {
       console.error("Google callback error:", error);
-      const errorMessage =
-        error.response?.data?.detail ||
-        "Failed to authenticate with Google. Please try again.";
-      showNotification(errorMessage, false);
+      showNotification(
+        error.response?.data?.detail || "Failed to authenticate with Google",
+        false
+      );
     } finally {
       setIsGoogleAuthenticating(false);
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   };
 
+  // Password reset functionality
   const openResetPasswordModal = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResetModalVisible(true);
-  };
-
-  const handleModalOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      closeResetModal();
-    }
   };
 
   const closeResetModal = () => {
@@ -225,7 +222,10 @@ export const useLogin = (): UseLoginReturn => {
     setResetEmailAddress("");
   };
 
-  // Send password reset link
+  const handleModalOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) closeResetModal();
+  };
+
   const requestPasswordReset = async (e: React.FormEvent, email: string) => {
     e.preventDefault();
 

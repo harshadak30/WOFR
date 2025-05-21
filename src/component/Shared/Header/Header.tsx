@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 import { RiMenu3Line, RiCloseLine } from "react-icons/ri";
 import { Link, NavLink } from "react-router-dom";
@@ -26,9 +26,9 @@ const openCalendly = () => {
   return false;
 };
 
-const Header: React.FC = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const [isLanguageOpen, setIsLanguageOpen] = useState<boolean>(false);
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [isLanguageOpen, setIsLanguageOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -36,57 +36,27 @@ const Header: React.FC = () => {
 
   return (
     <div className="w-full">
-      {/* Announcement Bar */}
-      {/* <div className="bg-black flex flex-col sm:flex-row justify-between text-white text-center sm:text-left text-sm p-3 px-6">
-        <div className="sm:ml-10">
-          This announcement bar can be used to inform visitors of{" "}
-          <span className="text-blue-600">something important!</span>
-        </div>
-        <div
-          className="flex items-center justify-center sm:justify-end sm:mr-10 mt-2 sm:mt-0 cursor-pointer"
-          onClick={() => setIsLanguageOpen(!isLanguageOpen)}
-        >
-          <TbWorld />
-          <span className="mx-1">EN</span>
-          <IoIosArrowDown />
-
-          {isLanguageOpen && (
-            <div className="absolute top-10 bg-white text-black p-2 rounded shadow-md z-50">
-              <div className="py-1 px-4 hover:bg-gray-100 cursor-pointer">
-                EN
-              </div>
-              <div className="py-1 px-4 hover:bg-gray-100 cursor-pointer">
-                FR
-              </div>
-              <div className="py-1 px-4 hover:bg-gray-100 cursor-pointer">
-                ES
-              </div>
-            </div>
-          )}
-        </div>
-      </div> */}
-
       {/* Logo and Social Links */}
-      <div className="bg-white p-2 flex items-center justify-between px-5">
-        <a href="/" rel="logo">
+      <div className="bg-white p-2 flex items-center justify-between px-2 sm:px-4 lg:px-5">
+        <a href="/" rel="logo" className="flex-shrink-0">
           <img
             src={backgroundImages.companyLogo}
             alt="Logo"
-            className="pl-4 md:pl-20 h-16 sm:h-20"
+            className="h-12 xs:h-14 sm:h-16 md:h-18 lg:h-20 pl-2 sm:pl-4 md:pl-10 lg:pl-20"
           />
         </a>
-        <div className="flex gap-3 sm:gap-5 text-gray-500 pr-4 md:pr-20">
-          <FaFacebook className="text-lg sm:text-xl" />
-          <FaInstagram className="text-lg sm:text-xl" />
-          <FaTwitter className="text-lg sm:text-xl" />
+        <div className="flex gap-2 xs:gap-3 sm:gap-4 lg:gap-5 text-gray-500 pr-2 sm:pr-4 md:pr-10 lg:pr-20">
+          <FaFacebook className="text-base xs:text-lg sm:text-xl" />
+          <FaInstagram className="text-base xs:text-lg sm:text-xl" />
+          <FaTwitter className="text-base xs:text-lg sm:text-xl" />
         </div>
       </div>
 
       {/* Navigation */}
       <nav className="bg-[#0049AC] shadow-md relative">
-        <div className="flex justify-between items-center p-4 px-12">
+        <div className="flex justify-between items-center p-2 xs:p-3 sm:p-4 px-2 xs:px-4 sm:px-6 lg:px-12">
           {/* Desktop Menu */}
-          <ul className="hidden md:flex space-x-6 text-white pl-4 md:pl-20">
+          <ul className="hidden md:flex space-x-3 lg:space-x-6 text-white pl-2 sm:pl-4 md:pl-10 lg:pl-20 text-sm lg:text-base">
             <Link to="/" className="cursor-pointer hover:text-gray-300">
               Home
             </Link>
@@ -102,20 +72,23 @@ const Header: React.FC = () => {
           </ul>
 
           {/* Mobile Menu Button */}
-          <button className="md:hidden text-white pl-4" onClick={toggleMenu}>
+          <button
+            className="md:hidden text-white pl-1 xs:pl-2"
+            onClick={toggleMenu}
+          >
             {isMenuOpen ? <RiCloseLine size={24} /> : <RiMenu3Line size={24} />}
           </button>
 
           {/* Buttons */}
-          <div className="space-x-2 sm:space-x-4 pr-4 md:pr-10 flex items-center">
+          <div className="space-x-1 xs:space-x-2 sm:space-x-3 lg:space-x-4 pr-1 xs:pr-2 sm:pr-4 md:pr-6 lg:pr-10 flex items-center">
             <Link to={"/login"}>
-              <button className="text-white px-2 sm:px-4 py-1 sm:py-2 rounded text-sm sm:text-base">
+              <button className="text-white px-1 xs:px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded text-xs xs:text-sm lg:text-base whitespace-nowrap">
                 Sign In
               </button>
             </Link>
             <NavLink to="/book-demo">
               <button
-                className="bg-[#008F98] text-white px-4 py-2 rounded cursor-pointer"
+                className="bg-[#008F98] text-white px-2 xs:px-3 sm:px-4 py-1 xs:py-1.5 sm:py-2 rounded cursor-pointer text-xs xs:text-sm lg:text-base whitespace-nowrap"
                 onClick={openCalendly}
               >
                 Book a Demo
@@ -126,41 +99,47 @@ const Header: React.FC = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden flex flex-col items-center space-y-4 py-4 bg-[#0049AC] text-white absolute w-full z-50">
-            <ul className="space-y-4 w-full">
-              <Link
-                to="{/}"
-                className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center"
-              >
-                Home
-              </Link>
-              <Link
-                to="{/explore-solutions}"
-                className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center"
-              >
-                About Us
-              </Link>
-              <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+          <div className="md:hidden flex flex-col items-center space-y-2 xs:space-y-3 sm:space-y-4 py-2 xs:py-3 sm:py-4 bg-[#0049AC] text-white absolute w-full z-50">
+            <ul className="space-y-2 sm:space-y-4 w-full text-sm sm:text-base">
+              <li className="w-full">
+                <Link
+                  to="/"
+                  className="block cursor-pointer hover:bg-[#003d90] px-4 sm:px-6 py-1.5 sm:py-2 text-center"
+                >
+                  Home
+                </Link>
+              </li>
+              <li className="w-full">
+                <Link
+                  to="/explore-solutions"
+                  className="block cursor-pointer hover:bg-[#003d90] px-4 sm:px-6 py-1.5 sm:py-2 text-center"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li className="cursor-pointer hover:bg-[#003d90] px-4 sm:px-6 py-1.5 sm:py-2 text-center">
                 Services
               </li>
-              <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              <li className="cursor-pointer hover:bg-[#003d90] px-4 sm:px-6 py-1.5 sm:py-2 text-center">
                 Resources
               </li>
-              <li className="cursor-pointer hover:bg-[#003d90] px-6 py-2 text-center">
+              <li className="cursor-pointer hover:bg-[#003d90] px-4 sm:px-6 py-1.5 sm:py-2 text-center">
                 Testimonials
               </li>
             </ul>
-            <div className="space-y-4 w-full px-6 pb-2">
+            <div className="space-y-2 sm:space-y-4 w-full px-4 sm:px-6 pb-2 text-sm sm:text-base">
               <Link to={"/login"} className="block">
-                <button className="w-full text-white border border-white px-4 py-2 rounded">
+                <button className="w-full text-white border border-white px-3 sm:px-4 py-1.5 sm:py-2 rounded">
                   Sign In
                 </button>
               </Link>
-              <Link
-                to="/book-demo"
-                className="w-full bg-[#008F98] text-white px-4 py-2 rounded"
-              >
-                Book a Demo
+              <Link to="/book-demo" className="block">
+                <button
+                  className="w-full bg-[#008F98] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded"
+                  onClick={openCalendly}
+                >
+                  Book a Demo
+                </button>
               </Link>
             </div>
           </div>

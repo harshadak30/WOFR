@@ -5,9 +5,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
   LineChart,
   Line,
 } from "recharts";
@@ -32,8 +29,6 @@ import { Input } from "../../component/common/ui/Input";
 import { Card } from "../../component/common/ui/Card";
 import RecentAlerts from "../../component/common/Charts/RecentAlert";
 import MonthlyExpenseChart from "../../component/common/Charts/MonthlyExpenseChart";
-
-const COLORS = ["#3b82f6", "#0ea5e9", "#f59e0b", "#10b981"];
 
 const DashboardOverview = () => {
   const [search, setSearch] = useState("");
@@ -139,13 +134,13 @@ const DashboardOverview = () => {
       <div className=" mx-auto">
         {/* Search and filters */}
         <div className="mb-8">
-          <div className="flex flex-wrap justify-between gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm ">
+          <div className="flex flex-wrap justify-start gap-4 bg-[#fcfcfc] p-5 rounded-xl shadow-sm ">
             <Input
               type="text"
               placeholder="Search leases..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-grow max-w-3xl border-gray-300"
+              className="flex-grow max-w-3xl border-gray-300 mr-10"
             />
 
             <button className="flex items-center bg-[#F3F4F6] hover:bg-[#E5E7EB] text-gray-700 py-2 px-4 rounded-md transition-colors duration-200">
@@ -274,7 +269,7 @@ const DashboardOverview = () => {
         <div className="grid grid-cols-1 mt-10">
           <Card title="Lease Distribution" className="bg-white">
             {/* <div className="h-80 flex items-center justify-center p-5">
-          
+         
             </div> */}
             <RecentAlerts />
           </Card>
