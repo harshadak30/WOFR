@@ -31,4 +31,6 @@ export interface Option {
     moduleId: string | null;
     created: string;
     enabled: boolean;
+    tenant_user_id: string; 
+    tenant_id: string;      
   }

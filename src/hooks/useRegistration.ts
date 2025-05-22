@@ -21,6 +21,7 @@ interface UseRegisterReturn {
   isPasswordVisible: boolean;
   isConfirmPasswordVisible: boolean;
   form: UseFormReturn<RegistrationFormData>;
+  setValue: UseFormReturn<RegistrationFormData>["setValue"];
   verifyEmail: () => Promise<void>;
   submitRegistration: () => Promise<void>;
   onSubmit: (data: RegistrationFormData) => void;
@@ -139,11 +140,13 @@ export const useRegister = (): UseRegisterReturn => {
         displayNotification("error", "Please fill all required fields");
         return;
       }
-
+      const phoneWithCountryCode = formData.phoneNumber.startsWith("+")
+      ? formData.phoneNumber
+      : `+91${formData.phoneNumber}`;
       const formDataUrlEncoded = new URLSearchParams();
       formDataUrlEncoded.append("user_name", formData.name);
       formDataUrlEncoded.append("user_email", formData.email);
-      formDataUrlEncoded.append("phone", formData.phoneNumber);
+      formDataUrlEncoded.append("phone", phoneWithCountryCode); 
       formDataUrlEncoded.append(
         "organization_name",
         formData.organization || ""
@@ -214,6 +217,7 @@ export const useRegister = (): UseRegisterReturn => {
     isPasswordVisible,
     isConfirmPasswordVisible,
     form,
+    setValue: form.setValue,
     verifyEmail,
     submitRegistration,
     onSubmit,

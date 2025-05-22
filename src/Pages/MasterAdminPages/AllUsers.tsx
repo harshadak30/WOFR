@@ -2,18 +2,18 @@ import UserManagement from "./UserManagement";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import ExternalOrganizations from "./ExternalOrganizations";
-import { useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
 
 function Allusers() {
   const [showModuleView, setShowModuleView] = useState(false);
   const [userType, setUserType] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const { authState } = useContext(AuthContext);
+  // const { authState } = useAuth();
 
   useEffect(() => {
     const userType = localStorage.getItem("user_type");
-    // const userType = authState.user_type ;
+    // const userType = authState.user_type;
+
     setUserType(userType);
   }, []);
 

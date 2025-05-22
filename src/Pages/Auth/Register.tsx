@@ -5,8 +5,8 @@ import backgroundImages from "../../../public/background";
 import { useRegister } from "../../hooks/useRegistration";
 import OTPVerificationPopup from "./OTPVerificationPopup";
 // Import for future international phone number implementation
-// import PhoneInput from 'react-phone-input-2';
-// import 'react-phone-input-2/lib/style.css';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 interface RegistrationProps {
   email?: string;
@@ -21,6 +21,7 @@ const Registration: React.FC<RegistrationProps> = () => {
     isPasswordVisible,
     isConfirmPasswordVisible,
     form,
+    setValue,
     verifyEmail,
     handleRegistrationSubmit,
     togglePasswordVisibility,
@@ -41,6 +42,16 @@ const Registration: React.FC<RegistrationProps> = () => {
     const img = new Image();
     img.src = "/background/landingHeroImage.png";
   }, []);
+
+  useEffect(() => {
+    register("phoneNumber", {
+      required: "Phone number is required",
+      pattern: {
+        value: /^[+]?[0-9]{10,15}$/,
+        message: "Please enter a valid phone number",
+      },
+    });
+  }, [register]);
 
   // Common error message component for consistency
   const ErrorMessage = ({ message }: { message?: string }) => {
@@ -177,7 +188,7 @@ const Registration: React.FC<RegistrationProps> = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Phone Number Field */}
-                  <div>
+                  {/* <div>
                     <label
                       htmlFor="phoneNumber"
                       className="block text-sm font-medium text-gray-700 mb-2"
@@ -219,6 +230,36 @@ const Registration: React.FC<RegistrationProps> = () => {
                       }}
                     />
                     */}
+                  {/* </div> */}
+                  {/* Phone Number Field using PhoneInput */}
+                  <div className="">
+                    <label
+                      htmlFor="phoneNumber"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
+                      Phone Number <span className="text-red-500">*</span>
+                    </label>
+                    <div className="w-full h-[72px]">
+                    <PhoneInput
+                      country={"in"}
+                      value={getValues("phoneNumber")}
+                      placeholder="Phone number"
+                      onChange={(phone) => setValue("phoneNumber", phone)}
+                      inputProps={{
+                        name: "phoneNumber",
+                        required: true,
+                      }}
+               
+                      inputClass={`w-full !bg-gray-200 !px-4 !py-4 !border ${
+                        errors.phoneNumber
+                          ? "!border-red-500"
+                          : "!border-gray-200"
+                      } !rounded-md !focus:outline-none`}
+                      containerClass="w-full"
+                      inputStyle={{ width: "100%" , height:"110%" }}
+                    />
+</div>
+                    <ErrorMessage message={errors.phoneNumber?.message} />
                   </div>
 
                   {/* Organization Field */}
