@@ -16,6 +16,7 @@ import Allusers from "../Pages/MasterAdminPages/AllUsers";
 import OrganizationForm from "../Pages/MasterAdminPages/OrganizationForm";
 import CompanyProfile from "../Pages/SuperAdminPages/CompanyProfile";
 import Department from "../Pages/SuperAdminPages/Department";
+import RoleManagement from "../Pages/Sidebar/RoleManagement";
 
 // Import new page components
 // import ReportsOverview from "../Pages/Reports/ReportsOverview";
@@ -53,13 +54,13 @@ export const DashboardRoutes: RouteItem[] = [
     element: <ModulesBasedOnRolesWrapper />,
     allowedRoles: ["dev", "master_admin", "super_admin"], // TEMPORARY
   },
-  // {
-  //   name: "Role Management",
-  //   path: "role-management",
-  //   icon: <BarChart3 size={20} />,
-  //   element: <RoleManagement isReadOnly={false} />,
-  //   allowedRoles: ["dev", "master_admin" , "super_admin"],
-  // },
+  {
+    name: "Role Management",
+    path: "role-management",
+    icon: <BarChart3 size={20} />,
+    element: <RoleManagement isReadOnly={false} />,
+    allowedRoles: ["dev", "master_admin" , "super_admin"],
+  },
   {
     name: "User Management",
     path: "users",

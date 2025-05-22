@@ -19,6 +19,8 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
 }) => {
   const [users, setUsers] = useState<UserData[]>(userData);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
+
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
     type: "role" | "module";
@@ -41,6 +43,14 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
       (user.phone &&
         user.phone.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const totalItems = filteredUsers.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+
+
 
   const handleToggleChange = (id: number) => {
     if (isReadOnly) return;
@@ -70,14 +80,6 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
     });
   };
 
-  const handleApplyModules = (userId: number, selectedModules: string[]) => {
-    if (isReadOnly) return;
-    setUserSelectedModules({
-      ...userSelectedModules,
-      [userId]: selectedModules,
-    });
-    setSelectedUser(null);
-  };
 
   const handleResetRoles = (userId: number) => {
     if (isReadOnly) return;
@@ -87,13 +89,6 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
     });
   };
 
-  const handleResetModules = (userId: number) => {
-    if (isReadOnly) return;
-    setUserSelectedModules({
-      ...userSelectedModules,
-      [userId]: [],
-    });
-  };
 
   const toggleDropdown = (userId: number, type: "role" | "module") => {
     if (isReadOnly) return;
@@ -232,9 +227,11 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
           </div>
 
           <Pagination
-            currentPage={currentPage}
-            totalPages={10}
-            onPageChange={setCurrentPage}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
           />
         </div>
       </div>
