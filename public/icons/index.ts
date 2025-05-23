@@ -19,8 +19,8 @@ const icons = {
     phone2: "/icons/phone2.png",
     supportAgent: "/icons/support_agent.png",
     tb: "/icons/tb.png"  ,
-    logo:"/icons/Dashbaord-main-logo.png"
-
+    logo:"/icons/Dashbaord-main-logo.png",
+ lease_icon :"/icons/lease_icons.png"
   };
  
   export default icons;

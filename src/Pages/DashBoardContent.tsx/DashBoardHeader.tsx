@@ -41,6 +41,10 @@ const PAGE_INFO = {
     title: "Role Management",
     description: "View and manage your roles and thier permissions.",
   },
+  "/dashboard/Lease": {
+    title: "Lease Management",
+    description: "View and manage your roles and thier permissions.",
+  },
 };
 
 export const DashboardHeader = ({

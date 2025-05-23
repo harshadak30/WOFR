@@ -326,12 +326,7 @@
 
 // export default UserManagement;
 
-
-
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ChevronDown, Edit2 } from "lucide-react";
 import TableHeader from "../../component/common/ui/TableHeader";
 import MultiSelectDropdown from "../../component/common/ui/MultiSelectDropdown";
@@ -341,6 +336,7 @@ import Toggle from "../../component/common/ui/Toggle";
 import Pagination from "../../component/common/Pagination";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 interface UserManagementProps {
   isReadOnly: boolean;
@@ -353,18 +349,29 @@ const UserManagement: React.FC<UserManagementProps> = ({
 }) => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [roleOptions, setRoleOptions] = useState<{ id: string; label: string }[]>([]);
-  const [selectedUser, setSelectedUser] = useState<{ id: number; type: "role" | "module" } | null>(null);
-  const [userSelectedRoles, setUserSelectedRoles] = useState<Record<number, string[]>>({});
-  const [userSelectedModules, setUserSelectedModules] = useState<Record<number, string[]>>({});
+  const [roleOptions, setRoleOptions] = useState<
+    { id: string; label: string }[]
+  >([]);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: number;
+    type: "role" | "module";
+  } | null>(null);
+  const [userSelectedRoles, setUserSelectedRoles] = useState<
+    Record<number, string[]>
+  >({});
+  const [userSelectedModules, setUserSelectedModules] = useState<
+    Record<number, string[]>
+  >({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [itemsPerPage] = useState(10);
   const navigate = useNavigate();
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const userType = localStorage.getItem("user_type");
+    const userType = authState.user_type;
+    // const userType = localStorage.getItem("user_type");
 
     const fetchUsers = async () => {
       try {
@@ -380,16 +387,18 @@ const UserManagement: React.FC<UserManagementProps> = ({
         );
 
         const rawUsers = response.data.data.tenant_users;
-        const mappedUsers: UserData[] = rawUsers.map((user: any, index: number) => ({
-          id: index + 1,
-          name: user.name,
-          email: user.email,
-          OrgName: user.tenant_name,
-          created: new Date(user.created_at).toLocaleDateString(),
-          enabled: true,
-          tenant_user_id: user.tenant_user_id, // ADD this
-          tenant_id: user.tenant_id, 
-        }));
+        const mappedUsers: UserData[] = rawUsers.map(
+          (user: any, index: number) => ({
+            id: index + 1,
+            name: user.name,
+            email: user.email,
+            OrgName: user.tenant_name,
+            created: new Date(user.created_at).toLocaleDateString(),
+            enabled: true,
+            tenant_user_id: user.tenant_user_id, // ADD this
+            tenant_id: user.tenant_id,
+          })
+        );
 
         setUsers(mappedUsers);
       } catch (err) {
@@ -455,7 +464,6 @@ const UserManagement: React.FC<UserManagementProps> = ({
   const handleApplyRoles = async (userId: number, selectedRoles: string[]) => {
     if (isReadOnly) return;
 
-
     setUserSelectedRoles({
       ...userSelectedRoles,
       [userId]: selectedRoles,
@@ -466,10 +474,10 @@ const UserManagement: React.FC<UserManagementProps> = ({
     if (!selectedUserObj) return;
 
     const token = localStorage.getItem("token");
-    const tenantUserId = selectedUserObj.tenant_user_id; 
+    const tenantUserId = selectedUserObj.tenant_user_id;
     const tenantId = selectedUserObj.tenant_id;
     const screenIds = selectedRoles.map((roleId) => parseInt(roleId, 10)); // Ensure they are numbers
-  
+
     console.log("tenantUserId:", tenantUserId);
     console.log("tenantId:", tenantId);
     console.log("screenIds:", screenIds);
@@ -597,11 +605,19 @@ const UserManagement: React.FC<UserManagementProps> = ({
                 {currentItems.map((user) => (
                   <tr
                     key={user.id}
-                    className={`hover:bg-gray-50 ${isReadOnly ? "cursor-not-allowed" : ""}`}
+                    className={`hover:bg-gray-50 ${
+                      isReadOnly ? "cursor-not-allowed" : ""
+                    }`}
                   >
-                    <td className="px-6 py-4 text-sm text-gray-500">{user.id}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{user.name}</td>
-                    <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {user.id}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {user.name}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {user.email}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="relative">
                         <button
@@ -624,7 +640,9 @@ const UserManagement: React.FC<UserManagementProps> = ({
                               <MultiSelectDropdown
                                 title="Roles"
                                 options={roleOptions}
-                                selectedOptions={userSelectedRoles[user.id] || []}
+                                selectedOptions={
+                                  userSelectedRoles[user.id] || []
+                                }
                                 onApply={(selected) =>
                                   handleApplyRoles(user.id, selected)
                                 }
@@ -634,11 +652,15 @@ const UserManagement: React.FC<UserManagementProps> = ({
                           )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">{user.created}</td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {user.created}
+                    </td>
                     <td className="px-6 py-4">
                       <button
                         className={`text-gray-500 ${
-                          isReadOnly ? "cursor-not-allowed opacity-50" : "hover:text-gray-700"
+                          isReadOnly
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:text-gray-700"
                         }`}
                         onClick={() => handleToNavigate(user)}
                       >

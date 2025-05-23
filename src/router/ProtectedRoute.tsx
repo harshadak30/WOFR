@@ -12,15 +12,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
 }) => {
   const { authState } = useContext(AuthContext);
-  // const userType = authState.user_type ;
-  const token = localStorage.getItem("token");
-  const userType = localStorage.getItem("user_type");
   const location = useLocation();
 
-  const isAuthenticated = !!token;
-  const isAuthorized = isAuthenticated && allowedRoles.includes(userType || "");
-
-  console.log(isAuthorized);
+  const isAuthenticated = authState.isAuthenticated;
+  const userType = authState.user_type;
+  const isAuthorized =
+    isAuthenticated && userType && allowedRoles.includes(userType);
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;

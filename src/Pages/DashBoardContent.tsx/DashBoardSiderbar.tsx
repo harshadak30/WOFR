@@ -1,10 +1,9 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useContext } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { HelpCircle, LogOut, X, ChevronLeft, ChevronRight } from "lucide-react";
-import { DashboardRoutes } from "../../router/DashboardRoutes";
 import Swal from "sweetalert2";
+import { DashboardRoutes } from "../../router/DashboardRoutes";
 import icons from "../../../public/icons/index";
-import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 interface SidebarProps {
@@ -25,14 +24,14 @@ export const DashboardSidebar = ({
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {}
   );
-  const { authState } = useContext(AuthContext);
-  // const userType = authState.user_type || "dev";
+  const { authState, logout } = useContext(AuthContext);
+
+  // Prefer user_type from context state or fallback to localStorage
   const userType = useMemo(
-    () => localStorage.getItem("user_type") || "dev",
-    []
+    () => authState.user_type || localStorage.getItem("user_type") || "dev",
+    [authState.user_type]
   );
 
-  // Use useCallback for event handlers to prevent recreation on each render
   const toggleExpand = useCallback((name: string) => {
     setExpandedItems((prev) => ({ ...prev, [name]: !prev[name] }));
   }, []);
@@ -48,7 +47,7 @@ export const DashboardSidebar = ({
       confirmButtonText: "Yes, logout!",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.clear();
+        logout();
         Swal.fire({
           title: "Logged out!",
           text: "You have been logged out successfully.",
@@ -58,9 +57,8 @@ export const DashboardSidebar = ({
         }).then(() => navigate("/login"));
       }
     });
-  }, [navigate]);
+  }, [logout, navigate]);
 
-  // Memoize filtered routes to prevent recalculation on every render
   const filteredRoutes = useMemo(
     () =>
       DashboardRoutes.filter((route) => route.allowedRoles.includes(userType)),

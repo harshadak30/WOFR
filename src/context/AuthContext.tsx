@@ -94,7 +94,16 @@
 //     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 //   );
 // };
-import React, { createContext, useState, ReactNode, useContext } from "react";
+
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import Swal from "sweetalert2";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -127,20 +136,74 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [authState, setAuthState] = useState<AuthState>(initialAuthState);
+  const [authState, setAuthState] = useState<AuthState>(() => {
+    // Initialize auth state from localStorage
+    const token = localStorage.getItem("token");
+    const username = localStorage.getItem("username");
+    const user_type = localStorage.getItem("user_type");
 
-  const login = (token: string, username: string, user_type: string) => {
-    setAuthState({
-      isAuthenticated: true,
+    return {
+      isAuthenticated: !!token,
       token,
       username,
       user_type,
-    });
-  };
+    };
+  });
 
-  const logout = () => {
+  const login = useCallback(
+    (token: string, username: string, user_type: string) => {
+      localStorage.setItem("token", token);
+      localStorage.setItem("username", username);
+      localStorage.setItem("user_type", user_type);
+
+      setAuthState({
+        isAuthenticated: true,
+        token,
+        username,
+        user_type,
+      });
+    },
+    []
+  );
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("username");
+    localStorage.removeItem("user_type");
+
     setAuthState(initialAuthState);
-  };
+  }, []);
+
+  // Auto logout after 15 minutes of inactivity
+  useEffect(() => {
+    const events = ["mousemove", "keydown", "scroll", "click"];
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        logout();
+        Swal.fire({
+          icon: "info",
+          title: "Session expired",
+          text: "You have been logged out due to inactivity.",
+          timer: 3000,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.href = "/login";
+        });
+      }, 15 * 60 * 1000); // 15 minutes
+    };
+
+    // Attach events
+    events.forEach((event) => window.addEventListener(event, resetTimer));
+    resetTimer();
+
+    return () => {
+      clearTimeout(timeoutId);
+      events.forEach((event) => window.removeEventListener(event, resetTimer));
+    };
+  }, [logout]);
 
   return (
     <AuthContext.Provider value={{ authState, login, logout }}>
@@ -149,7 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-// Optional: custom hook for easy use
+// Custom hook for easy use
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {

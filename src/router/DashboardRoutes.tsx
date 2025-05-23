@@ -2,9 +2,13 @@ import DashboardOverview from "../Pages/Sidebar/DashboardOverview";
 import {
   BarChart3,
   Building2,
+  FileText,
+  Hotel,
   LayoutDashboard,
   PackageOpen,
   ShieldUser,
+  UserCog,
+  UserPen,
   Users,
 } from "lucide-react";
 
@@ -17,6 +21,7 @@ import OrganizationForm from "../Pages/MasterAdminPages/OrganizationForm";
 import CompanyProfile from "../Pages/SuperAdminPages/CompanyProfile";
 import Department from "../Pages/SuperAdminPages/Department";
 import RoleManagement from "../Pages/Sidebar/RoleManagement";
+import LeaseManagement from "../Pages/LeaseMangement/LeaseManagement";
 
 // Import new page components
 // import ReportsOverview from "../Pages/Reports/ReportsOverview";
@@ -55,12 +60,19 @@ export const DashboardRoutes: RouteItem[] = [
     allowedRoles: ["dev", "master_admin", "super_admin"], // TEMPORARY
   },
   {
-    name: "Role Management",
-    path: "role-management",
-    icon: <BarChart3 size={20} />,
-    element: <RoleManagement isReadOnly={false} />,
-    allowedRoles: ["dev", "master_admin" , "super_admin"],
+    name: "Lease Management",
+    path: "Lease",
+    icon: <Hotel size={20} />,
+    element: <LeaseManagement />,
+    allowedRoles: ["dev", "super_admin"],
   },
+  // {
+  //   name: "Role Management",
+  //   path: "role-management",
+  //   icon: <UserCog  size={20} />,
+  //   element: <RoleManagement isReadOnly={false} />,
+  //   allowedRoles: ["dev", "master_admin", "super_admin"],
+  // },
   {
     name: "User Management",
     path: "users",
@@ -78,14 +90,14 @@ export const DashboardRoutes: RouteItem[] = [
       {
         name: "Organzation Form",
         path: "org-form",
-        icon: <ShieldUser size={20} />,
+        icon: <FileText size={20} />,
         element: <OrganizationForm />,
-        allowedRoles: ["dev",  "super_admin"],
+        allowedRoles: ["dev", "super_admin"],
       },
       {
         name: "Organization Profile",
         path: "Profile",
-        icon: <Building2 size={20} />,
+        icon: <UserPen size={20} />,
         element: <OrganizationProfile />,
         allowedRoles: ["dev", "super_admin"],
       },
@@ -102,9 +114,9 @@ export const DashboardRoutes: RouteItem[] = [
         path: "company",
         icon: <ShieldUser size={20} />,
         element: <CompanyProfile />,
-        allowedRoles: ["dev",  "super_admin"],
+        allowedRoles: ["dev", "super_admin"],
       },
-      
+
       {
         name: "Department Profile",
         path: "Department",

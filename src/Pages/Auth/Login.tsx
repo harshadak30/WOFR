@@ -1,4 +1,4 @@
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -7,12 +7,11 @@ import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../hooks/useAuth";
 import MainLayout from "../../component/Layout/MainLayout";
 
-
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { authState } = useAuth();
- 
+
   const {
     isPasswordVisible,
     otpDigits,
@@ -37,7 +36,6 @@ const Login = () => {
     setResetEmailAddress,
   } = useLogin();
 
-
   const {
     register,
     formState: { errors },
@@ -48,7 +46,7 @@ const Login = () => {
       password: "",
     },
   });
- 
+
   // Redirect to dashboard if already authenticated
   useEffect(() => {
     if (authState.isAuthenticated) {
@@ -56,12 +54,12 @@ const Login = () => {
     }
   }, [authState.isAuthenticated, navigate]);
 
-
   // Login method configuration from admin settings
   const loginMethodFromAdmin = "both"; // Options: "password", "otp", "both"
-  const isPasswordAuthEnabled = loginMethodFromAdmin === "password" || loginMethodFromAdmin === "both";
-  const isOtpAuthEnabled = loginMethodFromAdmin === "otp" || loginMethodFromAdmin === "both";
-
+  const isPasswordAuthEnabled =
+    loginMethodFromAdmin === "password" || loginMethodFromAdmin === "both";
+  const isOtpAuthEnabled =
+    loginMethodFromAdmin === "otp" || loginMethodFromAdmin === "both";
 
   // Handle Google OAuth callback
   useEffect(() => {
@@ -70,14 +68,12 @@ const Login = () => {
     const error = searchParams.get("error");
     const state = searchParams.get("state");
 
-
     if (code && !error) {
       handleGoogleAuthCallback(code, state);
     } else if (error) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [location, handleGoogleAuthCallback]);
-
 
   // Handle modal escape key and body overflow
   useEffect(() => {
@@ -87,9 +83,8 @@ const Login = () => {
       }
     };
 
-
     document.addEventListener("keydown", handleEscapeKey);
-   
+
     // Toggle body scroll lock
     if (isResetModalVisible) {
       document.body.classList.add("overflow-hidden");
@@ -97,13 +92,11 @@ const Login = () => {
       document.body.classList.remove("overflow-hidden");
     }
 
-
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
       document.body.classList.remove("overflow-hidden");
     };
   }, [isResetModalVisible, closeResetModal]);
-
 
   return (
     <MainLayout>
@@ -129,14 +122,12 @@ const Login = () => {
             </p>
           </div>
 
-
           {/* Right side - Login Form */}
           <div className="flex-1 w-full max-w-sm sm:max-w-md md:max-w-lg">
             <div className="bg-white rounded-lg shadow-xl p-4 sm:p-6 md:p-8 lg:p-10 w-full mx-auto my-2 sm:my-4 lg:my-8">
               <h2 className="text-lg sm:text-xl md:text-2xl font-medium text-gray-800 text-center mb-4 md:mb-6">
                 Log in to your Account
               </h2>
-
 
               <form className="space-y-4">
                 {/* Email */}
@@ -169,7 +160,6 @@ const Login = () => {
                   )}
                 </div>
 
-
                 {/* Password */}
                 {isPasswordAuthEnabled && (
                   <div>
@@ -188,7 +178,9 @@ const Login = () => {
                           errors.password ? "border-red-500" : "border-gray-200"
                         } rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500`}
                         {...register("password", {
-                          required: isPasswordAuthEnabled ? "Password is required" : false,
+                          required: isPasswordAuthEnabled
+                            ? "Password is required"
+                            : false,
                           minLength: {
                             value: 6,
                             message: "Password must be at least 6 characters",
@@ -199,7 +191,9 @@ const Login = () => {
                         type="button"
                         className="absolute inset-y-0 right-3 flex items-center text-gray-500"
                         onClick={togglePasswordVisibility}
-                        aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                        aria-label={
+                          isPasswordVisible ? "Hide password" : "Show password"
+                        }
                       >
                         {isPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                       </button>
@@ -212,7 +206,6 @@ const Login = () => {
                   </div>
                 )}
 
-
                 {/* Forgot password */}
                 <div className="flex items-center justify-end">
                   <button
@@ -224,7 +217,6 @@ const Login = () => {
                   </button>
                 </div>
 
-
                 {/* OTP Authentication */}
                 {isOtpAuthEnabled && (
                   <>
@@ -233,15 +225,18 @@ const Login = () => {
                       onClick={() =>
                         requestOtpCode(
                           getValues("email"),
-                          isPasswordAuthEnabled ? getValues("password") : undefined
+                          isPasswordAuthEnabled
+                            ? getValues("password")
+                            : undefined
                         )
                       }
                       disabled={isOtpProcessing}
                       className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 sm:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-400 transition-colors"
                     >
-                      {isOtpProcessing ? "Sending..." : "Generate OTP for Verification"}
+                      {isOtpProcessing
+                        ? "Sending..."
+                        : "Generate OTP for Verification"}
                     </button>
-
 
                     {/* OTP Input Section */}
                     <div className="mt-3 flex flex-col items-center text-center">
@@ -258,7 +253,9 @@ const Login = () => {
                             type="text"
                             maxLength={1}
                             value={value}
-                            onChange={(e) => handleOtpDigitChange(index, e.target.value)}
+                            onChange={(e) =>
+                              handleOtpDigitChange(index, e.target.value)
+                            }
                             className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-center border rounded-md"
                             disabled={!isOtpDelivered || isOtpVerifying}
                           />
@@ -270,7 +267,9 @@ const Login = () => {
                           onClick={() =>
                             resendOtpCode(
                               getValues("email"),
-                              isPasswordAuthEnabled ? getValues("password") : undefined
+                              isPasswordAuthEnabled
+                                ? getValues("password")
+                                : undefined
                             )
                           }
                           disabled={isOtpProcessing}
@@ -283,26 +282,31 @@ const Login = () => {
                   </>
                 )}
 
-
                 {/* Login Button */}
                 <button
                   type="button"
-                  onClick={() => submitOtpVerification(getValues("email"), otpDigits.join(""))}
+                  onClick={() =>
+                    submitOtpVerification(
+                      getValues("email"),
+                      otpDigits.join("")
+                    )
+                  }
                   disabled={!isOtpDelivered || isOtpVerifying}
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white font-medium py-2 sm:py-3 px-4 rounded-md focus:outline-none disabled:bg-teal-400 transition-colors"
                 >
                   {isOtpVerifying ? "Verifying..." : "Login"}
                 </button>
 
-
                 {/* Sign up link */}
                 <p className="text-center text-xs sm:text-sm text-gray-600 mt-3">
                   Don't have an account?{" "}
-                  <Link to="/register" className="text-teal-600 hover:text-teal-500 font-medium">
+                  <Link
+                    to="/register"
+                    className="text-teal-600 hover:text-teal-500 font-medium"
+                  >
                     Sign up
                   </Link>
                 </p>
-
 
                 {/* Google Login - Commented but optimized */}
                 {/* <div className="mt-4 sm:mt-6">
@@ -322,7 +326,6 @@ const Login = () => {
         </div>
       </div>
 
-
       {/* Password Reset Modal - Responsive for all device sizes */}
       {isResetModalVisible && (
         <div
@@ -341,11 +344,11 @@ const Login = () => {
               </h3>
             </div>
 
-
             <form onSubmit={(e) => requestPasswordReset(e, resetEmailAddress)}>
               <div className="px-4 py-3 sm:py-4">
                 <p className="text-xs sm:text-sm text-gray-500 mb-3">
-                  Enter your email address and we'll send you a link to reset your password.
+                  Enter your email address and we'll send you a link to reset
+                  your password.
                 </p>
                 <div>
                   <label
@@ -366,7 +369,6 @@ const Login = () => {
                   />
                 </div>
               </div>
-
 
               <div className="px-4 py-3 bg-gray-50 flex flex-row-reverse">
                 <button
@@ -392,7 +394,4 @@ const Login = () => {
   );
 };
 
-
 export default Login;
-
-

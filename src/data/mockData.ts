@@ -135,6 +135,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 2,
@@ -146,6 +148,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 3,
@@ -157,6 +161,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 4,
@@ -168,6 +174,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 5,
@@ -179,6 +187,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 6,
@@ -190,6 +200,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 7,
@@ -201,6 +213,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 8,
@@ -212,6 +226,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 9,
@@ -223,6 +239,8 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
   },
   {
     id: 10,
@@ -234,5 +252,73 @@ export const userData: UserData[] = [
     moduleId: null,
     created: "dd/mm/yy",
     enabled: true,
+    tenant_user_id: "",
+    tenant_id: "",
+  },
+];
+
+import { Lease } from "../types";
+
+// Generate mock lease data
+export const mockLeases: Lease[] = [
+  {
+    id: "1",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Active",
+  },
+  {
+    id: "2",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Active",
+  },
+  {
+    id: "3",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Pending",
+  },
+  {
+    id: "4",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Draft",
+  },
+  {
+    id: "5",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Rejected",
+  },
+  {
+    id: "6",
+    leaseNumber: "#12345",
+    propertyType: "Office Space",
+    client: "Office Space",
+    price: 1200,
+    startDate: "01-03-2025",
+    endDate: "14-03-2025",
+    status: "Expired",
   },
 ];

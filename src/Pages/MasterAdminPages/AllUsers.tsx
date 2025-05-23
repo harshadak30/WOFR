@@ -1,18 +1,19 @@
 import UserManagement from "./UserManagement";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import ExternalOrganizations from "./ExternalOrganizations";
+import { AuthContext } from "../../context/AuthContext";
 // import { useAuth } from "../../context/AuthContext";
 
 function Allusers() {
   const [showModuleView, setShowModuleView] = useState(false);
   const [userType, setUserType] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  // const { authState } = useAuth();
+  const { authState } = useContext(AuthContext);
 
   useEffect(() => {
-    const userType = localStorage.getItem("user_type");
-    // const userType = authState.user_type;
+    // const userType = localStorage.getItem("user_type");
+    const userType = authState.user_type;
 
     setUserType(userType);
   }, []);
@@ -53,27 +54,6 @@ function Allusers() {
             </div>
 
             <div className="flex flex-col md:flex-row w-full md:w-auto items-center space-y-4 md:space-y-0 md:space-x-4">
-              {/* <div className="relative w-full md:w-64">
-                {(userType === "super_admin" ||
-                  (userType === "master_admin" && !showModuleView)) && (
-                  <button
-                    className={`whitespace-nowrap py-2 px-3 sm:px-4 rounded-md text-xs sm:text-sm font-medium transition-colors duration-200 bg-[#008F98] text-white hover:bg-[#008F98]`}
-                  >
-                    Add Users
-                  </button>
-                )}
-
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search size={18} className="text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent sm:text-sm"
-                  placeholder="Search users..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              </div> */}
 
               <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
                 {(userType === "super_admin" ||

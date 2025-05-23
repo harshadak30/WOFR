@@ -1,17 +1,19 @@
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { dashboardRoutes, publicRoutes } from "./router/routes";
+import { AuthProvider } from "./context/AuthContext";
 
 const AppRoutes = () => {
-  // Combine all routes
   const routes = [...publicRoutes, ...dashboardRoutes];
   return useRoutes(routes);
 };
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <AppRoutes />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
 };
 

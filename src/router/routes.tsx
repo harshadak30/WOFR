@@ -14,6 +14,8 @@ import DashboardLayout from "../component/Layout/DashboardLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import Unauthorized from "../Pages/unauthorized/Unauthorized";
 import UserProfile from "../Pages/MasterAdminPages/UserProfile";
+import BulkUpload from "../Pages/LeaseMangement/BulkUpload";
+import CreateLease from "../Pages/LeaseMangement/CreateLease";
 
 export const publicRoutes: RouteObject[] = [
   {
@@ -57,11 +59,10 @@ export const publicRoutes: RouteObject[] = [
     element: <NotFound />,
   },
   {
-    path:"/unauthorized",
-    element: <Unauthorized/>
-  }
+    path: "/unauthorized",
+    element: <Unauthorized />,
+  },
 ];
-
 
 // Dashboard routes (temporarily without auth protection)
 export const dashboardRoutes: RouteObject[] = [
@@ -73,47 +74,62 @@ export const dashboardRoutes: RouteObject[] = [
         index: true,
         element: <Navigate to="/dashboard/overview" replace />,
       },
-      ...DashboardRoutes.filter(route => !route.children).map(route => ({
+      ...DashboardRoutes.filter((route) => !route.children).map((route) => ({
         path: route.path,
         // Temporary: No ProtectedRoute
         // element: route.element,
-     
+
         element: (
           <ProtectedRoute allowedRoles={route.allowedRoles}>
             {route.element}
           </ProtectedRoute>
         ),
-        
       })),
-      ...DashboardRoutes.filter(route => route.children)
-        .flatMap(route =>
-          route.children!.map(child => ({
-            path: child.path,
-            // Temporary: No ProtectedRoute
-            // element: child.element,
-       
-            element: (
-              <ProtectedRoute allowedRoles={child.allowedRoles}>
-                {child.element}
-              </ProtectedRoute>
-            ),
-         
-          }))
-        ),
+      ...DashboardRoutes.filter((route) => route.children).flatMap((route) =>
+        route.children!.map((child) => ({
+          path: child.path,
+          // Temporary: No ProtectedRoute
+          // element: child.element,
 
-        {
-          // path: "users/:id", 
-          path:"users/userDetails/:id",
           element: (
-            <ProtectedRoute allowedRoles={["dev", "master_admin", "super_admin"]}>
-              <UserProfile />
+            <ProtectedRoute allowedRoles={child.allowedRoles}>
+              {child.element}
             </ProtectedRoute>
           ),
-        }
+        }))
+      ),
+
+      {
+        // path: "users/:id",
+        path: "users/userDetails/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["dev", "master_admin", "super_admin"]}>
+            <UserProfile />
+          </ProtectedRoute>
+        ),
+        // element:<UserProfile/>
+      },
+
+      {
+        // path: "users/:id",
+        path: "create-lease",
+        element: (
+          <ProtectedRoute allowedRoles={["dev", "master_admin", "super_admin"]}>
+            <CreateLease />
+          </ProtectedRoute>
+        ),
+        // element:<CreateLease/>
+      },
+      {
+        // path: "users/:id",
+        path: "bulk-upload",
+        element: (
+          <ProtectedRoute allowedRoles={["dev", "master_admin", "super_admin"]}>
+            <BulkUpload />
+          </ProtectedRoute>
+        ),
+        // element:<BulkUpload/>
+      },
     ],
   },
-
-  
 ];
-
-
