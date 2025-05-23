@@ -31,7 +31,7 @@ const LeaseManagement: React.FC = () => {
 
       setLeases(filteredLeases);
       setLoading(false);
-      setCurrentPage(1); // Reset to first page when changing tabs
+      setCurrentPage(1); 
     }, 500);
   }, [activeTab]);
 

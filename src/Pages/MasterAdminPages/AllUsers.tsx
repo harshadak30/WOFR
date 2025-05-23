@@ -14,7 +14,6 @@ function Allusers() {
   useEffect(() => {
     // const userType = localStorage.getItem("user_type");
     const userType = authState.user_type;
-
     setUserType(userType);
   }, []);
 
@@ -54,7 +53,6 @@ function Allusers() {
             </div>
 
             <div className="flex flex-col md:flex-row w-full md:w-auto items-center space-y-4 md:space-y-0 md:space-x-4">
-
               <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
                 {(userType === "super_admin" ||
                   (userType === "master_admin" && !showModuleView)) && (

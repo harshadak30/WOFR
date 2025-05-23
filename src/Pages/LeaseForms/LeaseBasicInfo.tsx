@@ -316,7 +316,7 @@ const LeaseBasicInfo: React.FC<LeaseTermsProps> = ({
           <button
             type="button"
             onClick={onNext}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-[#008F98] text-white px-4 py-2 rounded-md hover:bg-[#008F98] transition-colors"
           >
             Next
           </button>

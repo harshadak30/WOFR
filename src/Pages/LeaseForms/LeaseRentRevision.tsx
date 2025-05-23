@@ -98,7 +98,7 @@ const LeaseRentRevision: React.FC<LeaseRentRevisionProps> = ({
             <div className="flex justify-end text-sm font-medium text-gray-700 mt-5">
               <button
                 type="button"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+                className="bg-[#008F98] text-white px-4 py-2 rounded-md hover:bg-[#008F98] transition-colors"
               >
                 + Add
               </button>
@@ -119,7 +119,7 @@ const LeaseRentRevision: React.FC<LeaseRentRevisionProps> = ({
         <button
           type="button"
           onClick={onNext}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+          className="bg-[#008F98] text-white px-4 py-2 rounded-md hover:bg-[#008F98] transition-colors"
         >
           Next
         </button>
