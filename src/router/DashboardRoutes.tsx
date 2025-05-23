@@ -6,7 +6,6 @@ import {
   Hotel,
   LayoutDashboard,
   PackageOpen,
-  ShieldUser,
   UserCog,
   UserPen,
   Users,
@@ -66,13 +65,13 @@ export const DashboardRoutes: RouteItem[] = [
     element: <LeaseManagement />,
     allowedRoles: ["dev", "super_admin"],
   },
-  // {
-  //   name: "Role Management",
-  //   path: "role-management",
-  //   icon: <UserCog  size={20} />,
-  //   element: <RoleManagement isReadOnly={false} />,
-  //   allowedRoles: ["dev", "master_admin", "super_admin"],
-  // },
+  {
+    name: "Role Management",
+    path: "role-management",
+    icon: <UserCog size={20} />,
+    element: <RoleManagement isReadOnly={false} />,
+    allowedRoles: ["dev", "super_admin"],
+  },
   {
     name: "User Management",
     path: "users",
@@ -101,22 +100,6 @@ export const DashboardRoutes: RouteItem[] = [
         element: <OrganizationProfile />,
         allowedRoles: ["dev", "super_admin"],
       },
-    ],
-  },
-  {
-    name: "Company",
-    path: "",
-    icon: <Users size={20} />,
-    allowedRoles: ["dev", "super_admin"],
-    children: [
-      {
-        name: "Company profile",
-        path: "company",
-        icon: <ShieldUser size={20} />,
-        element: <CompanyProfile />,
-        allowedRoles: ["dev", "super_admin"],
-      },
-
       {
         name: "Department Profile",
         path: "Department",
@@ -126,6 +109,29 @@ export const DashboardRoutes: RouteItem[] = [
       },
     ],
   },
+  // {
+  //   name: "Company",
+  //   path: "",
+  //   icon: <Users size={20} />,
+  //   allowedRoles: ["dev", "super_admin"],
+  //   children: [
+  //     {
+  //       name: "Company profile",
+  //       path: "company",
+  //       icon: <ShieldUser size={20} />,
+  //       element: <CompanyProfile />,
+  //       allowedRoles: ["dev", "super_admin"],
+  //     },
+
+  //     {
+  //       name: "Department Profile",
+  //       path: "Department",
+  //       icon: <Building2 size={20} />,
+  //       element: <Department />,
+  //       allowedRoles: ["dev", "super_admin"],
+  //     },
+  //   ],
+  // },
   {
     name: "Financial Dashboard",
     path: "financial",

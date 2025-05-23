@@ -238,7 +238,7 @@ const LeaseReviewSubmit: React.FC<LeaseReviewSubmitProps> = ({
           disabled={!isFormValid}
           className={`px-4 py-2 rounded-md ${
             isFormValid
-              ? "bg-blue-600 text-white hover:bg-blue-700"
+              ? "bg-[#008F98] text-white hover:bg-[#008F98]"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           } transition-colors`}
         >
