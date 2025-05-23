@@ -71,6 +71,27 @@ const UserProfile = ({
 
   return (
     <div className="bg-white rounded-md shadow-sm w-full mx-auto">
+      <button
+        onClick={() => window.history.back()}
+        className="ml-4 mt-4 text-sm text-indigo-600 hover:underline flex items-center space-x-1"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-4 h-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+        <span>Back</span>
+      </button>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 md:p-6 lg:p-10">
         {/* User Information Section */}
         <div className="space-y-4 md:space-y-6">

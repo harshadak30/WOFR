@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "../helper/axios";
-import { useAuth } from "./useAuth";
+import { useAuth } from "../context/AuthContext";
 
 interface UseLoginReturn {
   isPasswordVisible: boolean;
@@ -132,22 +132,16 @@ export const useLogin = (): UseLoginReturn => {
 
       if (response.data) {
         if (response.data.token) {
-          localStorage.setItem("token", response.data.token);
-          localStorage.setItem("name", response.data.username);
-          localStorage.setItem("user_type", response.data.user_type);
-        }
-        if (response.data.token) {
+          // Use the auth context login function which handles both state and localStorage
           login(
             response.data.token,
             response.data.username,
             response.data.user_type || "User"
           );
 
-          console.log(response.data.user_type);
+          showNotification("Login successful", true);
+          setTimeout(() => navigate("/dashboard"), 1000);
         }
-        showNotification("Login successful", true);
-
-        setTimeout(() => navigate("/dashboard"), 1000);
       }
     } catch (error: any) {
       console.error("OTP verification error:", error);
@@ -166,8 +160,8 @@ export const useLogin = (): UseLoginReturn => {
   const initiateGoogleAuth = async () => {
     setIsGoogleAuthenticating(true);
     try {
-      const response = await axios.get(`auth/v1/google/login`);
-      window.location.href = response.data?.authUrl || `auth/v1/google/login`;
+      const response = await axios.get("auth/v1/google/login");
+      window.location.href = response.data?.authUrl || "auth/v1/google/login";
     } catch (error) {
       console.error("Google login error:", error);
       showNotification(
@@ -184,12 +178,13 @@ export const useLogin = (): UseLoginReturn => {
   ) => {
     setIsGoogleAuthenticating(true);
     try {
-      const response = await axios.post(`v1/auth/google/callback`, {
+      const response = await axios.post("v1/auth/google/callback", {
         code,
         state: state || "",
       });
 
       if (response.data?.token) {
+        // Use the auth context login function
         login(
           response.data.token,
           response.data.username,
