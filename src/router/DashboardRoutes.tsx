@@ -6,7 +6,7 @@ import {
   Hotel,
   LayoutDashboard,
   PackageOpen,
-  UserCog,
+  Settings,
   UserPen,
   Users,
 } from "lucide-react";
@@ -17,15 +17,13 @@ import ModulesBasedOnRolesWrapper from "../Pages/SuperAdminPages/ModulesBasedOnR
 import OrganizationProfile from "../Pages/SuperAdminPages/OrganizationProfile";
 import Allusers from "../Pages/MasterAdminPages/AllUsers";
 import OrganizationForm from "../Pages/MasterAdminPages/OrganizationForm";
-import CompanyProfile from "../Pages/SuperAdminPages/CompanyProfile";
 import Department from "../Pages/SuperAdminPages/Department";
-import RoleManagement from "../Pages/Sidebar/RoleManagement";
 import LeaseManagement from "../Pages/LeaseMangement/LeaseManagement";
 import RoleManagement1 from "../Pages/SuperAdminPages/RoleManagement1";
+import RoleManagementM from "../Pages/Sidebar/RoleManagementM";
 
 // Import new page components
 // import ReportsOverview from "../Pages/Reports/ReportsOverview";
-// import PaymentHistory from "../Pages/Finance/PaymentHistory";
 
 export interface RouteChild {
   name: string;
@@ -57,26 +55,26 @@ export const DashboardRoutes: RouteItem[] = [
     path: "modules",
     icon: <PackageOpen size={20} />,
     element: <ModulesBasedOnRolesWrapper />,
-    allowedRoles: ["dev", "master_admin", "super_admin"], // TEMPORARY
+    allowedRoles: ["dev", "master_admin", "super_admin"], 
   },
-  {
-    name: "Lease Management",
-    path: "Lease",
-    icon: <Hotel size={20} />,
-    element: <LeaseManagement />,
-    allowedRoles: ["dev", "super_admin"],
-  },
+  // {
+  //   name: "Lease Management",
+  //   path: "Lease",
+  //   icon: <Hotel size={20} />,
+  //   element: <LeaseManagement />,
+  //   allowedRoles: ["dev", "super_admin"],
+  // },
   {
     name: "Role Management",
     path: "role-management",
-    icon: <UserCog size={20} />,
-    element: <RoleManagement isReadOnly={false} />,
+    icon: <Settings size={20} />,
+    element: <RoleManagementM isReadOnly={false} />,
     allowedRoles: ["dev","master_admin"],
   },
   {
     name: "Role Management",
     path: "role-management1",
-    icon: <UserCog size={20} />,
+    icon: <Settings size={20} />,
     element: <RoleManagement1 isReadOnly={false} />,
     allowedRoles: ["dev", "super_admin"],
   },
