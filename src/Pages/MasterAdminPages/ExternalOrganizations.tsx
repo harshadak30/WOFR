@@ -52,7 +52,6 @@
 //   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 //   const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
 
-
 //   useEffect(() => {
 //     const token = localStorage.getItem("token");
 //     const userType = localStorage.getItem("user_type");
@@ -96,9 +95,6 @@
 //     }
 //   }, []);
 
-
-
-
 //   const handleToggleChange = (id: number) => {
 //     if (isReadOnly) return;
 //     setUsers(
@@ -127,7 +123,6 @@
 //     });
 //   };
 
-
 //   const handleResetRoles = (userId: number) => {
 //     if (isReadOnly) return;
 //     setUserSelectedRoles({
@@ -135,7 +130,6 @@
 //       [userId]: [],
 //     });
 //   };
-
 
 //   const toggleDropdown = (userId: number, type: "role" | "module") => {
 //     if (isReadOnly) return;
@@ -310,6 +304,11 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
 }) => {
   const [users, setUsers] = useState<UserData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [moduleDropdownOptions, setModuleDropdownOptions] = useState<
+  { id: string; label: string }[]
+>([]);
+  const [error, setError] = useState<string | null>(null);
   const [itemsPerPage] = useState(10);
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
@@ -322,7 +321,6 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
   const [userSelectedModules, setUserSelectedModules] = useState<
     Record<number, string[]>
   >({});
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -337,6 +335,7 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
             },
           }
         );
+console.log(response.data);
 
         const transformed = response.data.map((user: any, index: number) => ({
           id: index + 1,
@@ -360,6 +359,75 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
 
     fetchUsers();
   }, []);
+
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   const userType = localStorage.getItem("user_type");
+
+  //   const fetchRoles = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const response = await axios.get(
+  //         `http://192.168.29.82:8000/api/v1/modules?page=1&limit=10&sort_by=module_id&order=asc`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //             Accept: "application/json",
+  //           },
+  //         }
+  //       );
+  //       console.log("modules_response", response.data.data.modules);
+
+     
+  //     } catch (err) {
+  //       setError("Failed to fetch user roles");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+   
+  //     fetchRoles();
+  
+  // }, []);
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    const fetchModules = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          "http://192.168.29.82:8000/api/v1/modules?page=1&limit=10&sort_by=module_id&order=asc",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+  
+        const modules = response.data.data.modules || [];
+  
+        const formattedModules = modules.map((module: any) => ({
+          id: String(module.module_id),
+          label: module.module_name,
+        }));
+  
+        setModuleDropdownOptions(formattedModules);
+      } catch (err) {
+        console.error("Failed to fetch modules:", err);
+        setError("Failed to fetch modules");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchModules();
+  }, []);
+  
 
   const filteredUsers = users.filter(
     (user) =>
@@ -401,6 +469,25 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
     });
   };
 
+
+  const handleApplyModules = (userId: number, selectedModules: string[]) => {
+    if (isReadOnly) return;
+    setUserSelectedModules({
+      ...userSelectedModules,
+      [userId]: selectedModules,
+    });
+    setSelectedUser(null);
+  };
+
+  
+  const handleResetModules = (userId: number) => {
+    if (isReadOnly) return;
+    setUserSelectedModules({
+      ...userSelectedModules,
+      [userId]: [],
+    });
+  };
+
   const handleToNavigate = (user: UserData) => {
     navigate(`userDetails/${user.user_id}`, {
       state: {
@@ -423,7 +510,7 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
   const getSelectedText = (userId: number, type: "role" | "module") => {
     const items =
       type === "role" ? userSelectedRoles[userId] : userSelectedModules[userId];
-    if (!items?.length) return type === "role" ? "Roles" : "Standard";
+    if (!items?.length) return type === "role" ? "Roles" : "Modules";
 
     const options = type === "role" ? roleOptions : moduleOptions;
     const selectedLabels = items
@@ -460,6 +547,7 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
                   <TableHeader>EMAIL</TableHeader>
                   <TableHeader>PHONE</TableHeader>
                   <TableHeader>ROLES</TableHeader>
+                  <TableHeader>Modules</TableHeader>
                   <TableHeader>CREATED</TableHeader>
                   <TableHeader>EDIT</TableHeader>
                   <TableHeader>ENABLE/DISABLE</TableHeader>
@@ -469,7 +557,9 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
                 {currentItems.map((user) => (
                   <tr
                     key={user.user_id}
-                    className={`hover:bg-gray-50 ${isReadOnly ? "cursor-not-allowed" : ""}`}
+                    className={`hover:bg-gray-50 ${
+                      isReadOnly ? "cursor-not-allowed" : ""
+                    }`}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.id}
@@ -520,6 +610,41 @@ const ExternalOrganizations: React.FC<ExternalOrganizationUserProps> = ({
                           )}
                       </div>
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown(user.id, "module")}
+                          className={`inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm ${
+                            isReadOnly
+                              ? "cursor-not-allowed opacity-75"
+                              : "hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          }`}
+                          disabled={isReadOnly}
+                        >
+                          {getSelectedText(user.id, "module")}
+                          <ChevronDown size={16} className="ml-2" />
+                        </button>
+
+                        {!isReadOnly &&
+                          selectedUser?.id === user.id &&
+                          selectedUser?.type === "module" && (
+                            <div className="absolute z-10 mt-1 w-72">
+                              <MultiSelectDropdown
+                                title="Modules"
+                                options={moduleDropdownOptions}
+                                selectedOptions={
+                                  userSelectedModules[user.id] || []
+                                }
+                                onApply={(selected) =>
+                                  handleApplyModules(user.id, selected)
+                                }
+                                onReset={() => handleResetModules(user.id)}
+                              />
+                            </div>
+                          )}
+                      </div>
+                    </td>
+
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>

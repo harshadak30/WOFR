@@ -22,6 +22,11 @@ export interface ModuleData {
 }
 
 export interface UserData {
+  created_at: string | number | Date;
+  user_id: any;
+  phone_number: any;
+  organization_name: any;
+  username: any;
   id: number;
   OrgName: string;
   name: string;
