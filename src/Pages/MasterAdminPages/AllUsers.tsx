@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import ExternalOrganizations from "./ExternalOrganizations";
 import { AuthContext } from "../../context/AuthContext";
+import UserManagementM from "../SuperAdminPages/UserManagementM";
 // import { useAuth } from "../../context/AuthContext";
 
 function Allusers() {
@@ -109,7 +110,7 @@ function Allusers() {
               <UserManagement isReadOnly={false} searchTerm={searchTerm} />
             )
           ) : (
-            <UserManagement isReadOnly={false} searchTerm={searchTerm} />
+            <UserManagementM isReadOnly={false} searchTerm={searchTerm} />
           )}
         </div>
       </div>
