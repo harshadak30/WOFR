@@ -21,6 +21,7 @@ import CompanyProfile from "../Pages/SuperAdminPages/CompanyProfile";
 import Department from "../Pages/SuperAdminPages/Department";
 import RoleManagement from "../Pages/Sidebar/RoleManagement";
 import LeaseManagement from "../Pages/LeaseMangement/LeaseManagement";
+import RoleManagement1 from "../Pages/SuperAdminPages/RoleManagement1";
 
 // Import new page components
 // import ReportsOverview from "../Pages/Reports/ReportsOverview";
@@ -70,6 +71,13 @@ export const DashboardRoutes: RouteItem[] = [
     path: "role-management",
     icon: <UserCog size={20} />,
     element: <RoleManagement isReadOnly={false} />,
+    allowedRoles: ["dev","master_admin"],
+  },
+  {
+    name: "Role Management",
+    path: "role-management1",
+    icon: <UserCog size={20} />,
+    element: <RoleManagement1 isReadOnly={false} />,
     allowedRoles: ["dev", "super_admin"],
   },
   {
@@ -163,29 +171,6 @@ export const DashboardRoutes: RouteItem[] = [
         allowedRoles: ["dev", "master_admin", "super_admin", "analyst"],
       },
       // You can add more analytics children here
-    ]
-  },
-  {
-    name: "Documents",
-    path: "documents",
-    icon: <FileText size={20} />,
-    element: <DocumentCenter />,
-    allowedRoles: ["dev", "master_admin", "super_admin", "document_manager"],
-  },
-
-  {
-    name: "Finance",
-    path: "",
-    icon: <CreditCard size={20} />,
-    allowedRoles: ["dev", "master_admin", "finance_admin"],
-    children: [
-      {
-        name: "Payment History",
-        path: "payment-history",
-        icon: <FileText size={20} />,
-        element: <PaymentHistory />,
-        allowedRoles: ["dev", "master_admin", "finance_admin"],
-      }
     ]
   },
  

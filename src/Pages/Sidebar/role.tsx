@@ -30,25 +30,12 @@ interface RoleMapping {
 
 const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
   const [roles, setRoles] = useState<Role[]>([]);
-  const [moduleActionPairs, setModuleActionPairs] = useState<
-    ModuleActionPair[]
-  >([]);
-  const [selectedRole, setSelectedRole] = useState<{
-    id: number;
-    type: "module" | "action";
-  } | null>(null);
-  // const [roleModules, setRoleModules] = useState<Record<number, string[]>>({});
-  // const [roleActions, setRoleActions] = useState<Record<number, string[]>>({});
-  const [currentPage, setCurrentPage] = useState(1);
-  const [message, setMessage] = useState<string>("");
-  const [initialRoleModules, setInitialRoleModules] = useState<
-    Record<number, string[]>
-  >({});
-  const [initialRoleActions, setInitialRoleActions] = useState<
-    Record<number, string[]>
-  >({});
+  const [moduleActionPairs, setModuleActionPairs] = useState<ModuleActionPair[]>([]);
+  const [selectedRole, setSelectedRole] = useState<{ id: number; type: "module" | "action" } | null>(null);
   const [roleModules, setRoleModules] = useState<Record<number, string[]>>({});
   const [roleActions, setRoleActions] = useState<Record<number, string[]>>({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [message, setMessage] = useState<string>("");
 
   const itemsPerPage = 10;
   const totalItems = roles.length;
@@ -57,53 +44,13 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentRoles = roles.slice(indexOfFirstItem, indexOfLastItem);
 
-  // const fetchRoleMappings = async (fetchedRoles: Role[]) => {
-  //   try {
-  //     const response = await axios.get("/api/v1/mapped-module-actions-roles?page=1&limit=100&order=asc", {
-  //       headers: { Accept: "application/json" },
-  //     });
-  //     const mappings = response.data.data.modules;
-
-  //     const groupedByRole = mappings.reduce((acc, item) => {
-  //       if (!acc[item.role_name]) acc[item.role_name] = [];
-  //       acc[item.role_name].push(item);
-  //       return acc;
-  //     }, {} as Record<string, RoleMapping[]>);
-
-  //     const roleNameToId = fetchedRoles.reduce((map, role) => {
-  //       map[role.role_name] = role.role_id;
-  //       return map;
-  //     }, {} as Record<string, number>);
-
-  //     const newRoleModules: Record<number, string[]> = {};
-  //     const newRoleActions: Record<number, string[]> = {};
-
-  //     for (const [roleName, items] of Object.entries(groupedByRole)) {
-  //       const roleId = roleNameToId[roleName];
-  //       if (roleId !== undefined) {
-  //         newRoleModules[roleId] = Array.from(new Set(items.map((item) => item.module_name)));
-  //         newRoleActions[roleId] = Array.from(new Set(items.map((item) => item.action_name)));
-  //       }
-  //     }
-
-  //     setRoleModules(newRoleModules);
-  //     setRoleActions(newRoleActions);
-
-  //   } catch (error) {
-  //     console.error("Failed to fetch role mappings", error);
-  //   }
-  // };
-
   const fetchRoleMappings = async (fetchedRoles: Role[]) => {
     try {
-      const response = await axios.get(
-        "/api/v1/mapped-module-actions-roles?page=1&limit=100&order=asc",
-        {
-          headers: { Accept: "application/json" },
-        }
-      );
-
+      const response = await axios.get("/api/v1/mapped-module-actions-roles?page=1&limit=100&order=asc", {
+        headers: { Accept: "application/json" },
+      });
       const mappings = response.data.data.modules;
+
       const groupedByRole = mappings.reduce((acc, item) => {
         if (!acc[item.role_name]) acc[item.role_name] = [];
         acc[item.role_name].push(item);
@@ -121,44 +68,14 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
       for (const [roleName, items] of Object.entries(groupedByRole)) {
         const roleId = roleNameToId[roleName];
         if (roleId !== undefined) {
-          newRoleModules[roleId] = Array.from(
-            new Set(items.map((item) => item.module_name))
-          );
-          newRoleActions[roleId] = Array.from(
-            new Set(items.map((item) => item.action_name))
-          );
+          newRoleModules[roleId] = Array.from(new Set(items.map((item) => item.module_name)));
+          newRoleActions[roleId] = Array.from(new Set(items.map((item) => item.action_name)));
         }
       }
 
-      setInitialRoleModules(newRoleModules);
-      setInitialRoleActions(newRoleActions);
+      setRoleModules(newRoleModules);
+      setRoleActions(newRoleActions);
 
-      // Only update user state if not manually modified (you can improve this check)
-      setRoleModules((prev) => {
-        const updated: Record<number, string[]> = {};
-        for (const key in newRoleModules) {
-          const id = parseInt(key);
-          if (!prev[id] || prev[id].length === 0) {
-            updated[id] = newRoleModules[id];
-          } else {
-            updated[id] = prev[id]; // retain manual changes
-          }
-        }
-        return updated;
-      });
-
-      setRoleActions((prev) => {
-        const updated: Record<number, string[]> = {};
-        for (const key in newRoleActions) {
-          const id = parseInt(key);
-          if (!prev[id] || prev[id].length === 0) {
-            updated[id] = newRoleActions[id];
-          } else {
-            updated[id] = prev[id];
-          }
-        }
-        return updated;
-      });
     } catch (error) {
       console.error("Failed to fetch role mappings", error);
     }
@@ -180,13 +97,11 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
           }),
         ]);
 
-        const fetchedRoles = roleRes.data.data.roles.map((r: any) => ({
-          ...r,
-          enabled: true,
-        }));
+        const fetchedRoles = roleRes.data.data.roles.map((r: any) => ({ ...r, enabled: true }));
         setRoles(fetchedRoles);
         setModuleActionPairs(moduleRes.data.data.module_action_pairs);
         fetchRoleMappings(fetchedRoles);
+
       } catch (error) {
         console.error("API fetch failed:", error);
       }
@@ -194,7 +109,7 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
 
     fetchData();
 
-    const interval = setInterval(() => fetchRoleMappings(roles), 40000); // auto-refresh
+    const interval = setInterval(() => fetchRoleMappings(roles), 10000); // auto-refresh
     return () => clearInterval(interval);
   }, []);
 
@@ -235,11 +150,7 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
     );
   };
 
-  const handleApply = (
-    roleId: number,
-    selected: string[],
-    type: "module" | "action"
-  ) => {
+  const handleApply = (roleId: number, selected: string[], type: "module" | "action") => {
     if (type === "module") {
       setRoleModules({ ...roleModules, [roleId]: selected });
     } else {
@@ -251,43 +162,33 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
   const handleToggleChange = (roleId: number) => {
     if (isReadOnly) return;
     setRoles((prev) =>
-      prev.map((r) =>
-        r.role_id === roleId ? { ...r, enabled: !r.enabled } : r
-      )
+      prev.map((r) => (r.role_id === roleId ? { ...r, enabled: !r.enabled } : r))
     );
   };
 
   const handleSaveAssignments = async () => {
-    const assignments = Object.entries(roleActions).map(
-      ([roleId, actionNames]) => {
-        const moduleActionIds = moduleActionPairs
-          .filter((pair) => actionNames.includes(pair.action_name))
-          .map((pair) => pair.module_action_pair_id);
+    const assignments = Object.entries(roleActions).map(([roleId, actionNames]) => {
+      const moduleActionIds = moduleActionPairs
+        .filter(pair =>
+          actionNames.includes(pair.action_name)
+        )
+        .map(pair => pair.module_action_pair_id);
 
-        return {
-          role_id: [parseInt(roleId)],
-          module_action_pair_ids: moduleActionIds,
-          status: "active",
-        };
-      }
-    );
+      return {
+        role_id: [parseInt(roleId)],
+        module_action_pair_ids: moduleActionIds,
+        status: "active",
+      };
+    });
 
     try {
-      const response = await axios.post(
-        "/api/v1/mapping-module-actions-roles",
-        { assignments },
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      setMessage(
-        `Assigned successfully to roles: ${assignments
-          .map((a) => a.role_id[0])
-          .join(", ")}`
-      );
+      const response = await axios.post("/api/v1/mapping-module-actions-roles", { assignments }, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+      setMessage(`Assigned successfully to roles: ${assignments.map((a) => a.role_id[0]).join(", ")}`);
       fetchRoleMappings(roles); // refresh immediately
     } catch (error) {
       console.error("Assignment failed:", error);
@@ -310,9 +211,7 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
       </div>
 
       {message && (
-        <div className="px-4 py-2 text-sm text-green-700 bg-green-100 rounded mx-4 my-2">
-          {message}
-        </div>
+        <div className="px-4 py-2 text-sm text-green-700 bg-green-100 rounded mx-4 my-2">{message}</div>
       )}
 
       <table className="min-w-full divide-y divide-gray-200">
@@ -336,28 +235,20 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
                     onClick={() => toggleDropdown(role.role_id, "module")}
                     className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm"
                   >
-                    {/* {roleModules[role.role_id]?.length ? `${roleModules[role.role_id].length} Modules` : "Select Modules"} */}
-                    {roleModules[role.role_id]?.length
-                      ? `${roleModules[role.role_id].length} Modules`
-                      : "0 Modules"}
+                    {roleModules[role.role_id]?.length ? `${roleModules[role.role_id].length} Modules` : "Select Modules"}
                     <ChevronDown size={16} className="inline ml-2" />
                   </button>
-                  {selectedRole?.id === role.role_id &&
-                    selectedRole?.type === "module" && (
-                      <div className="absolute z-10 mt-1 w-72">
-                        <MultiSelectDropdown
-                          title="Modules"
-                          options={moduleOptions}
-                          selectedOptions={roleModules[role.role_id] || []}
-                          onApply={(selected) =>
-                            handleApply(role.role_id, selected, "module")
-                          }
-                          onReset={() =>
-                            handleApply(role.role_id, [], "module")
-                          }
-                        />
-                      </div>
-                    )}
+                  {selectedRole?.id === role.role_id && selectedRole?.type === "module" && (
+                    <div className="absolute z-10 mt-1 w-72">
+                      <MultiSelectDropdown
+                        title="Modules"
+                        options={moduleOptions}
+                        selectedOptions={roleModules[role.role_id] || []}
+                        onApply={(selected) => handleApply(role.role_id, selected, "module")}
+                        onReset={() => handleApply(role.role_id, [], "module")}
+                      />
+                    </div>
+                  )}
                 </div>
               </td>
               <td className="px-6 py-4">
@@ -366,29 +257,20 @@ const RoleManagement: React.FC<{ isReadOnly: boolean }> = ({ isReadOnly }) => {
                     onClick={() => toggleDropdown(role.role_id, "action")}
                     className="inline-flex justify-between items-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm"
                   >
-                    {/* {roleActions[role.role_id]?.length ? `${roleActions[role.role_id].length} Actions` : "Select Actions"} */}
-                    {roleActions[role.role_id]?.length
-                      ? `${roleActions[role.role_id].length} Actions`
-                      : "0 Actions"}
-
+                    {roleActions[role.role_id]?.length ? `${roleActions[role.role_id].length} Actions` : "Select Actions"}
                     <ChevronDown size={16} className="inline ml-2" />
                   </button>
-                  {selectedRole?.id === role.role_id &&
-                    selectedRole?.type === "action" && (
-                      <div className="absolute z-10 mt-1 w-72">
-                        <MultiSelectDropdown
-                          title="Actions"
-                          options={actionOptions}
-                          selectedOptions={roleActions[role.role_id] || []}
-                          onApply={(selected) =>
-                            handleApply(role.role_id, selected, "action")
-                          }
-                          onReset={() =>
-                            handleApply(role.role_id, [], "action")
-                          }
-                        />
-                      </div>
-                    )}
+                  {selectedRole?.id === role.role_id && selectedRole?.type === "action" && (
+                    <div className="absolute z-10 mt-1 w-72">
+                      <MultiSelectDropdown
+                        title="Actions"
+                        options={actionOptions}
+                        selectedOptions={roleActions[role.role_id] || []}
+                        onApply={(selected) => handleApply(role.role_id, selected, "action")}
+                        onReset={() => handleApply(role.role_id, [], "action")}
+                      />
+                    </div>
+                  )}
                 </div>
               </td>
               <td className="px-6 py-4">
