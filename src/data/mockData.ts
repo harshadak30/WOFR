@@ -137,6 +137,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 2,
@@ -150,6 +155,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 3,
@@ -163,6 +173,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 4,
@@ -176,6 +191,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 5,
@@ -189,6 +209,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 6,
@@ -202,6 +227,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 7,
@@ -215,6 +245,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 8,
@@ -228,6 +263,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 9,
@@ -241,6 +281,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
   {
     id: 10,
@@ -254,6 +299,11 @@ export const userData: UserData[] = [
     enabled: true,
     tenant_user_id: "",
     tenant_id: "",
+    created_at: "",
+    user_id: undefined,
+    phone_number: undefined,
+    organization_name: undefined,
+    username: undefined
   },
 ];
 

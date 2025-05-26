@@ -8,7 +8,7 @@ import UserManagementM from "../SuperAdminPages/UserManagementM";
 
 function Allusers() {
   const [showModuleView, setShowModuleView] = useState(false);
-  const [userType, setUserType] = useState(null);
+  const [userType, setUserType] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { authState } = useContext(AuthContext);
 
@@ -103,7 +103,7 @@ function Allusers() {
           {userType === "master_admin" ? (
             showModuleView ? (
               <ExternalOrganizations
-                isReadOnly={true}
+                isReadOnly={false}
                 searchTerm={searchTerm}
               />
             ) : (
