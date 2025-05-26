@@ -29,6 +29,7 @@ const LeaseReviewSubmit: React.FC<LeaseReviewSubmitProps> = ({
       formData.startDate,
       formData.endDate,
       formData.annualPayment,
+      formData.paymentFrequency
       // Add more required fields as needed
     ];
 
@@ -64,6 +65,18 @@ const LeaseReviewSubmit: React.FC<LeaseReviewSubmitProps> = ({
             Lease Terms
           </h3>
           <div className="bg-gray-50 border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-gray-500">Property ID</p>
+              <p className="font-medium">
+                {formData.propertyId || "Not specified"}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">Property Name</p>
+              <p className="font-medium">
+                {formData.propertyName || "Not specified"}
+              </p>
+            </div>
             <div>
               <p className="text-sm text-gray-500">Lease Start Date</p>
               <p className="font-medium">
@@ -151,58 +164,101 @@ const LeaseReviewSubmit: React.FC<LeaseReviewSubmitProps> = ({
           </div>
         </section>
 
-        {formData.hasCashflow && (
+        {formData.hasCashflow && formData.cashflowEntries && formData.cashflowEntries.length > 0 && (
           <section>
             <h3 className="text-lg font-medium text-gray-800 mb-3">
-              Cashflow Information
+              Custom Cashflow
             </h3>
-            <div className="bg-gray-50 border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Cashflow Type</p>
-                <p className="font-medium capitalize">
-                  {formData.cashflowType || "Not specified"}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Amount</p>
-                <p className="font-medium">
-                  {formatCurrency(formData.cashflowAmount)}
-                </p>
-              </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+              <table className="w-full min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lease ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {formData.cashflowEntries.map((entry, index) => (
+                    <tr key={entry.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.leaseId || "—"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.date || "—"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.amount ? formatCurrency(entry.amount) : "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </section>
         )}
 
-        <section>
-          <h3 className="text-lg font-medium text-gray-800 mb-3">
-            Security Deposit
-          </h3>
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-500">Deposit Number</p>
-              <p className="font-medium">
-                {formData.depositNumber || "Not specified"}
-              </p>
+        {formData.securityDeposits && formData.securityDeposits.length > 0 && (
+          <section>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
+              Security Deposits
+            </h3>
+            <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+              <table className="w-full min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deposit Number</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rate</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {formData.securityDeposits.map((deposit, index) => (
+                    <tr key={deposit.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{deposit.depositNumber || "—"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {deposit.amount ? formatCurrency(deposit.amount) : "—"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {deposit.rate ? `${deposit.rate}%` : "—"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {deposit.startDate && deposit.endDate 
+                          ? `${deposit.startDate} to ${deposit.endDate}`
+                          : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Amount</p>
-              <p className="font-medium">
-                {formatCurrency(formData.depositAmount)}
-              </p>
+          </section>
+        )}
+
+        {formData.rentRevisions && formData.rentRevisions.length > 0 && (
+          <section>
+            <h3 className="text-lg font-medium text-gray-800 mb-3">
+              Rent Revisions
+            </h3>
+            <div className="bg-gray-50 border border-gray-200 rounded-md p-4">
+              <table className="w-full min-w-full divide-y divide-gray-200">
+                <thead>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revision Date</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revised Payment</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {formData.rentRevisions.map((revision, index) => (
+                    <tr key={revision.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{index + 1}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{revision.revisionDate || "—"}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {revision.revisedPayment ? formatCurrency(revision.revisedPayment) : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Rate</p>
-              <p className="font-medium">{formData.depositRate || 0}%</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Deposit Period</p>
-              <p className="font-medium">
-                {formData.depositStartDate || "Not specified"} to{" "}
-                {formData.depositEndDate || "Not specified"}
-              </p>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section>
           <h3 className="text-lg font-medium text-gray-800 mb-3">Documents</h3>
@@ -238,7 +294,7 @@ const LeaseReviewSubmit: React.FC<LeaseReviewSubmitProps> = ({
           disabled={!isFormValid}
           className={`px-4 py-2 rounded-md ${
             isFormValid
-              ? "bg-[#008F98] text-white hover:bg-[#008F98]"
+              ? "bg-[#008F98] text-white hover:bg-[#007A82]"
               : "bg-gray-300 text-gray-500 cursor-not-allowed"
           } transition-colors`}
         >

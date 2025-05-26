@@ -337,6 +337,7 @@ import Pagination from "../../component/common/Pagination";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 interface UserManagementProps {
   isReadOnly: boolean;
@@ -413,6 +414,52 @@ const UserManagement: React.FC<UserManagementProps> = ({
     }
   }, [currentPage]);
 
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+  
+    const fetchAssignedRoles = async () => {
+      try {
+        const response = await axios.get(
+          "http://192.168.29.82:8000/api/v1/assigned-tenant-user-screen?page=1&limit=100",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        );
+  
+        const assignments = response.data.data.assigned_screen_to_tenant_user;
+  
+        const groupedByUser: Record<number, string[]> = {};
+  
+        assignments.forEach((assignment: any) => {
+          const screenId = String(assignment.screen_data.screen_id);
+          const tenantUserId = assignment.tenant_user_id;
+  
+          const user = users.find((u) => u.tenant_user_id === tenantUserId);
+          if (!user) return;
+  
+          if (!groupedByUser[user.id]) {
+            groupedByUser[user.id] = [];
+          }
+  
+          if (!groupedByUser[user.id].includes(screenId)) {
+            groupedByUser[user.id].push(screenId);
+          }
+        });
+  
+        setUserSelectedRoles(groupedByUser);
+      } catch (error) {
+        console.error("Error fetching assigned roles:", error);
+      }
+    };
+  
+    fetchAssignedRoles();
+  }, [users]);
+  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userType = localStorage.getItem("user_type");
@@ -429,6 +476,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
             },
           }
         );
+        console.log("responseroles", response.data);
 
         const roleMappings = response.data.data.user_roles;
         const roleSet = new Set<string>();
@@ -437,11 +485,12 @@ const UserManagement: React.FC<UserManagementProps> = ({
         roleMappings.forEach((userRole: any) => {
           userRole.role_module_action_mappings.forEach((mapping: any) => {
             const roleName = mapping.module_data.role_name;
+            const screenId = mapping.screen_id; // <-- Important
             const roleId = mapping.module_data.role_id;
             if (!roleSet.has(roleName)) {
               roleSet.add(roleName);
               roleOptionsFromAPI.push({
-                id: String(roleId),
+                id: String(screenId),
                 label: roleName,
               });
             }
@@ -476,7 +525,7 @@ const UserManagement: React.FC<UserManagementProps> = ({
     const token = localStorage.getItem("token");
     const tenantUserId = selectedUserObj.tenant_user_id;
     const tenantId = selectedUserObj.tenant_id;
-    const screenIds = selectedRoles.map((roleId) => parseInt(roleId, 10)); // Ensure they are numbers
+    const screenIds = selectedRoles.map((roleId) => parseInt(roleId, 10)); 
 
     console.log("tenantUserId:", tenantUserId);
     console.log("tenantId:", tenantId);
@@ -504,8 +553,10 @@ const UserManagement: React.FC<UserManagementProps> = ({
         [userId]: selectedRoles,
       });
       setSelectedUser(null);
+      toast.success("Roles assigned successfully!");
     } catch (error) {
       console.error("Error assigning roles:", error);
+      toast.error("Failed to assign roles.");
     }
   };
 
